@@ -1,0 +1,50 @@
+
+{
+  "name": "@react-native-community/geolocation",
+  "version": "1.0.0",
+  "description": "React Native Geolocation Module for iOS and Android",
+  "main": "js/index.js",
+  "author": "Janic Duplessis <janic@th3rdwave.coffee>",
+  "contributors": [],
+  "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
+  "license": "MIT",
+  "scripts": {
+    "start": "react-native start",
+    "test": "yarn validate:eslint && yarn validate:flow && yarn test:jest",
+    "validate:eslint": "eslint 'js/**/*.js' 'example/**/*.js'",
+    "validate:flow": "flow check",
+    "test:jest": "jest js/"
+  },
+  "keywords": [
+    "react-native",
+    "geolocation",
+    "location"
+  ],
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-native": ">=0.57 <0.60"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/runtime": "^7.4.2",
+    "@react-native-community/eslint-config": "^0.0.3",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.5.0",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "eslint": "5.15.3",
+    "flow-bin": "^0.95.1",
+    "jest": "^24.5.0",
+    "metro-react-native-babel-preset": "^0.53.1",
+    "prettier": "^1.16.4",
+    "react-native": "0.59.2",
+    "react-test-renderer": "16.8.3",
+    "react": "16.8.3"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ]
+  }
+}
