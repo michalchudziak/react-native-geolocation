@@ -5,7 +5,9 @@
   "description": "React Native Geolocation Module for iOS and Android",
   "main": "js/index.js",
   "author": "Janic Duplessis <janic@th3rdwave.coffee>",
-  "contributors": [],
+  "contributors": [
+    "Jyrno Ader <jyrno42@gmail.com>"
+  ],
   "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
   "license": "MIT",
   "scripts": {
