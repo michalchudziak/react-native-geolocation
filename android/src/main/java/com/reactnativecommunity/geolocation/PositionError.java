@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package com.facebook.react.modules.location;
+package com.reactnativecommunity.geolocation;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -39,7 +39,7 @@ public class PositionError {
     if (message != null) {
       error.putString("message", message);
     }
-    
+
     /**
     * Provide error types in error message. Feature parity with iOS
     */
