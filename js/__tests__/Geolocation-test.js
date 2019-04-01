@@ -5,35 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @emails oncall+react_native
  */
 
-'use strict';
+import {NativeModules} from 'react-native';
+import Geolocation from '../';
 
-describe('Geolocation', () => {
-  let Geolocation;
-  const NativeModules = require('NativeModules');
-
-  beforeEach(() => {
-    jest.resetModules();
-    Geolocation = jest.requireActual('Geolocation');
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
+describe('react-native-geolocation', () => {
   it('should set the location observer configuration', () => {
     Geolocation.setRNConfiguration({skipPermissionRequests: true});
     expect(
-      NativeModules.LocationObserver.setConfiguration.mock.calls.length,
+      NativeModules.RNCGeolocation.setConfiguration.mock.calls.length,
     ).toEqual(1);
   });
 
   it('should request authorization for location requests', () => {
     Geolocation.requestAuthorization();
     expect(
-      NativeModules.LocationObserver.requestAuthorization.mock.calls.length,
+      NativeModules.RNCGeolocation.requestAuthorization.mock.calls.length,
     ).toEqual(1);
   });
 
@@ -41,17 +29,17 @@ describe('Geolocation', () => {
     const callback = () => {};
     Geolocation.getCurrentPosition(callback);
     expect(
-      NativeModules.LocationObserver.getCurrentPosition.mock.calls.length,
+      NativeModules.RNCGeolocation.getCurrentPosition.mock.calls.length,
     ).toEqual(1);
     expect(
-      NativeModules.LocationObserver.getCurrentPosition.mock.calls[0][1],
+      NativeModules.RNCGeolocation.getCurrentPosition.mock.calls[0][1],
     ).toBe(callback);
   });
 
   it('should add a success listener to the geolocation', () => {
     const watchID = Geolocation.watchPosition(() => {});
     expect(watchID).toEqual(0);
-    expect(NativeModules.LocationObserver.addListener.mock.calls[0][0]).toBe(
+    expect(NativeModules.RNCGeolocation.addListener.mock.calls[0][0]).toBe(
       'geolocationDidChange',
     );
   });
@@ -59,7 +47,7 @@ describe('Geolocation', () => {
   it('should add an error listener to the geolocation', () => {
     const watchID = Geolocation.watchPosition(() => {}, () => {});
     expect(watchID).toEqual(0);
-    expect(NativeModules.LocationObserver.addListener.mock.calls[1][0]).toBe(
+    expect(NativeModules.RNCGeolocation.addListener.mock.calls[1][0]).toBe(
       'geolocationError',
     );
   });
@@ -67,7 +55,7 @@ describe('Geolocation', () => {
   it('should clear the listeners associated with a watchID', () => {
     const watchID = Geolocation.watchPosition(() => {}, () => {});
     Geolocation.clearWatch(watchID);
-    expect(NativeModules.LocationObserver.stopObserving.mock.calls.length).toBe(
+    expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
       1,
     );
   });
@@ -76,7 +64,7 @@ describe('Geolocation', () => {
     const watchID = Geolocation.watchPosition(() => {}, () => {});
     Geolocation.watchPosition(() => {}, () => {});
     Geolocation.clearWatch(watchID);
-    expect(NativeModules.LocationObserver.stopObserving.mock.calls.length).toBe(
+    expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
       0,
     );
   });
@@ -84,19 +72,19 @@ describe('Geolocation', () => {
   it('should not fail if the watchID one wants to clear does not exist', () => {
     Geolocation.watchPosition(() => {}, () => {});
     Geolocation.clearWatch(42);
-    expect(NativeModules.LocationObserver.stopObserving.mock.calls.length).toBe(
+    expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
       0,
     );
   });
 
   it('should stop observing and warn about removing existing subscriptions', () => {
-    const warningCallback = jest.fn();
-    jest.mock('fbjs/lib/warning', () => warningCallback);
+    const mockWarningCallback = jest.fn();
+    jest.mock('fbjs/lib/warning', () => mockWarningCallback);
     Geolocation.watchPosition(() => {}, () => {});
     Geolocation.stopObserving();
-    expect(NativeModules.LocationObserver.stopObserving.mock.calls.length).toBe(
+    expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
       1,
     );
-    expect(warningCallback.mock.calls.length).toBeGreaterThanOrEqual(1);
+    expect(mockWarningCallback.mock.calls.length).toBeGreaterThanOrEqual(1);
   });
 });

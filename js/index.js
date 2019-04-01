@@ -8,19 +8,12 @@
  * @flow
  */
 
-'use strict';
+import {Platform, PermissionsAndroid} from 'react-native';
+import {RNCGeolocation, GeolocationEventEmitter} from './nativeInterface';
 
-const NativeEventEmitter = require('NativeEventEmitter');
-const RCTLocationObserver = require('NativeModules').LocationObserver;
-
-const invariant = require('invariant');
-const logError = require('logError');
-const warning = require('fbjs/lib/warning');
-
-const LocationEventEmitter = new NativeEventEmitter(RCTLocationObserver);
-
-const Platform = require('Platform');
-const PermissionsAndroid = require('PermissionsAndroid');
+import invariant from 'invariant';
+import logError from 'logError'; // TODO: Remove this haste import
+import warning from 'fbjs/lib/warning'; // TODO: Maybe remove fbjs
 
 let subscriptions = [];
 let updatesEnabled = false;
@@ -33,7 +26,7 @@ type GeoOptions = {
   timeout?: number,
   maximumAge?: number,
   enableHighAccuracy?: boolean,
-  distanceFilter: number,
+  distanceFilter?: number,
   useSignificantChanges?: boolean,
 };
 
@@ -51,8 +44,8 @@ const Geolocation = {
    *
    */
   setRNConfiguration: function(config: GeoConfiguration) {
-    if (RCTLocationObserver.setConfiguration) {
-      RCTLocationObserver.setConfiguration(config);
+    if (RNCGeolocation.setConfiguration) {
+      RNCGeolocation.setConfiguration(config);
     }
   },
 
@@ -62,7 +55,7 @@ const Geolocation = {
    * See https://facebook.github.io/react-native/docs/geolocation.html#requestauthorization
    */
   requestAuthorization: function() {
-    RCTLocationObserver.requestAuthorization();
+    RNCGeolocation.requestAuthorization();
   },
 
   /*
@@ -79,27 +72,13 @@ const Geolocation = {
       typeof geo_success === 'function',
       'Must provide a valid geo_success callback.',
     );
-    let hasPermission = true;
-    // Supports Android's new permission model. For Android older devices,
-    // it's always on.
-    if (Platform.OS === 'android' && Platform.Version >= 23) {
-      hasPermission = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (!hasPermission) {
-        const status = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        );
-        hasPermission = status === PermissionsAndroid.RESULTS.GRANTED;
-      }
-    }
-    if (hasPermission) {
-      RCTLocationObserver.getCurrentPosition(
-        geo_options || {},
-        geo_success,
-        geo_error || logError,
-      );
-    }
+
+    // Permission checks/requests are done on the native side
+    RNCGeolocation.getCurrentPosition(
+      geo_options || {},
+      geo_success,
+      geo_error || logError,
+    );
   },
 
   /*
@@ -113,14 +92,14 @@ const Geolocation = {
     options?: GeoOptions,
   ): number {
     if (!updatesEnabled) {
-      RCTLocationObserver.startObserving(options || {});
+      RNCGeolocation.startObserving(options || {});
       updatesEnabled = true;
     }
     const watchID = subscriptions.length;
     subscriptions.push([
-      LocationEventEmitter.addListener('geolocationDidChange', success),
+      GeolocationEventEmitter.addListener('geolocationDidChange', success),
       error
-        ? LocationEventEmitter.addListener('geolocationError', error)
+        ? GeolocationEventEmitter.addListener('geolocationError', error)
         : null,
     ]);
     return watchID;
@@ -162,7 +141,7 @@ const Geolocation = {
    */
   stopObserving: function() {
     if (updatesEnabled) {
-      RCTLocationObserver.stopObserving();
+      RNCGeolocation.stopObserving();
       updatesEnabled = false;
       for (let ii = 0; ii < subscriptions.length; ii++) {
         const sub = subscriptions[ii];
