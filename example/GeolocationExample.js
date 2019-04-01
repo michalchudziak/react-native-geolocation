@@ -10,11 +10,14 @@
 
 'use strict';
 
-const React = require('react');
-const ReactNative = require('react-native');
-const {StyleSheet, Text, View, Alert} = ReactNative;
+import React from 'react';
+import {StyleSheet, Text, View, Alert} from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
 
-class GeolocationExample extends React.Component<{}, $FlowFixMeState> {
+export default class GeolocationExample extends React.Component<
+  {},
+  $FlowFixMeState,
+> {
   state = {
     initialPosition: 'unknown',
     lastPosition: 'unknown',
@@ -23,7 +26,7 @@ class GeolocationExample extends React.Component<{}, $FlowFixMeState> {
   watchID: ?number = null;
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
+    Geolocation.getCurrentPosition(
       position => {
         const initialPosition = JSON.stringify(position);
         this.setState({initialPosition});
@@ -31,14 +34,14 @@ class GeolocationExample extends React.Component<{}, $FlowFixMeState> {
       error => Alert.alert('Error', JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
-    this.watchID = navigator.geolocation.watchPosition(position => {
+    this.watchID = Geolocation.watchPosition(position => {
       const lastPosition = JSON.stringify(position);
       this.setState({lastPosition});
     });
   }
 
   componentWillUnmount() {
-    this.watchID != null && navigator.geolocation.clearWatch(this.watchID);
+    this.watchID != null && Geolocation.clearWatch(this.watchID);
   }
 
   render() {
@@ -62,16 +65,3 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
-
-exports.framework = 'React';
-exports.title = 'Geolocation';
-exports.description = 'Examples of using the Geolocation API.';
-
-exports.examples = [
-  {
-    title: 'navigator.geolocation',
-    render: function(): React.Element<any> {
-      return <GeolocationExample />;
-    },
-  },
-];
