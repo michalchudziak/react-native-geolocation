@@ -7,6 +7,6 @@
 
 #import <React/RCTEventEmitter.h>
 
-@interface RCTLocationObserver : RCTEventEmitter
+@interface RNCGeolocation : RCTEventEmitter
 
 @end
