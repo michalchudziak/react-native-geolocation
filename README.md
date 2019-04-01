@@ -145,12 +145,12 @@ Check out the [example project](example) for more examples.
 
 ### Summary
 
-* [`setRNConfiguration`](geolocation.md#setrnconfiguration)
-* [`requestAuthorization`](geolocation.md#requestauthorization)
-* [`getCurrentPosition`](geolocation.md#getcurrentposition)
-* [`watchPosition`](geolocation.md#watchposition)
-* [`clearWatch`](geolocation.md#clearwatch)
-* [`stopObserving`](geolocation.md#stopobserving)
+* [`setRNConfiguration`](README.md#setrnconfiguration)
+* [`requestAuthorization`](README.md#requestauthorization)
+* [`getCurrentPosition`](README.md#getcurrentposition)
+* [`watchPosition`](README.md#watchposition)
+* [`clearWatch`](README.md#clearwatch)
+* [`stopObserving`](README.md#stopobserving)
 
 ---
 
