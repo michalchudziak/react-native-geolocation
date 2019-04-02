@@ -126,7 +126,7 @@ import Geolocation from '@react-native-community/geolocation';
 Geolocation.setRNConfiguration(config);
 ```
 
-If you need to have geolocation API aligned with the browser (cross-platform apps), or want to support backwards compatibility, please cosdider adding following lines at the root level (only for [react native](https://facebook.github.io/react-native/docs/platform-specific-code.html#native-specific-extensions-ie-sharing-code-with-nodejs-and-web).):
+If you need to have geolocation API aligned with the browser (cross-platform apps), or want to support backwards compatibility, please cosdider adding following lines at the root level (only for [react native](https://facebook.github.io/react-native/docs/platform-specific-code.html#native-specific-extensions-ie-sharing-code-with-nodejs-and-web)):
 
 ```javascript
 navigator.geolocation = require('@react-native-community/geolocation');
@@ -148,12 +148,12 @@ Check out the [example project](example) for more examples.
 
 ### Summary
 
-* [`setRNConfiguration`](geolocation.md#setrnconfiguration)
-* [`requestAuthorization`](geolocation.md#requestauthorization)
-* [`getCurrentPosition`](geolocation.md#getcurrentposition)
-* [`watchPosition`](geolocation.md#watchposition)
-* [`clearWatch`](geolocation.md#clearwatch)
-* [`stopObserving`](geolocation.md#stopobserving)
+* [`setRNConfiguration`](README.md#setrnconfiguration)
+* [`requestAuthorization`](README.md#requestauthorization)
+* [`getCurrentPosition`](README.md#getcurrentposition)
+* [`watchPosition`](README.md#watchposition)
+* [`clearWatch`](README.md#clearwatch)
+* [`stopObserving`](README.md#stopobserving)
 
 ---
 
