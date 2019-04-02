@@ -8,7 +8,6 @@
  * @flow
  */
 
-import {Platform, PermissionsAndroid} from 'react-native';
 import {RNCGeolocation, GeolocationEventEmitter} from './nativeInterface';
 
 import invariant from 'invariant';

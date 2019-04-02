@@ -10,7 +10,14 @@
 import {NativeModules} from 'react-native';
 import Geolocation from '../';
 
+jest.mock('fbjs/lib/warning');
+import warning from 'fbjs/lib/warning';
+
 describe('react-native-geolocation', () => {
+  afterEach(() => {
+    Geolocation.stopObserving();
+  });
+
   it('should set the location observer configuration', () => {
     Geolocation.setRNConfiguration({skipPermissionRequests: true});
     expect(
@@ -79,7 +86,8 @@ describe('react-native-geolocation', () => {
 
   it('should stop observing and warn about removing existing subscriptions', () => {
     const mockWarningCallback = jest.fn();
-    jest.mock('fbjs/lib/warning', () => mockWarningCallback);
+    warning.mockImplementation(mockWarningCallback);
+
     Geolocation.watchPosition(() => {}, () => {});
     Geolocation.stopObserving();
     expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
