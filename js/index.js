@@ -11,8 +11,7 @@
 import {RNCGeolocation, GeolocationEventEmitter} from './nativeInterface';
 
 import invariant from 'invariant';
-import logError from 'logError'; // TODO: Remove this haste import
-import warning from 'fbjs/lib/warning'; // TODO: Maybe remove fbjs
+import {logError, warning} from './utils';
 
 let subscriptions = [];
 let updatesEnabled = false;
