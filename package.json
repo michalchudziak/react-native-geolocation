@@ -6,7 +6,8 @@
   "author": "React Native Community",
   "contributors": [
     "Janic Duplessis <janic@th3rdwave.coffee>",
-    "Michal Chudziak <michal.chudziak@gmail.com>"
+    "Michal Chudziak <michal.chudziak@gmail.com>",
+    "Matt Oakes <hello@mattoakes.net>"
   ],
   "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
   "license": "MIT",
