@@ -3,7 +3,12 @@
 
 The Geolocation API extends the [Geolocation web spec](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation).
 
-On Android, this uses the [android.location API](https://developer.android.com/reference/android/location/package-summary). This API is not recommended by Google because it is less accurate and slower than the recommended [Google Location Services API](https://developer.android.com/training/location/). In order to use it with React Native, use the [react-native-geolocation-service](https://github.com/Agontuk/react-native-geolocation-service) module.
+Currently, on Android, this uses the [android.location API](https://developer.android.com/reference/android/location/package-summary). This API is not recommended by Google because it is less accurate and slower than the recommended [Google Location Services API](https://developer.android.com/training/location/). This is something that we want to change in the near future https://github.com/react-native-community/react-native-geolocation/issues/6.
+
+In order to use the new [Google Location Services API](https://developer.android.com/training/location/) with React Native, please check out alternative libraries:
+
+- [react-native-geolocation-service](https://github.com/Agontuk/react-native-geolocation-service)
+- [react-native-location](https://github.com/timfpark/react-native-location)
 
 ## Getting started
 
@@ -90,8 +95,6 @@ protected List<ReactPackage> getPackages() {
 You need to include the `NSLocationWhenInUseUsageDescription` key in Info.plist to enable geolocation when using the app. Geolocation is enabled by default when you create a project with `react-native init`.
 
 In order to enable geolocation in the background, you need to include the 'NSLocationAlwaysUsageDescription' key in Info.plist and add location as a background mode in the 'Capabilities' tab in Xcode.
-
-If you are using CocoaPods for React Native, make sure to include the `RCTGeolocation` sub-podspec.
 
 ### Android
 
