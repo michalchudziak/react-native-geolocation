@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "description": "React Native Geolocation Module for iOS and Android",
   "main": "js/index.js",
-  "author": "Janic Duplessis <janic@th3rdwave.coffee>",
+  "author": "React Native Community",
   "contributors": [
-    "Jyrno Ader <jyrno42@gmail.com>"
+    "Janic Duplessis <janic@th3rdwave.coffee>",
+    "Michal Chudziak <michal.chudziak@gmail.com>"
   ],
   "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
   "license": "MIT",
@@ -23,8 +24,8 @@
     "location"
   ],
   "peerDependencies": {
-    "react": "^16.0.0",
-    "react-native": ">=0.57 <0.60"
+    "react": "*",
+    "react-native": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
