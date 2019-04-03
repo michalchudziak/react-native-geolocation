@@ -1,0 +1,89 @@
+version: 2.1
+
+orbs:
+  rn: react-native-community/react-native@dev:0.1.0-rc12
+
+jobs:
+  checkout_code:
+    executor: rn/linux_js
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: .
+          paths: .
+  analyse:
+    executor: rn/linux_js
+    steps:
+      - attach_workspace:
+          at: .
+      - rn/yarn_install
+      - run:
+          name: Lint JS Code (ESLint)
+          command: yarn run validate:eslint
+      - run:
+          name: Flow
+          command: yarn run validate:flow
+      - run:
+          name: Jest
+          command: yarn run test:jest
+#       Disabled until we have e2e tests enabled 
+#       - run:
+#           name: Build Android JavaScript Bundle
+#           command: yarn run test:detox:android:bundle:release
+#       - run:
+#           name: Build iOS JavaScript Bundle
+#           command: yarn run test:detox:ios:bundle:release
+#       Disabled until we have semantic release enabled 
+#   publish:
+#     executor: rn/linux_js
+#     steps:
+#       - attach_workspace:
+#           at: .
+#       - rn/yarn_install
+#       - run:
+#           name: Publish to NPM
+#           command: yarn ci:publish
+
+workflows:
+  test:
+    jobs:
+      - checkout_code
+      - analyse:
+          requires:
+            - checkout_code
+      - rn/android_build:
+          name: build_android_debug
+          project_path: "example/android"
+          build_type: debug
+          requires:
+            - analyse
+      - rn/android_build:
+          name: build_android_release
+          project_path: "example/android"
+          build_type: release
+          requires:
+            - analyse
+#       Disabled until we have e2e tests enabled
+#       - rn/android_test:
+#           detox_configuration: "android.emu.release"
+#           requires:
+#             - build_android_release
+#       - rn/ios_build_and_test:
+#           project_path: "example/ios/GeolocationExample.xcodeproj"
+#           derived_data_path: "example/ios/build"
+#           device: "iPhone X"
+#           build_configuration: "Release"
+#           scheme: "GeolocationExample"
+#           detox_configuration: "ios.sim.release"
+#           requires:
+#             - analyse
+#       Disabled until we have semantic release enabled
+#       - publish:
+#           requires:
+#             - analyse
+#             # Disabled until we have e2e tests enabled 
+#             # - rn/android_test
+#             # - rn/ios_build_and_test
+#           filters:
+#             branches:
+#               only: master
