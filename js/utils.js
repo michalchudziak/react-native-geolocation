@@ -31,16 +31,17 @@ const logError = function(...args: $ReadOnlyArray<mixed>) {
  * same logic and follow the same code paths.
  */
 const warning = __DEV__
-  ? function(condition, format, ...args) {
+  ? function(condition: boolean, format: string, ...args: any[]) {
       if (format === undefined) {
         throw new Error(
           '`warning(condition, format, ...args)` requires a warning ' +
-          'message argument'
+            'message argument',
         );
       }
       if (!condition) {
         var argIndex = 0;
-        var message = 'Warning: ' + format.replace(/%s/g, () => args[argIndex++]);
+        var message =
+          'Warning: ' + format.replace(/%s/g, () => args[argIndex++]);
         if (typeof console !== 'undefined') {
           console.error(message);
         }
@@ -52,9 +53,9 @@ const warning = __DEV__
         } catch (x) {}
       }
     }
-  : function() {};
+  : function(...args: any[]) {};
 
 module.exports = {
   logError,
-  warning
+  warning,
 };

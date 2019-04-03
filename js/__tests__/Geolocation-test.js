@@ -10,8 +10,13 @@
 import {NativeModules} from 'react-native';
 import Geolocation from '../';
 
-jest.mock('fbjs/lib/warning');
-import warning from 'fbjs/lib/warning';
+jest.mock('../utils', () => {
+  return {
+    logError: jest.fn(),
+    warning: jest.fn(),
+  };
+});
+import {warning} from '../utils';
 
 describe('react-native-geolocation', () => {
   afterEach(() => {
