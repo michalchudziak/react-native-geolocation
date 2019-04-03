@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  rn: react-native-community/react-native@dev:0.1.0-rc12
+  rn: react-native-community/react-native@dev:0.1.0-rc14
 
 jobs:
   checkout_code:
@@ -26,13 +26,6 @@ jobs:
       - run:
           name: Jest
           command: yarn run test:jest
-#       Disabled until we have e2e tests enabled 
-#       - run:
-#           name: Build Android JavaScript Bundle
-#           command: yarn run test:detox:android:bundle:release
-#       - run:
-#           name: Build iOS JavaScript Bundle
-#           command: yarn run test:detox:ios:bundle:release
 #       Disabled until we have semantic release enabled 
 #   publish:
 #     executor: rn/linux_js
@@ -63,20 +56,19 @@ workflows:
           build_type: release
           requires:
             - analyse
-#       Disabled until we have e2e tests enabled
-#       - rn/android_test:
-#           detox_configuration: "android.emu.release"
-#           requires:
-#             - build_android_release
-#       - rn/ios_build_and_test:
-#           project_path: "example/ios/GeolocationExample.xcodeproj"
-#           derived_data_path: "example/ios/build"
-#           device: "iPhone X"
-#           build_configuration: "Release"
-#           scheme: "GeolocationExample"
-#           detox_configuration: "ios.sim.release"
-#           requires:
-#             - analyse
+      - rn/android_test:
+          detox_configuration: "android.emu.release"
+          requires:
+            - build_android_release
+      - rn/ios_build_and_test:
+          project_path: "example/ios/GeolocationExample.xcodeproj"
+          derived_data_path: "example/ios/build"
+          device: "iPhone X"
+          build_configuration: "Release"
+          scheme: "GeolocationExample"
+          detox_configuration: "ios.sim.release"
+          requires:
+            - analyse
 #       Disabled until we have semantic release enabled
 #       - publish:
 #           requires:
