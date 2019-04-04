@@ -126,7 +126,7 @@ import Geolocation from '@react-native-community/geolocation';
 Geolocation.setRNConfiguration(config);
 ```
 
-If you need to have geolocation API aligned with the browser (cross-platform apps), or want to support backwards compatibility, please consider adding following lines at the root level, for example at the the top of your App.js file (only for [react native](https://facebook.github.io/react-native/docs/platform-specific-code.html#native-specific-extensions-ie-sharing-code-with-nodejs-and-web)):
+If you need to have geolocation API aligned with the browser (cross-platform apps), or want to support backward compatibility, please consider adding following lines at the root level, for example at the top of your App.js file (only for [react native](https://facebook.github.io/react-native/docs/platform-specific-code.html#native-specific-extensions-ie-sharing-code-with-nodejs-and-web)):
 
 ```javascript
 navigator.geolocation = require('@react-native-community/geolocation');
