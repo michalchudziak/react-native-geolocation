@@ -17,6 +17,7 @@ Currently we use `flow` for typechecking, `eslint` with `prettier` for linting a
 * `yarn validate:eslint --fix`: Run `eslint` and automatically fix issues. This is useful for correcting code formatting.
 * `yarn validate:flow`: Run `flow` typechecking.
 * `yarn test:jest`: Run unit tests with `jest`.
+* `yarn test:e2e:<ios|android>:<debug|release>`: Runs end-to-end Detox tests, for example `yarn test:e2e:ios:debug` runs the iOS E2E tests in debug mode. Before you can run it, you should build the app that can be run, by using `yarn build:e2e:<ios|android>:<debug|release>`.
 
 ## Sending a pull request
 When you're sending a pull request:
