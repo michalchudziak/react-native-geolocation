@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "React Native Geolocation Module for iOS and Android",
   "main": "js/index.js",
+  "typings": "typings/index.d.ts",
   "author": "React Native Community",
   "contributors": [
     "Janic Duplessis <janic@th3rdwave.coffee>",
