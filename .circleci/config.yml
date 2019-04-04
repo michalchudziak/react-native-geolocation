@@ -26,16 +26,15 @@ jobs:
       - run:
           name: Jest
           command: yarn run test:jest
-#       Disabled until we have semantic release enabled 
-#   publish:
-#     executor: rn/linux_js
-#     steps:
-#       - attach_workspace:
-#           at: .
-#       - rn/yarn_install
-#       - run:
-#           name: Publish to NPM
-#           command: yarn ci:publish
+  publish:
+    executor: rn/linux_js
+    steps:
+      - attach_workspace:
+          at: .
+      - rn/yarn_install
+      - run:
+          name: Publish to NPM
+          command: yarn semantic-release
 
 workflows:
   test:
@@ -69,13 +68,11 @@ workflows:
           detox_configuration: "ios.sim.release"
           requires:
             - analyse
-#       Disabled until we have semantic release enabled
-#       - publish:
-#           requires:
-#             - analyse
-#             # Disabled until we have e2e tests enabled 
-#             # - rn/android_test
-#             # - rn/ios_build_and_test
-#           filters:
-#             branches:
-#               only: master
+      - publish:
+          requires:
+            - analyse
+            - rn/android_test
+            - rn/ios_build_and_test
+          filters:
+            branches:
+              only: master
