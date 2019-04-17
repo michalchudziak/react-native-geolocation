@@ -9,6 +9,7 @@
 
 export type GeolocationConfiguration = {
   skipPermissionRequests: boolean;
+  authorizationLevel: "always" | "whenInUse"
 };
 
 export type GeolocationOptions = {
