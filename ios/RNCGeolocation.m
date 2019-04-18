@@ -23,10 +23,17 @@ typedef NS_ENUM(NSInteger, RNCPositionErrorCode) {
   RNCPositionErrorTimeout,
 };
 
+typedef NS_ENUM(NSInteger, RNCGeolocationAuthorizationLevel) {
+  RNCGeolocationAuthorizationLevelDefault,
+  RNCGeolocationAuthorizationLevelWhenInUse,
+  RNCGeolocationAuthorizationLevelAlways,
+};
+
 #define RNC_DEFAULT_LOCATION_ACCURACY kCLLocationAccuracyHundredMeters
 
 typedef struct {
   BOOL skipPermissionRequests;
+  RNCGeolocationAuthorizationLevel authorizationLevel;
 } RNCGeolocationConfiguration;
 
 typedef struct {
@@ -37,6 +44,13 @@ typedef struct {
   BOOL useSignificantChanges;
 } RNCGeolocationOptions;
 
+@implementation RCTConvert (RNCGeolocationAuthorizationLevel)
+RCT_ENUM_CONVERTER(RNCGeolocationAuthorizationLevel, (@{
+    @"whenInUse": @(RNCGeolocationAuthorizationLevelWhenInUse),
+    @"always": @(RNCGeolocationAuthorizationLevelAlways)}),
+  RNCGeolocationAuthorizationLevelDefault, integerValue)
+@end
+
 @implementation RCTConvert (RNCGeolocationOptions)
 
 + (RNCGeolocationConfiguration)RNCGeolocationConfiguration:(id)json
@@ -44,7 +58,8 @@ typedef struct {
   NSDictionary<NSString *, id> *options = [RCTConvert NSDictionary:json];
 
   return (RNCGeolocationConfiguration) {
-    .skipPermissionRequests = [RCTConvert BOOL:options[@"skipPermissionRequests"]]
+    .skipPermissionRequests = [RCTConvert BOOL:options[@"skipPermissionRequests"]],
+    .authorizationLevel = [RCTConvert RNCGeolocationAuthorizationLevel:options[@"authorizationLevel"]]
   };
 }
 
@@ -202,10 +217,24 @@ RCT_EXPORT_METHOD(requestAuthorization)
     _locationManager = [CLLocationManager new];
     _locationManager.delegate = self;
   }
+  BOOL wantsAlways = NO;
+  BOOL wantsWhenInUse = NO;
+  if (_locationConfiguration.authorizationLevel == RNCGeolocationAuthorizationLevelDefault) {
+    if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] &&
+        [_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+      wantsAlways = YES;
+    } else if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] &&
+               [_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+      wantsWhenInUse = YES;
+    }
+  } else if (_locationConfiguration.authorizationLevel == RNCGeolocationAuthorizationLevelAlways) {
+    wantsAlways = YES;
+  } else if (_locationConfiguration.authorizationLevel == RNCGeolocationAuthorizationLevelWhenInUse) {
+    wantsWhenInUse = YES;
+  }
 
   // Request location access permission
-  if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] &&
-      [_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+  if (wantsAlways) {
     [_locationManager requestAlwaysAuthorization];
 
     // On iOS 9+ we also need to enable background updates
@@ -215,8 +244,7 @@ RCT_EXPORT_METHOD(requestAuthorization)
         [_locationManager setAllowsBackgroundLocationUpdates:YES];
       }
     }
-  } else if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] &&
-             [_locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+  } else if (wantsWhenInUse) {
     [_locationManager requestWhenInUseAuthorization];
   }
 }
