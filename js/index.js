@@ -18,7 +18,7 @@ let updatesEnabled = false;
 
 type GeoConfiguration = {
   skipPermissionRequests: boolean,
-  authorizationLevel: 'always' | 'whenInUse',
+  authorizationLevel: 'always' | 'whenInUse' | 'auto',
 };
 
 type GeoOptions = {

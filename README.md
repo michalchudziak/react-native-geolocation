@@ -176,7 +176,7 @@ Sets configuration options that will be used in all location requests.
 Supported options:
 
 * `skipPermissionRequests` (boolean, iOS-only) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
-* `authorizationLevel` (string, iOS-only) - Either `"whenInUse"` or `"always"`. Changes the whether the user will be asked to give "always" or "when in use" location services permission. Any other value will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
+* `authorizationLevel` (string, iOS-only) - Either `"whenInUse"`, `"always"`, or `"auto"`. Changes the whether the user will be asked to give "always" or "when in use" location services permission. Any other value or `auto` will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
 
 ---
 
