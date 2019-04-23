@@ -33,7 +33,7 @@ export type GeolocationResponse = {
   timestamp: number;
 };
 
-type GeolocationError = {
+export type GeolocationError = {
   code: number;
   message: string;
   PERMISSION_DENIED: number;
