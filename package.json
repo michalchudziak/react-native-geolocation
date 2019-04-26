@@ -6,7 +6,11 @@
   "main": "lib/commonjs/index.js",
   "files": [
     "lib/",
-    "js/"
+    "js/",
+    "/android",
+    "!/android/build",
+    "/ios",
+    "/*.podspec"
   ],
   "typings": "typings/index.d.ts",
   "author": "React Native Community",
