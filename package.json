@@ -45,6 +45,7 @@
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/runtime": "^7.4.3",
+    "@react-native-community/bob": "^0.3.4",
     "@react-native-community/eslint-config": "^0.0.3",
     "@semantic-release/git": "^7.0.8",
     "babel-core": "^7.0.0-bridge.0",
@@ -99,14 +100,17 @@
     },
     "specs": ""
   },
-  "dependencies": {
-    "@react-native-community/bob": "^0.3.4"
-  },
+  "dependencies": {},
   "@react-native-community/bob": {
     "source": "js",
     "output": "web",
     "targets": [
-      ["commonjs", {"flow": true}],
+      [
+        "commonjs",
+        {
+          "flow": true
+        }
+      ],
       "module"
     ]
   }
