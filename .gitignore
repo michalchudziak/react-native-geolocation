@@ -44,5 +44,5 @@ buck-out/
 \.buckd/
 *.keystore
       
-# Web build
-web/
+# Build
+lib/
