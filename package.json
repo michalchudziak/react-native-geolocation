@@ -3,9 +3,9 @@
   "version": "1.3.0",
   "description": "React Native Geolocation Module for iOS and Android",
   "react-native": "js/index.js",
-  "main": "web/commonjs/index.js",
+  "main": "lib/commonjs/index.js",
   "files": [
-    "web/",
+    "lib/",
     "js/"
   ],
   "typings": "typings/index.d.ts",
@@ -103,7 +103,7 @@
   "dependencies": {},
   "@react-native-community/bob": {
     "source": "js",
-    "output": "web",
+    "output": "lib",
     "targets": [
       [
         "commonjs",
