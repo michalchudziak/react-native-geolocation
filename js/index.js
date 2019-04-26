@@ -11,10 +11,10 @@ type GeoOptions = {
 
 const Geolocation = {
   setRNConfiguration: function() {
-    console.info('method not supported by the browser');
+    throw new Error('method not supported by the browser');
   },
   requestAuthorization: function() {
-    console.info('method not supported by the browser');
+    throw new Error('method not supported by the browser');
   },
   getCurrentPosition: async function(
     success: Function,
@@ -22,8 +22,7 @@ const Geolocation = {
     options?: GeoOptions,
   ) {
     if (typeof success !== 'function') {
-      console.error('Success callback must be a function');
-      return;
+      throw new Error('success callback must be a function');
     } else if (!navigator || !navigator.geolocation) {
       console.error('Navigator is undefined');
       return;
@@ -36,8 +35,7 @@ const Geolocation = {
     options?: GeoOptions,
   ) {
     if (typeof success !== 'function') {
-      console.error('Success callback must be a function');
-      return;
+      throw new Error('success callback must be a function');
     } else if (!navigator || !navigator.geolocation) {
       console.error('Navigator is undefined');
       return;
@@ -52,7 +50,7 @@ const Geolocation = {
     navigator.geolocation.clearWatch(watchID);
   },
   stopObserving: function() {
-    console.info('method not supported by the browser');
+    throw new Error('method not supported by the browser');
   },
 };
 module.exports = Geolocation;
