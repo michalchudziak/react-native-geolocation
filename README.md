@@ -148,12 +148,12 @@ Check out the [example project](example) for more examples.
 
 ### Summary
 
-* [`setRNConfiguration`](README.md#setrnconfiguration)
-* [`requestAuthorization`](README.md#requestauthorization)
-* [`getCurrentPosition`](README.md#getcurrentposition)
-* [`watchPosition`](README.md#watchposition)
-* [`clearWatch`](README.md#clearwatch)
-* [`stopObserving`](README.md#stopobserving)
+* [`setRNConfiguration`](#setrnconfiguration)
+* [`requestAuthorization`](#requestauthorization)
+* [`getCurrentPosition`](#getcurrentposition)
+* [`watchPosition`](#watchposition)
+* [`clearWatch`](#clearwatch)
+* [`stopObserving`](#stopobserving)
 
 ---
 
