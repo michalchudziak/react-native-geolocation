@@ -38,6 +38,15 @@ Drag `RNCGeolocation.xcodeproj` to your project on Xcode (usually under the Libr
 Click on your main project file (the one that represents the `.xcodeproj`) select `Build Phases` and drag the static library from the `Products` folder inside the Library you are importing to `Link Binary With Libraries` (or use the `+` sign and choose library from the list):
 
 ![xcode-link](https://facebook.github.io/react-native/docs/assets/AddToBuildPhases.png)
+
+### Using CocoaPods
+
+Update your `Podfile`
+
+```
+pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
+```
+
 </details>
 
 <details>
