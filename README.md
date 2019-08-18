@@ -1,5 +1,5 @@
 # `@react-native-community/geolocation`
-[![CircleCI Status](https://img.shields.io/circleci/project/github/react-native-community/react-native-geolocation/master.svg)](https://circleci.com/gh/react-native-community/workflows/react-native-geolocation/tree/master) ![Supports Android and iOS](https://img.shields.io/badge/platforms-android%20|%20ios-lightgrey.svg) ![MIT License](https://img.shields.io/npm/l/@react-native-community/geolocation.svg)
+[![CircleCI Status](https://img.shields.io/circleci/project/github/react-native-community/react-native-geolocation/master.svg)](https://circleci.com/gh/react-native-community/workflows/react-native-geolocation/tree/master) ![Supports Android, iOS and web](https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20web-lightgrey.svg) ![MIT License](https://img.shields.io/npm/l/@react-native-community/geolocation.svg)
 
 The Geolocation API extends the [Geolocation web spec](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation).
 
@@ -51,7 +51,7 @@ pod 'react-native-geolocation', path: '../node_modules/@react-native-community/g
 
 <details>
 <summary>Manually link the library on Android</summary>
-   
+
 #### `android/settings.gradle`
 ```groovy
 include ':react-native-community-geolocation'
@@ -121,7 +121,7 @@ Android API >= 18 Positions will also contain a `mocked` boolean to indicate if 
 </p>
 
 ## Migrating from the core `react-native` module
-This module was created when the Geolocation was split out from the core of React Native. As a browser polyfill, this API was available through the `navigator.geolocation` global - you didn't need to import it. To migrate to this module you need to follow the installation instructions above and change following code: 
+This module was created when the Geolocation was split out from the core of React Native. As a browser polyfill, this API was available through the `navigator.geolocation` global - you didn't need to import it. To migrate to this module you need to follow the installation instructions above and change following code:
 
 ```javascript
 navigator.geolocation.setRNConfiguration(config);
