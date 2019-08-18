@@ -48,39 +48,39 @@ workflows:
       - analyse:
           requires:
             - checkout_code
-      - rn/android_build:
-          name: build_android_debug
-          project_path: "example/android"
-          build_type: debug
-          requires:
-            - analyse
-      - rn/android_build:
-          name: build_android_release
-          project_path: "example/android"
-          build_type: release
-          requires:
-            - analyse
-      - rn/android_test:
-          logcat_grep: "com.geolocationexample"
-          detox_configuration: "android.emu.release"
-          detox_loglevel: verbose
-          requires:
-            - build_android_release
-      - rn/ios_build_and_test:
-          project_path: "example/ios/GeolocationExample.xcodeproj"
-          derived_data_path: "example/ios/build"
-          device: "iPhone X"
-          build_configuration: "Release"
-          scheme: "GeolocationExample"
-          detox_configuration: "ios.sim.release"
-          detox_loglevel: verbose
-          requires:
-            - analyse
+      # - rn/android_build:
+      #     name: build_android_debug
+      #     project_path: "example/android"
+      #     build_type: debug
+      #     requires:
+      #       - analyse
+      # - rn/android_build:
+      #     name: build_android_release
+      #     project_path: "example/android"
+      #     build_type: release
+      #     requires:
+      #       - analyse
+      # - rn/android_test:
+      #     logcat_grep: "com.geolocationexample"
+      #     detox_configuration: "android.emu.release"
+      #     detox_loglevel: verbose
+      #     requires:
+      #       - build_android_release
+      # - rn/ios_build_and_test:
+      #     project_path: "example/ios/GeolocationExample.xcodeproj"
+      #     derived_data_path: "example/ios/build"
+      #     device: "iPhone X"
+      #     build_configuration: "Release"
+      #     scheme: "GeolocationExample"
+      #     detox_configuration: "ios.sim.release"
+      #     detox_loglevel: verbose
+      #     requires:
+      #       - analyse
       - publish:
           requires:
             - analyse
-            - rn/android_test
-            - rn/ios_build_and_test
+            # - rn/android_test
+            # - rn/ios_build_and_test
           filters:
             branches:
               only: master
