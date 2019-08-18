@@ -9,9 +9,9 @@
  */
 
 type GeoOptions = {
-  timeout: number,
-  maximumAge: number,
-  enableHighAccuracy: boolean,
+  timeout?: number,
+  maximumAge?: number,
+  enableHighAccuracy?: boolean,
 };
 
 const Geolocation = {

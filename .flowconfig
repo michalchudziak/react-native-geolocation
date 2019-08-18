@@ -20,7 +20,7 @@
 .*/node_modules/metro/.*
 
 ; Ignore the compiled files
-lib/.*
+<PROJECT_ROOT>/lib/.*
 
 [include]
 
