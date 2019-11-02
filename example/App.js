@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 
 import GeolocationExample from './GeolocationExample';
-import {name as appName} from './app.json';
 
 // Examples which show the user how to correctly use the library
 const EXAMPLES = [
@@ -40,8 +39,10 @@ type State = {
   showExamples: boolean,
 };
 
-export default class ExampleApp extends React.Component<{}, State> {
-  constructor(props) {
+type Props = {};
+
+export default class ExampleApp extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {

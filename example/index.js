@@ -8,9 +8,7 @@
  * @flow
  */
 
-import React from 'react';
-import {
-  AppRegistry,
-} from 'react-native';
+import {AppRegistry} from 'react-native';
+import {name as appName} from './app.json';
 
-AppRegistry.registerComponent(appName, () => ExampleApp);
+AppRegistry.registerComponent(appName, () => require('./App.js'));
