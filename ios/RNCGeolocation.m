@@ -323,7 +323,7 @@ RCT_EXPORT_METHOD(stopObserving)
     
     // and if no pending requests also stop updating
     if (_pendingRequests.count == 0) {
-        [_locationManagerObs stopUpdatingLocation];
+        [_locationManager stopUpdatingLocation];
     }
 }
 
