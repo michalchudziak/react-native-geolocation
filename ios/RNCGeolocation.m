@@ -413,11 +413,10 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
     };
     
     
-    // staring an observer might return a cached version
-    // right away.
-    // If it is the same we last fetched, ignore it
-    // and wait for a new updated value
-    if(_lastLocationEvent && ([_lastLocationEvent[@"timestamp"] doubleValue] == [newLocation[@"timestamp"] doubleValue])){
+    // staring an observer might return a cached version right away.
+    // If it is the same we last fetched, or we have a more recent one,
+    // ignore it and wait for a new updated value
+    if(_lastLocationEvent && ([_lastLocationEvent[@"timestamp"] doubleValue] >= [newLocation[@"timestamp"] doubleValue])){
         return;
     }
     
