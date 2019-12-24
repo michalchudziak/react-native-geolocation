@@ -160,7 +160,10 @@ RCT_EXPORT_MODULE()
     }
     
     if(_locationManagerObs){
-        [_locationManagerObs stopMonitoringSignificantLocationChanges];
+        // do not stop this one, it should only be stopped with
+        // stop observing since we may use it to re-launch our app
+        //[_locationManagerObs stopMonitoringSignificantLocationChanges];
+        
         [_locationManagerObs stopUpdatingLocation];
         _locationManagerObs.delegate = nil;
     }
