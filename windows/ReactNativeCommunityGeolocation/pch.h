@@ -15,6 +15,7 @@
 #include <winrt/Windows.UI.Xaml.Markup.h>
 #include <winrt/Windows.UI.Xaml.Navigation.h>
 #include <winrt/Windows.UI.Xaml.h>
+#include <winrt/Windows.Devices.Geolocation.h>
 
 #include <winrt/Microsoft.ReactNative.h>
 

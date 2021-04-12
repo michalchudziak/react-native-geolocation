@@ -4,7 +4,8 @@
 #include "ReactPackageProvider.g.cpp"
 #endif
 
-#include "ReactNativeModule.h"
+//#include "ReactNativeModule.h"
+#include "RNCGeolocation.h"
 
 using namespace winrt::Microsoft::ReactNative;
 
