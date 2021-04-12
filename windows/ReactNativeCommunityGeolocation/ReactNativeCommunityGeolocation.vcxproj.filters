@@ -12,6 +12,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReactPackageProvider.h" />
     <ClInclude Include="ReactNativeModule.h" />
+    <ClInclude Include="GeoConfiguration.h" />
+    <ClInclude Include="GeolocationCoordinates.h" />
+    <ClInclude Include="GeolocationPosition.h" />
+    <ClInclude Include="GeoOptions.h" />
+    <ClInclude Include="RNCGeolocation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PropertySheet.props" />
