@@ -12,6 +12,7 @@ import {RNCGeolocation, GeolocationEventEmitter} from './nativeInterface';
 
 import invariant from 'invariant';
 import {logError, warning} from './utils';
+import { Platform } from 'react-native';
 
 let subscriptions = [];
 let updatesEnabled = false;
@@ -73,11 +74,20 @@ const Geolocation = {
     );
 
     // Permission checks/requests are done on the native side
-    RNCGeolocation.getCurrentPosition(
-      geo_options || {},
-      geo_success,
-      geo_error || logError,
-    );
+    if (Platform.OS === 'windows') {
+        RNCGeolocation.getCurrentPosition(geo_options)
+        .then((position) => {
+            geo_success(position);
+        }).catch((error) => {
+            (geo_error || logError)(error);
+        });
+    } else {
+        RNCGeolocation.getCurrentPosition(
+          geo_options || {},
+          geo_success,
+          geo_error || logError,
+        );
+    }
   },
 
   /*
