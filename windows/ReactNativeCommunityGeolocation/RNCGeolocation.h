@@ -12,6 +12,7 @@
 #include "GeoOptions.h"
 #include "GeoConfiguration.h"
 #include "GeolocationPosition.h"
+#include "GeolocationCoordinates.h"
 
 using namespace winrt;
 using namespace Windows::Devices::Geolocation;
@@ -28,9 +29,6 @@ namespace winrt::ReactNativeCommunityGeolocation
 		GeoConfiguration _config;
 		winrt::event_token _positionChangedEventToken;
 
-		// NativeModules.RNCGeolocation.setConfiguration()
-		//   .then(() => { // success }
-		//   .catch((error) => { // failure };
 		REACT_METHOD(SetConfiguration, L"setConfiguration");
 		void SetConfiguration(GeoConfiguration config) noexcept
 		{
@@ -71,7 +69,7 @@ namespace winrt::ReactNativeCommunityGeolocation
 			_positionChangedEventToken = _locator.PositionChanged({ this, &RNCGeolocation::OnPositionChanged });
 		}
 
-		void OnPositionChanged(Geolocator const& sender, PositionChangedEventArgs const& e) noexcept {
+		void OnPositionChanged(Geolocator const&, PositionChangedEventArgs const& e) noexcept {
 			auto result = ToJSValueObject(e.Position().Coordinate());
 			GeolocationDidChange(result);
 		}
@@ -82,6 +80,21 @@ namespace winrt::ReactNativeCommunityGeolocation
 			if (_locator != nullptr) {
 				_locator.PositionChanged(_positionChangedEventToken);
 			}
+		}
+
+		REACT_METHOD(CallbackTestInt, L"callbackTestInt");
+		void CallbackTestInt(std::function<void(int)> const& callback) noexcept
+		{
+			callback(27);
+		}
+
+		REACT_METHOD(CallbackTestStruct, L"callbackTestStruct");
+		void CallbackTestStruct(std::function<void(GeolocationCoordinates)> const& callback) noexcept
+		{
+			auto coords = GeolocationCoordinates();
+			coords.Latitude = 50.0;
+			coords.Longitude = 40.0;
+			callback(coords);
 		}
 
 		static JSValueObject ToJSValueObject(winrt::Windows::Devices::Geolocation::Geocoordinate coord) {
@@ -152,5 +165,6 @@ namespace winrt::ReactNativeCommunityGeolocation
 				}
 			};
 		}
+
 	};
 }
