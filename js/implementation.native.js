@@ -54,8 +54,12 @@ const Geolocation = {
    *
    * See https://facebook.github.io/react-native/docs/geolocation.html#requestauthorization
    */
-  requestAuthorization: function() {
-    RNCGeolocation.requestAuthorization();
+  requestAuthorization: async function() {
+    if (Platform.OS === 'windows') {
+        await RNCGeolocation.requestAuthorization();
+    } else {
+        RNCGeolocation.requestAuthorization();
+    }
   },
 
   /*

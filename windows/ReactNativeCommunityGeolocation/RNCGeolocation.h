@@ -58,8 +58,8 @@ namespace winrt::ReactNativeCommunityGeolocation
 		//NativeModules.RNCGeolocation.watchPosition()
 		// .then(result => console.log(result))
 		// .catch(error => console.log(error));
-		REACT_METHOD(WatchPosition, L"watchPosition");
-		void WatchPosition() noexcept
+		REACT_METHOD(StartObserving, L"startObserving");
+		void StartObserving() noexcept
 		{
 			if (_locator == nullptr) {
 				_locator = Geolocator();
