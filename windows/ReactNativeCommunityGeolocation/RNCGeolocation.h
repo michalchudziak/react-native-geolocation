@@ -112,7 +112,7 @@ namespace winrt::ReactNativeCommunityGeolocation
 
 			//resultObject["altitude"] = ifFinite(coord.Altitude(), 0.0);
 			//resultObject["altitudeAccuracy"] = ifFinite(coord.AltitudeAccuracy(), 0.0);
-			//resultObject["heading"] = ifFinite(coord.Heading(), 0.0);
+			resultObject["heading"] = ifFinite(coord.Heading(), 0.0);
 			resultObject["speed"] = ifFinite(coord.Speed(), 0.0);
 
 			return resultObject;
