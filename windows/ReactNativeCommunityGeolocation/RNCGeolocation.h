@@ -35,9 +35,6 @@ namespace winrt::ReactNativeCommunityGeolocation
 			_config = config;
 		}
 
-		// NativeModules.RNCGeolocation.requestAuthorization()
-		//   .then(() => { // success }
-		//   .catch((error) => { // failure };
 		REACT_METHOD(RequestAuthorization, L"requestAuthorization");
 		void RequestAuthorization(ReactPromise<void> promise) noexcept
 		{
@@ -45,9 +42,22 @@ namespace winrt::ReactNativeCommunityGeolocation
 			asyncOp.Completed(MakeAsyncActionCompletedHandler(promise));
 		}
 
-		// NativeModules.RNCGeolocation.GetCurrentPosition()
-		//  .then(result => console.log(result))
-		//  .catch(error => console.log(error));
+		static IAsyncAction RequestAuthorizationAsync(ReactPromise<void> promise) noexcept
+		{
+			auto capturedPromise = promise;
+			auto access = co_await Geolocator::RequestAccessAsync();
+			if (access == GeolocationAccessStatus::Allowed) {
+				capturedPromise.Resolve();
+			}
+			else if (access == GeolocationAccessStatus::Denied) {
+				capturedPromise.Reject("Access was denied.");
+			}
+			else {
+				capturedPromise.Reject("Access was unknown.");
+			}
+		}
+
+
 		REACT_METHOD(GetCurrentPosition, L"getCurrentPosition");
 		void GetCurrentPosition(GeoOptions options, ReactPromise<JSValueObject> promise) noexcept
 		{
@@ -55,9 +65,20 @@ namespace winrt::ReactNativeCommunityGeolocation
 			asyncOp.Completed(MakeAsyncActionCompletedHandler(promise));
 		}
 
-		//NativeModules.RNCGeolocation.watchPosition()
-		// .then(result => console.log(result))
-		// .catch(error => console.log(error));
+		static IAsyncAction GetCurrentPositionAsync(GeoOptions options, ReactPromise<JSValueObject> promise) noexcept
+		{
+			auto capturedPromise = promise;
+			auto locator = Geolocator();
+			unsigned int accuracy = 0;
+			locator.DesiredAccuracyInMeters(accuracy);
+
+			auto position = co_await locator.GetGeopositionAsync();
+			auto resultObject = ToJSValueObject(position.Coordinate());
+
+			capturedPromise.Resolve(resultObject);
+		}
+
+
 		REACT_METHOD(StartObserving, L"startObserving");
 		void StartObserving() noexcept
 		{
@@ -82,21 +103,6 @@ namespace winrt::ReactNativeCommunityGeolocation
 			}
 		}
 
-		REACT_METHOD(CallbackTestInt, L"callbackTestInt");
-		void CallbackTestInt(std::function<void(int)> const& callback) noexcept
-		{
-			callback(27);
-		}
-
-		REACT_METHOD(CallbackTestStruct, L"callbackTestStruct");
-		void CallbackTestStruct(std::function<void(GeolocationCoordinates)> const& callback) noexcept
-		{
-			auto coords = GeolocationCoordinates();
-			coords.Latitude = 50.0;
-			coords.Longitude = 40.0;
-			callback(coords);
-		}
-
 		static JSValueObject ToJSValueObject(winrt::Windows::Devices::Geolocation::Geocoordinate coord) {
 			auto resultObject = JSValueObject();
 
@@ -114,34 +120,6 @@ namespace winrt::ReactNativeCommunityGeolocation
 
 		REACT_EVENT(GeolocationDidChange, L"geolocationDidChange");
 		std::function<void(JSValueObject&)> GeolocationDidChange;
-
-		static IAsyncAction RequestAuthorizationAsync(ReactPromise<void> promise) noexcept
-		{
-			auto capturedPromise = promise;
-			auto access = co_await Geolocator::RequestAccessAsync();
-			if (access == GeolocationAccessStatus::Allowed) {
-				capturedPromise.Resolve();
-			}
-			else if (access == GeolocationAccessStatus::Denied) {
-				capturedPromise.Reject("Access was denied.");
-			}
-			else {
-				capturedPromise.Reject("Access was unknown.");
-			}
-		}
-
-		static IAsyncAction GetCurrentPositionAsync(GeoOptions options, ReactPromise<JSValueObject> promise) noexcept
-		{
-			auto capturedPromise = promise;
-			auto locator = Geolocator();
-			unsigned int accuracy = 0;
-			locator.DesiredAccuracyInMeters(accuracy);
-
-			auto position = co_await locator.GetGeopositionAsync();
-			auto resultObject = ToJSValueObject(position.Coordinate());
-
-			capturedPromise.Resolve(resultObject);
-		}
 
 		static double ifFinite(IReference<double> reference, double defaultValue) {
 			double value = reference.GetDouble();
