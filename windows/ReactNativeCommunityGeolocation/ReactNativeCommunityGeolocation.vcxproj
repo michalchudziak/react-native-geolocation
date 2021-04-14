@@ -117,7 +117,6 @@
     <ClInclude Include="ReactPackageProvider.h">
       <DependentUpon>ReactPackageProvider.idl</DependentUpon>
     </ClInclude>
-    <ClInclude Include="ReactNativeModule.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RNCGeolocation.h" />
   </ItemGroup>
