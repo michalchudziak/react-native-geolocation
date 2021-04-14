@@ -108,7 +108,7 @@ namespace winrt::ReactNativeCommunityGeolocation
 
 			resultObject["latitude"] = coord.Latitude();
 			resultObject["longitude"] = coord.Longitude();
-			//resultObject["accuracy"] = coord.Accuracy();
+			resultObject["accuracy"] = coord.Accuracy();
 
 			//resultObject["altitude"] = ifFinite(coord.Altitude(), 0.0);
 			//resultObject["altitudeAccuracy"] = ifFinite(coord.AltitudeAccuracy(), 0.0);
