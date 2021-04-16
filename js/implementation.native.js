@@ -170,9 +170,9 @@ const Geolocation = {
     }
   },
 
-  getStatus: function() {
+  getStatus: async function() {
     if (Platform.OS === 'windows') {
-      return RNCGeolocation.getStatus();
+      return await RNCGeolocation.getStatus();
     } else {
       return 'unknown';
     }
