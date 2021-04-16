@@ -169,6 +169,14 @@ const Geolocation = {
       subscriptions = [];
     }
   },
+
+  getStatus: function() {
+    if (Platform.OS === 'windows') {
+      return RNCGeolocation.getStatus();
+    } else {
+      return 'unknown';
+    }
+  },
 };
 
 module.exports = Geolocation;

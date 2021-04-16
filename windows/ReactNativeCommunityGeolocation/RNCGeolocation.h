@@ -78,14 +78,33 @@ namespace winrt::ReactNativeCommunityGeolocation
 			capturedPromise.Resolve(resultObject);
 		}
 
+		REACT_METHOD(GetStatus, L"getStatus");
+		std::string GetStatus() noexcept
+		{
+			if (_locator == nullptr) {
+				_locator = Geolocator();
+			}
+
+			auto status = _locator.LocationStatus();
+			switch (status)
+			{
+			case PositionStatus::Initializing: return "initializing";
+			case PositionStatus::Disabled: return "disabled";
+			case PositionStatus::NoData: return "no-data";
+			case PositionStatus::NotAvailable: return "not-available";
+			case PositionStatus::NotInitialized: return "not-initialized";
+			case PositionStatus::Ready: return "ready";
+			}
+		}
+
 
 		REACT_METHOD(StartObserving, L"startObserving");
 		void StartObserving() noexcept
 		{
 			if (_locator == nullptr) {
 				_locator = Geolocator();
-				_locator.ReportInterval(1000);
 			}
+			_locator.ReportInterval(1000);
 
 			_positionChangedEventToken = _locator.PositionChanged({ this, &RNCGeolocation::OnPositionChanged });
 		}
