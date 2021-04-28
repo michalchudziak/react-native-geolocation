@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <cmath>
+#include <chrono>
 
 #include "JSValue.h"
 #include "NativeModules.h"
@@ -19,6 +20,7 @@ using namespace Windows::Devices::Geolocation;
 using namespace Windows::Foundation;
 using namespace Windows::UI::Core;
 using namespace Microsoft::ReactNative;
+using namespace std::chrono;
 
 namespace winrt::ReactNativeCommunityGeolocation
 {
@@ -139,11 +141,11 @@ namespace winrt::ReactNativeCommunityGeolocation
 			resultObject["longitude"] = coord.Longitude();
 			resultObject["accuracy"] = coord.Accuracy();
 
-			//resultObject["altitude"] = ifFinite(coord.Altitude(), 0.0);
-			//resultObject["altitudeAccuracy"] = ifFinite(coord.AltitudeAccuracy(), 0.0);
 			resultObject["heading"] = ifFinite(coord.Heading(), 0.0);
 			resultObject["speed"] = ifFinite(coord.Speed(), 0.0);
-			resultObject["timestamp"] = coord.Timestamp().time_since_epoch().count();
+
+			auto ms = duration_cast<milliseconds>(coord.Timestamp().time_since_epoch());
+			resultObject["timestamp"] = ms.count();
 
 			return resultObject;
 		}
