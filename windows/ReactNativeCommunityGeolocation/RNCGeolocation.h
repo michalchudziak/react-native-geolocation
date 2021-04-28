@@ -144,8 +144,8 @@ namespace winrt::ReactNativeCommunityGeolocation
 			resultObject["heading"] = ifFinite(coord.Heading(), 0.0);
 			resultObject["speed"] = ifFinite(coord.Speed(), 0.0);
 
-			auto ms = duration_cast<milliseconds>(coord.Timestamp().time_since_epoch());
-			resultObject["timestamp"] = ms.count();
+			auto unixtime = winrt::clock::to_time_t(coord.Timestamp());
+			resultObject["timestamp"] = unixtime;
 
 			return resultObject;
 		}
