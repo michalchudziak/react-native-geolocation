@@ -68,9 +68,7 @@ namespace winrt::ReactNativeCommunityGeolocation
 		static IAsyncAction GetCurrentPositionAsync(GeoOptions options, ReactPromise<JSValueObject> promise) noexcept
 		{
 			auto capturedPromise = promise;
-			auto locator = Geolocator();
-			unsigned int accuracy = 0;
-			locator.DesiredAccuracyInMeters(accuracy);
+			auto locator = CreateGeolocator(options);
 
 			auto position = co_await locator.GetGeopositionAsync();
 			auto resultObject = ToJSValueObject(position.Coordinate());
@@ -79,11 +77,9 @@ namespace winrt::ReactNativeCommunityGeolocation
 		}
 
 		REACT_METHOD(GetStatus, L"getStatus");
-		std::string GetStatus() noexcept
+		std::string GetStatus(GeoOptions options) noexcept
 		{
-			if (_locator == nullptr) {
-				_locator = Geolocator();
-			}
+			EnsureGeolocatorInitialized(options);
 
 			auto status = _locator.LocationStatus();
 			switch (status)
@@ -94,17 +90,15 @@ namespace winrt::ReactNativeCommunityGeolocation
 			case PositionStatus::NotAvailable: return "not-available";
 			case PositionStatus::NotInitialized: return "not-initialized";
 			case PositionStatus::Ready: return "ready";
+			default: return "unknown";
 			}
 		}
 
 
 		REACT_METHOD(StartObserving, L"startObserving");
-		void StartObserving() noexcept
+		void StartObserving(GeoOptions options) noexcept
 		{
-			if (_locator == nullptr) {
-				_locator = Geolocator();
-			}
-			_locator.ReportInterval(1000);
+			EnsureGeolocatorInitialized(options);
 
 			_positionChangedEventToken = _locator.PositionChanged({ this, &RNCGeolocation::OnPositionChanged });
 		}
@@ -122,6 +116,22 @@ namespace winrt::ReactNativeCommunityGeolocation
 			}
 		}
 
+		void EnsureGeolocatorInitialized(GeoOptions options)
+		{
+			if (_locator == nullptr) {
+				_locator = CreateGeolocator(options);
+			}
+		}
+
+		static Geolocator CreateGeolocator(GeoOptions options) {
+			auto locator = Geolocator();
+			locator.ReportInterval(1000);
+			if (options.EnableHighAccuracy) {
+				locator.DesiredAccuracy(PositionAccuracy::High);
+			}
+			return locator;
+		}
+
 		static JSValueObject ToJSValueObject(winrt::Windows::Devices::Geolocation::Geocoordinate coord) {
 			auto resultObject = JSValueObject();
 
@@ -133,6 +143,7 @@ namespace winrt::ReactNativeCommunityGeolocation
 			//resultObject["altitudeAccuracy"] = ifFinite(coord.AltitudeAccuracy(), 0.0);
 			resultObject["heading"] = ifFinite(coord.Heading(), 0.0);
 			resultObject["speed"] = ifFinite(coord.Speed(), 0.0);
+			resultObject["timestamp"] = coord.Timestamp().time_since_epoch().count();
 
 			return resultObject;
 		}
