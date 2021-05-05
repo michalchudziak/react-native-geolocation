@@ -135,19 +135,22 @@ namespace winrt::ReactNativeCommunityGeolocation
 		}
 
 		static JSValueObject ToJSValueObject(winrt::Windows::Devices::Geolocation::Geocoordinate coord) {
-			auto resultObject = JSValueObject();
-
-			resultObject["latitude"] = coord.Latitude();
-			resultObject["longitude"] = coord.Longitude();
-			resultObject["accuracy"] = coord.Accuracy();
-
-			resultObject["heading"] = ifFinite(coord.Heading(), 0.0);
-			resultObject["speed"] = ifFinite(coord.Speed(), 0.0);
 
 			auto unixtime = winrt::clock::to_time_t(coord.Timestamp());
-			resultObject["timestamp"] = unixtime;
 
-			return resultObject;
+			auto result = JSValueObject{
+				{ "coords", JSValueObject {
+					{ "latitude", coord.Latitude() },
+					{ "longitude", coord.Longitude() },
+					{ "accuracy", coord.Accuracy() },
+					{ "heading", ifFinite(coord.Heading(), 0.0) },
+					{ "speed", ifFinite(coord.Speed(), 0.0) }
+					}
+				},
+				{ "timestamp", unixtime }
+			};
+
+			return result;
 		}
 
 		REACT_EVENT(GeolocationDidChange, L"geolocationDidChange");
