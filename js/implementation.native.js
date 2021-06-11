@@ -131,18 +131,21 @@ const Geolocation = {
     error?: Function,
     options?: GeoOptions,
   ): number {
-    if (!statusUpdatesEnabled) {
-      RNCGeolocation.startObservingStatus(options || {});
-      statusUpdatesEnabled = true;
+    if (Platform.OS === 'windows') {
+        if (!statusUpdatesEnabled) {
+          RNCGeolocation.startObservingStatus(options || {});
+          statusUpdatesEnabled = true;
+        }
+        const watchID = statusSubscriptions.length;
+        statusSubscriptions.push([
+          GeolocationEventEmitter.addListener('statusDidChange', success),
+          error
+            ? GeolocationEventEmitter.addListener('geolocationError', error)
+            : null,
+        ]);
+        return watchID;
     }
-    const watchID = statusSubscriptions.length;
-    statusSubscriptions.push([
-      GeolocationEventEmitter.addListener('statusDidChange', success),
-      error
-        ? GeolocationEventEmitter.addListener('geolocationError', error)
-        : null,
-    ]);
-    return watchID;
+    return 0;
   },
 
   /*
@@ -180,26 +183,28 @@ const Geolocation = {
    * See https://facebook.github.io/react-native/docs/geolocation.html#clearwatch
    */
   clearStatusWatch: function(watchID: number) {
-    const sub = statusSubscriptions[watchID];
-    if (!sub) {
-      // Silently exit when the watchID is invalid or already cleared
-      // This is consistent with timers
-      return;
-    }
+    if (Platform.OS === 'windows') {
+        const sub = statusSubscriptions[watchID];
+        if (!sub) {
+        // Silently exit when the watchID is invalid or already cleared
+        // This is consistent with timers
+        return;
+        }
 
-    sub[0].remove();
-    // array element refinements not yet enabled in Flow
-    const sub1 = sub[1];
-    sub1 && sub1.remove();
-    statusSubscriptions[watchID] = undefined;
-    let noWatchers = true;
-    for (let ii = 0; ii < statusSubscriptions.length; ii++) {
-      if (statusSubscriptions[ii]) {
-        noWatchers = false; // still valid subscriptions
-      }
-    }
-    if (noWatchers) {
-      Geolocation.stopObservingStatus();
+        sub[0].remove();
+        // array element refinements not yet enabled in Flow
+        const sub1 = sub[1];
+        sub1 && sub1.remove();
+        statusSubscriptions[watchID] = undefined;
+        let noWatchers = true;
+        for (let ii = 0; ii < statusSubscriptions.length; ii++) {
+        if (statusSubscriptions[ii]) {
+            noWatchers = false; // still valid subscriptions
+        }
+        }
+        if (noWatchers) {
+        Geolocation.stopObservingStatus();
+        }
     }
   },
 
@@ -232,20 +237,22 @@ const Geolocation = {
    * See https://facebook.github.io/react-native/docs/geolocation.html#stopobserving
    */
   stopObservingStatus: function() {
-    if (statusUpdatesEnabled) {
-      RNCGeolocation.stopObservingStatus();
-      statusUpdatesEnabled = false;
-      for (let ii = 0; ii < statusSubscriptions.length; ii++) {
-        const sub = statusSubscriptions[ii];
-        if (sub) {
-          warning(false, 'Called stopObservingStatus with existing subscriptions.');
-          sub[0].remove();
-          // array element refinements not yet enabled in Flow
-          const sub1 = sub[1];
-          sub1 && sub1.remove();
+    if (Platform.OS === 'windows') {
+        if (statusUpdatesEnabled) {
+        RNCGeolocation.stopObservingStatus();
+        statusUpdatesEnabled = false;
+        for (let ii = 0; ii < statusSubscriptions.length; ii++) {
+            const sub = statusSubscriptions[ii];
+            if (sub) {
+            warning(false, 'Called stopObservingStatus with existing subscriptions.');
+            sub[0].remove();
+            // array element refinements not yet enabled in Flow
+            const sub1 = sub[1];
+            sub1 && sub1.remove();
+            }
         }
-      }
-      statusSubscriptions = [];
+        statusSubscriptions = [];
+        }
     }
   },
 
