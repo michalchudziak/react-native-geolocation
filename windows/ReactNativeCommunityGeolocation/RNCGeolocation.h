@@ -30,13 +30,13 @@ namespace winrt::ReactNativeCommunityGeolocation
         Geolocator _locator;
         GeoConfiguration _config;
 
-        REACT_METHOD(addListener)
-        void addListener(std::string eventName) {
+        REACT_METHOD(addListener, L"addListener")
+        void addListener(std::string eventName) noexcept {
             // Keep: Required for RN built in Event Emitter Calls.
         }
 
-        REACT_METHOD(removeListeners)
-        void removeListeners(int count) {
+        REACT_METHOD(removeListeners, L"removeListeners")
+        void removeListeners(int count) noexcept {
             // Keep: Required for RN built in Event Emitter Calls.
         }
 
