@@ -30,6 +30,16 @@ namespace winrt::ReactNativeCommunityGeolocation
         Geolocator _locator;
         GeoConfiguration _config;
 
+        REACT_METHOD(addListener)
+        void addListener(std::string eventName) {
+            // Keep: Required for RN built in Event Emitter Calls.
+        }
+
+        REACT_METHOD(removeListener)
+        void removeListeners(int count) {
+            // Keep: Required for RN built in Event Emitter Calls.
+        }
+
         REACT_METHOD(SetConfiguration, L"setConfiguration");
         void SetConfiguration(GeoConfiguration config) noexcept
         {
