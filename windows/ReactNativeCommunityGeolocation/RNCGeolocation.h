@@ -35,7 +35,7 @@ namespace winrt::ReactNativeCommunityGeolocation
             // Keep: Required for RN built in Event Emitter Calls.
         }
 
-        REACT_METHOD(removeListener)
+        REACT_METHOD(removeListeners)
         void removeListeners(int count) {
             // Keep: Required for RN built in Event Emitter Calls.
         }
