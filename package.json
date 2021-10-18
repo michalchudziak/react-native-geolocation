@@ -38,6 +38,10 @@
     "test:e2e:ios:release": "detox test -c ios.sim.release",
     "prepare": "bob build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/react-native-geolocation/react-native-geolocation.git"
+  },
   "keywords": [
     "react-native",
     "geolocation",
