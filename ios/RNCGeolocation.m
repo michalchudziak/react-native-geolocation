@@ -139,6 +139,7 @@ static NSDictionary<NSString *, id> *RNCPositionError(RNCPositionErrorCode code,
   BOOL _usingSignificantChanges;
   RNCGeolocationConfiguration _locationConfiguration;
   RNCGeolocationOptions _observerOptions;
+  CLAuthorizationStatus _lastUpdatedAuthorizationStatus; // used since iOS 14.0+
 }
 
 RCT_EXPORT_MODULE()
@@ -147,9 +148,7 @@ RCT_EXPORT_MODULE()
 
 - (void)dealloc
 {
-  _usingSignificantChanges ?
-  [_locationManager stopMonitoringSignificantLocationChanges] :
-  [_locationManager stopUpdatingLocation];
+  [self stopMonitoring];
 
   _locationManager.delegate = nil;
 }
@@ -181,10 +180,30 @@ RCT_EXPORT_MODULE()
   _locationManager.desiredAccuracy = desiredAccuracy;
   _usingSignificantChanges = useSignificantChanges;
 
-  // Start observing location
-  _usingSignificantChanges ?
-  [_locationManager startMonitoringSignificantLocationChanges] :
-  [_locationManager startUpdatingLocation];
+  if (@available(iOS 14.0, *)) {
+    if (
+      _lastUpdatedAuthorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+      _lastUpdatedAuthorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse
+    ) {
+      [self startMonitoring];
+    }
+  } else {
+    [self startMonitoring];
+  }
+}
+
+- (void)startMonitoring
+{
+  _usingSignificantChanges
+    ? [_locationManager startMonitoringSignificantLocationChanges]
+    : [_locationManager startUpdatingLocation];
+}
+
+- (void)stopMonitoring
+{
+  _usingSignificantChanges
+    ? [_locationManager stopMonitoringSignificantLocationChanges]
+    : [_locationManager stopUpdatingLocation];
 }
 
 #pragma mark - Timeout handler
@@ -198,9 +217,7 @@ RCT_EXPORT_MODULE()
 
   // Stop updating if no pending requests
   if (_pendingRequests.count == 0 && !_observingLocation) {
-    _usingSignificantChanges ?
-    [_locationManager stopMonitoringSignificantLocationChanges] :
-    [_locationManager stopUpdatingLocation];
+    [self stopMonitoring];
   }
 }
 
@@ -272,9 +289,7 @@ RCT_EXPORT_METHOD(stopObserving)
 
   // Stop updating if no pending requests
   if (_pendingRequests.count == 0) {
-    _usingSignificantChanges ?
-    [_locationManager stopMonitoringSignificantLocationChanges] :
-    [_locationManager stopUpdatingLocation];
+    [self stopMonitoring];
   }
 }
 
@@ -289,21 +304,27 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
     return;
   }
 
-  if (![CLLocationManager locationServicesEnabled]) {
-    if (errorBlock) {
-      errorBlock(@[
-                   RNCPositionError(RNCPositionErrorUnavailable, @"Location services disabled.")
-                   ]);
-      return;
-    }
-  }
+  if (errorBlock) {
+    if (@available(iOS 14.0, *)) {
+      if (_lastUpdatedAuthorizationStatus == kCLAuthorizationStatusRestricted) {
+        errorBlock(@[RNCPositionError(RNCPositionErrorUnavailable, @"This application is not authorized to use location services")]);
+        return;
+      }
 
-  if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
-    if (errorBlock) {
-      errorBlock(@[
-                   RNCPositionError(RNCPositionErrorDenied, nil)
-                   ]);
-      return;
+      if (_lastUpdatedAuthorizationStatus == kCLAuthorizationStatusDenied) {
+        errorBlock(@[RNCPositionError(RNCPositionErrorDenied, nil)]);
+        return;
+      }
+    } else {
+      if (![CLLocationManager locationServicesEnabled]) {
+        errorBlock(@[RNCPositionError(RNCPositionErrorUnavailable, @"Location services disabled.")]);
+        return;
+      }
+
+      if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        errorBlock(@[RNCPositionError(RNCPositionErrorDenied, nil)]);
+        return;
+      }
     }
   }
 
@@ -311,7 +332,6 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
   if (_lastLocationEvent &&
       [NSDate date].timeIntervalSince1970 - [RCTConvert NSTimeInterval:_lastLocationEvent[@"timestamp"]] < options.maximumAge &&
       [_lastLocationEvent[@"coords"][@"accuracy"] doubleValue] <= options.accuracy) {
-
     // Call success block with most recent known location
     successBlock(@[_lastLocationEvent]);
     return;
@@ -376,11 +396,46 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
 
   // Stop updating if not observing
   if (!_observingLocation) {
-    _usingSignificantChanges ?
-    [_locationManager stopMonitoringSignificantLocationChanges] :
-    [_locationManager stopUpdatingLocation];
+    [self stopMonitoring];
   }
 
+}
+
+- (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager
+{
+  if (@available(iOS 14.0, *)) {
+    if (
+      manager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+      manager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse
+    ) {
+      [self startMonitoring];
+    } else {
+      NSDictionary<NSString *, id> *jsError = manager.authorizationStatus == kCLAuthorizationStatusRestricted
+        ? RNCPositionError(RNCPositionErrorUnavailable, @"This application is not authorized to use location services")
+        : manager.authorizationStatus == kCLAuthorizationStatusDenied
+          ? RNCPositionError(RNCPositionErrorDenied, nil)
+          : nil;
+
+      if (jsError != nil) {
+        if (_observingLocation) {
+          [self sendEventWithName:@"geolocationError" body:jsError];
+        }
+
+        // Fire all queued error callbacks
+        for (RNCGeolocationRequest *request in _pendingRequests) {
+          request.errorBlock(@[jsError]);
+          [request.timeoutTimer invalidate];
+        }
+        [_pendingRequests removeAllObjects];
+      }
+
+      // Stop updating if user has explicitly denied authorization for this application, or
+      // location services are disabled in Settings, or any other reason.
+      [self stopMonitoring];
+    }
+
+    _lastUpdatedAuthorizationStatus = manager.authorizationStatus;
+  }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
