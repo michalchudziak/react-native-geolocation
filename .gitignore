@@ -1,17 +1,8 @@
 
 # OSX
-#
 .DS_Store
-
-# node.js
-#
-node_modules/
-npm-debug.log
-yarn-error.log
   
-
 # Xcode
-#
 build/
 *.pbxuser
 !default.pbxuser
@@ -28,21 +19,28 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace
       
-
 # Android/IntelliJ
-#
 build/
 .idea
 .gradle
 local.properties
 *.iml
 
+# Build
+lib/
+
+# CocoaPods
+example/ios/Pods
+
+# node.js
+**/node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
-      
-# Build
-lib/
+android/app/libs
+android/keystores/debug.keystore

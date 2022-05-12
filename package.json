@@ -1,9 +1,10 @@
 {
   "name": "@react-native-community/geolocation",
-  "version": "2.0.2",
+  "version": "3.0.0-rc.0",
   "description": "React Native Geolocation Module for iOS and Android",
-  "react-native": "js/index.js",
-  "main": "lib/commonjs/index.js",
+  "react-native": "js/index",
+  "main": "lib/commonjs/index",
+  "source": "js/index",
   "files": [
     "lib/",
     "js/",
@@ -16,11 +17,9 @@
   "typings": "typings/index.d.ts",
   "author": "React Native Community",
   "contributors": [
-    "Janic Duplessis <janic@th3rdwave.coffee>",
-    "Michal Chudziak <michal.chudziak@gmail.com>",
-    "Matt Oakes <hello@mattoakes.net>"
+    "Michal Chudziak <michal.chudziak@gmail.com>"
   ],
-  "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
+  "homepage": "https://github.com/michalchudziak/react-native-geolocation#README.md",
   "license": "MIT",
   "scripts": {
     "start": "react-native start",
@@ -28,19 +27,11 @@
     "validate:eslint": "eslint 'js/**/*.js' 'example/**/*.js'",
     "validate:flow": "flow check",
     "test:jest": "jest js/",
-    "build:e2e:android:debug": "detox build -c android.emu.debug",
-    "build:e2e:android:release": "detox build -c android.emu.release",
-    "test:e2e:android:debug": "detox test -c android.emu.debug",
-    "test:e2e:android:release": "detox test -c android.emu.release",
-    "build:e2e:ios:debug": "detox build -c ios.sim.debug",
-    "build:e2e:ios:release": "detox build -c ios.sim.release",
-    "test:e2e:ios:debug": "detox test -c ios.sim.debug",
-    "test:e2e:ios:release": "detox test -c ios.sim.release",
     "prepare": "bob build"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-native-geolocation/react-native-geolocation.git"
+    "url": "https://github.com/michalchudziak/react-native-geolocation.git"
   },
   "keywords": [
     "react-native",
@@ -51,27 +42,26 @@
     "react": "*",
     "react-native": "*"
   },
+  "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/runtime": "^7.5.5",
-    "@react-native-community/bob": "^0.6.1",
-    "@react-native-community/eslint-config": "^0.0.5",
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
     "@semantic-release/git": "^7.0.16",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.0.2",
-    "babel-jest": "^24.9.0",
+    "babel-jest": "^26.6.3",
     "babel-plugin-module-resolver": "^3.2.0",
     "detox": "^14.0.2",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "3.0.1",
-    "flow-bin": "^0.92.0",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "0.56.0",
-    "prettier": "^1.18.2",
-    "react": "16.8.3",
-    "react-native": "0.59.10",
-    "react-test-renderer": "16.8.3",
+    "flow-bin": "^0.170.0",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "0.67.0",
+    "prettier": "^2.6.2",
+    "react": "17.0.2",
+    "react-native": "0.68.2",
+    "react-native-builder-bob": "^0.18.2",
+    "react-test-renderer": "17.0.2",
     "semantic-release": "^15.13.21"
   },
   "jest": {
@@ -80,39 +70,7 @@
       "<rootDir>/jest.setup.js"
     ]
   },
-  "detox": {
-    "test-runner": "jest",
-    "runner-config": "example/e2e/config.json",
-    "configurations": {
-      "ios.sim.debug": {
-        "binaryPath": "example/ios/build/Build/Products/Debug-iphonesimulator/GeolocationExample.app",
-        "build": "export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -project example/ios/GeolocationExample.xcodeproj -destination 'platform=iOS Simulator,name=iPhone X' -scheme GeolocationExample -parallelizeTargets -configuration Debug -derivedDataPath example/ios/build  -UseModernBuildSystem=YES | xcpretty -k",
-        "type": "ios.simulator",
-        "name": "iPhone X"
-      },
-      "ios.sim.release": {
-        "binaryPath": "example/ios/build/Build/Products/Release-iphonesimulator/GeolocationExample.app",
-        "build": "export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -project example/ios/GeolocationExample.xcodeproj -destination 'platform=iOS Simulator,name=iPhone X' -scheme GeolocationExample -parallelizeTargets -configuration Release -derivedDataPath example/ios/build  -UseModernBuildSystem=YES | xcpretty -k",
-        "type": "ios.simulator",
-        "name": "iPhone X"
-      },
-      "android.emu.debug": {
-        "binaryPath": "example/android/app/build/outputs/apk/debug/app-debug.apk",
-        "build": "export RCT_NO_LAUNCH_PACKAGER=true && pushd example/android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && popd",
-        "type": "android.emulator",
-        "name": "TestingAVD"
-      },
-      "android.emu.release": {
-        "binaryPath": "example/android/app/build/outputs/apk/release/app-release.apk",
-        "build": "export RCT_NO_LAUNCH_PACKAGER=true && pushd example/android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release && popd",
-        "type": "android.emulator",
-        "name": "TestingAVD"
-      }
-    },
-    "specs": ""
-  },
-  "dependencies": {},
-  "@react-native-community/bob": {
+  "react-native-builder-bob": {
     "source": "js",
     "output": "lib",
     "targets": [
