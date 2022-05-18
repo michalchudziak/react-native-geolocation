@@ -1,9 +1,10 @@
 {
   "name": "@react-native-community/geolocation",
-  "version": "2.1.0",
+  "version": "3.0.0-rc.0",
   "description": "React Native Geolocation Module for iOS and Android",
-  "react-native": "js/index.js",
-  "main": "lib/commonjs/index.js",
+  "react-native": "js/index",
+  "main": "lib/commonjs/index",
+  "source": "js/index",
   "files": [
     "lib/",
     "js/",
@@ -16,11 +17,9 @@
   "typings": "typings/index.d.ts",
   "author": "React Native Community",
   "contributors": [
-    "Janic Duplessis <janic@th3rdwave.coffee>",
-    "Michal Chudziak <michal.chudziak@gmail.com>",
-    "Matt Oakes <hello@mattoakes.net>"
+    "Michal Chudziak <michal.chudziak@gmail.com>"
   ],
-  "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
+  "homepage": "https://github.com/michalchudziak/react-native-geolocation#README.md",
   "license": "MIT",
   "scripts": {
     "start": "react-native start",
@@ -32,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-native-geolocation/react-native-geolocation.git"
+    "url": "https://github.com/michalchudziak/react-native-geolocation.git"
   },
   "keywords": [
     "react-native",
@@ -43,26 +42,25 @@
     "react": "*",
     "react-native": "*"
   },
+  "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/runtime": "^7.5.5",
-    "@react-native-community/bob": "^0.6.1",
-    "@react-native-community/eslint-config": "^0.0.5",
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
     "@semantic-release/git": "^7.0.16",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.0.2",
-    "babel-jest": "^24.9.0",
+    "babel-jest": "^26.6.3",
     "babel-plugin-module-resolver": "^3.2.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "3.0.1",
-    "flow-bin": "^0.92.0",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "0.56.0",
-    "prettier": "^1.18.2",
-    "react": "16.8.3",
-    "react-native": "0.59.10",
-    "react-test-renderer": "16.8.3",
+    "flow-bin": "^0.170.0",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "0.67.0",
+    "prettier": "^2.6.2",
+    "react": "17.0.2",
+    "react-native": "0.68.2",
+    "react-native-builder-bob": "^0.18.2",
+    "react-test-renderer": "17.0.2",
     "semantic-release": "^15.13.21"
   },
   "jest": {
@@ -71,8 +69,7 @@
       "<rootDir>/jest.setup.js"
     ]
   },
-  "dependencies": {},
-  "@react-native-community/bob": {
+  "react-native-builder-bob": {
     "source": "js",
     "output": "lib",
     "targets": [
