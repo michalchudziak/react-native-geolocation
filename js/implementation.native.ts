@@ -64,8 +64,8 @@ export function requestAuthorization() {
  */
 export async function getCurrentPosition(
   success: (position: GeolocationResponse) => void,
-  error?: (error: GeolocationError) => void,
-  options?: GeolocationOptions
+  error: (error: GeolocationError) => void = logError,
+  options: GeolocationOptions = {}
 ) {
   invariant(
     typeof success === 'function',
@@ -73,7 +73,7 @@ export async function getCurrentPosition(
   );
 
   // Permission checks/requests are done on the native side
-  RNCGeolocation.getCurrentPosition(options || {}, success, error || logError);
+  RNCGeolocation.getCurrentPosition(options, success, error);
 }
 
 /*
@@ -83,11 +83,11 @@ export async function getCurrentPosition(
  */
 export function watchPosition(
   success: (position: GeolocationResponse) => void,
-  error?: (error: GeolocationError) => void,
-  options?: GeolocationOptions
+  error: (error: GeolocationError) => void = logError,
+  options: GeolocationOptions = {}
 ): number {
   if (!updatesEnabled) {
-    RNCGeolocation.startObserving(options || {});
+    RNCGeolocation.startObserving(options);
     updatesEnabled = true;
   }
   const watchID = subscriptions.length;
