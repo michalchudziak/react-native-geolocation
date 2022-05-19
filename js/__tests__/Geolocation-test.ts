@@ -106,7 +106,9 @@ describe('react-native-geolocation', () => {
 
   it('should stop observing and warn about removing existing subscriptions', () => {
     const mockWarningCallback = jest.fn();
-    warning.mockImplementation(mockWarningCallback);
+    (warning as jest.MockedFunction<typeof warning>).mockImplementation(
+      mockWarningCallback
+    );
 
     Geolocation.watchPosition(
       () => {},

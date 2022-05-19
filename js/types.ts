@@ -9,7 +9,7 @@
 
 export type GeolocationConfiguration = {
   skipPermissionRequests: boolean;
-  authorizationLevel: 'always' | 'whenInUse' | 'auto';
+  authorizationLevel?: 'always' | 'whenInUse' | 'auto';
 };
 
 export type GeolocationOptions = {
@@ -40,38 +40,3 @@ export type GeolocationError = {
   POSITION_UNAVAILABLE: number;
   TIMEOUT: number;
 };
-
-export interface GeolocationStatic {
-  /**
-   * Invokes the success callback once with the latest location info.  Supported
-   * options: timeout (ms), maximumAge (ms), enableHighAccuracy (bool)
-   * On Android, this can return almost immediately if the location is cached or
-   * request an update, which might take a while.
-   */
-  getCurrentPosition(
-    success: (position: GeolocationResponse) => void,
-    error?: (error: GeolocationError) => void,
-    options?: GeolocationOptions
-  ): void;
-
-  /**
-   * Invokes the success callback whenever the location changes.  Supported
-   * options: timeout (ms), maximumAge (ms), enableHighAccuracy (bool), distanceFilter(m)
-   */
-  watchPosition(
-    success: (position: GeolocationResponse) => void,
-    error?: (error: GeolocationError) => void,
-    options?: GeolocationOptions
-  ): number;
-
-  clearWatch(watchID: number): void;
-
-  stopObserving(): void;
-
-  requestAuthorization(): void;
-
-  setRNConfiguration(config: GeolocationConfiguration): void;
-}
-
-declare let Geolocation: GeolocationStatic;
-export default Geolocation;
