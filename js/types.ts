@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) React Native Community
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -22,13 +22,13 @@ export type GeolocationOptions = {
 
 export type GeolocationResponse = {
   coords: {
-      latitude: number;
-      longitude: number;
-      altitude: number | null;
-      accuracy: number;
-      altitudeAccuracy: number | null;
-      heading: number | null;
-      speed: number | null;
+    latitude: number;
+    longitude: number;
+    altitude: number | null;
+    accuracy: number;
+    altitudeAccuracy: number | null;
+    heading: number | null;
+    speed: number | null;
   };
   timestamp: number;
 };
@@ -43,15 +43,15 @@ export type GeolocationError = {
 
 export interface GeolocationStatic {
   /**
-     * Invokes the success callback once with the latest location info.  Supported
-     * options: timeout (ms), maximumAge (ms), enableHighAccuracy (bool)
-     * On Android, this can return almost immediately if the location is cached or
-     * request an update, which might take a while.
-     */
-    getCurrentPosition(
-      success: (position: GeolocationResponse) => void,
-      error?: (error: GeolocationError) => void,
-      options?: GeolocationOptions
+   * Invokes the success callback once with the latest location info.  Supported
+   * options: timeout (ms), maximumAge (ms), enableHighAccuracy (bool)
+   * On Android, this can return almost immediately if the location is cached or
+   * request an update, which might take a while.
+   */
+  getCurrentPosition(
+    success: (position: GeolocationResponse) => void,
+    error?: (error: GeolocationError) => void,
+    options?: GeolocationOptions
   ): void;
 
   /**
@@ -59,9 +59,9 @@ export interface GeolocationStatic {
    * options: timeout (ms), maximumAge (ms), enableHighAccuracy (bool), distanceFilter(m)
    */
   watchPosition(
-      success: (position: GeolocationResponse) => void,
-      error?: (error: GeolocationError) => void,
-      options?: GeolocationOptions
+    success: (position: GeolocationResponse) => void,
+    error?: (error: GeolocationError) => void,
+    options?: GeolocationOptions
   ): number;
 
   clearWatch(watchID: number): void;

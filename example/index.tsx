@@ -1,11 +1,10 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) React Native Community
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
  */
 
 import React from 'react';
@@ -20,10 +19,17 @@ import {
 } from 'react-native';
 
 import GeolocationExample from './GeolocationExample';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
+
+type RenderableExample = {
+  id: string;
+  title: string;
+  description: string;
+  render: () => React.ReactElement;
+};
 
 // Examples which show the user how to correctly use the library
-const EXAMPLES = [
+const EXAMPLES: RenderableExample[] = [
   {
     id: 'getCurrentPosition',
     title: 'Geolocation.getCurrentPosition',
@@ -37,12 +43,14 @@ const EXAMPLES = [
 // Test cases for the e2e tests. THESE ARE NOT EXAMPLES OF BEST PRACTICE
 import TEST_CASES from './testCases';
 
+type Props = {};
+
 type State = {
-  showExamples: boolean,
+  showExamples: boolean;
 };
 
-class ExampleApp extends React.Component<{}, State> {
-  constructor(props) {
+class ExampleApp extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -51,11 +59,11 @@ class ExampleApp extends React.Component<{}, State> {
   }
 
   _toggleMode = () => {
-    this.setState(state => ({showExamples: !state.showExamples}));
+    this.setState((state) => ({ showExamples: !state.showExamples }));
   };
 
   render() {
-    const {showExamples} = this.state;
+    const { showExamples } = this.state;
     return (
       <ScrollView style={styles.container}>
         <SafeAreaView>
@@ -84,12 +92,13 @@ class ExampleApp extends React.Component<{}, State> {
     );
   }
 
-  _renderExample = example => {
+  _renderExample = (example: RenderableExample) => {
     return (
       <View
         testID={`example-${example.id}`}
         key={example.title}
-        style={styles.exampleContainer}>
+        style={styles.exampleContainer}
+      >
         <Text style={styles.exampleTitle}>{example.title}</Text>
         <Text style={styles.exampleDescription}>{example.description}</Text>
         <View style={styles.exampleInnerContainer}>{example.render()}</View>

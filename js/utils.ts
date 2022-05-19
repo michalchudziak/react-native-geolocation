@@ -1,11 +1,10 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) React Native Community
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict
  */
 
 'use strict';
@@ -15,7 +14,7 @@
  * `console.error` as a failure callback - it's not properly bound.  If passes an
  * `Error` object, it will print the message and stack.
  */
-const logError = function(...args: $ReadOnlyArray<mixed>) {
+export const logError = function (...args: unknown[]) {
   if (args.length === 1 && args[0] instanceof Error) {
     const err = args[0];
     console.error('Error: "' + err.message + '".  Stack:\n' + err.stack);
@@ -30,12 +29,12 @@ const logError = function(...args: $ReadOnlyArray<mixed>) {
  * paths. Removing the logging code for production environments will keep the
  * same logic and follow the same code paths.
  */
-const warning = __DEV__
-  ? function(condition: boolean, format: string, ...args: any[]) {
+export const warning = __DEV__
+  ? function (condition: boolean, format: string, ...args: any[]) {
       if (format === undefined) {
         throw new Error(
           '`warning(condition, format, ...args)` requires a warning ' +
-            'message argument',
+            'message argument'
         );
       }
       if (!condition) {
@@ -53,9 +52,4 @@ const warning = __DEV__
         } catch (x) {}
       }
     }
-  : function(...args: any[]) {};
-
-module.exports = {
-  logError,
-  warning,
-};
+  : () => {};

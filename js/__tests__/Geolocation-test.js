@@ -26,14 +26,14 @@ describe('react-native-geolocation', () => {
   it('should set the location observer configuration', () => {
     Geolocation.setRNConfiguration({skipPermissionRequests: true});
     expect(
-      NativeModules.RNCGeolocation.setConfiguration.mock.calls.length,
+      NativeModules.RNCGeolocation.setConfiguration.mock.calls.length
     ).toEqual(1);
   });
 
   it('should request authorization for location requests', () => {
     Geolocation.requestAuthorization();
     expect(
-      NativeModules.RNCGeolocation.requestAuthorization.mock.calls.length,
+      NativeModules.RNCGeolocation.requestAuthorization.mock.calls.length
     ).toEqual(1);
   });
 
@@ -41,10 +41,10 @@ describe('react-native-geolocation', () => {
     const callback = () => {};
     Geolocation.getCurrentPosition(callback);
     expect(
-      NativeModules.RNCGeolocation.getCurrentPosition.mock.calls.length,
+      NativeModules.RNCGeolocation.getCurrentPosition.mock.calls.length
     ).toEqual(1);
     expect(
-      NativeModules.RNCGeolocation.getCurrentPosition.mock.calls[0][1],
+      NativeModules.RNCGeolocation.getCurrentPosition.mock.calls[0][1]
     ).toBe(callback);
   });
 
@@ -52,40 +52,55 @@ describe('react-native-geolocation', () => {
     const watchID = Geolocation.watchPosition(() => {});
     expect(watchID).toEqual(0);
     expect(NativeModules.RNCGeolocation.addListener.mock.calls[0][0]).toBe(
-      'geolocationDidChange',
+      'geolocationDidChange'
     );
   });
 
   it('should add an error listener to the geolocation', () => {
-    const watchID = Geolocation.watchPosition(() => {}, () => {});
+    const watchID = Geolocation.watchPosition(
+      () => {},
+      () => {}
+    );
     expect(watchID).toEqual(0);
     expect(NativeModules.RNCGeolocation.addListener.mock.calls[1][0]).toBe(
-      'geolocationError',
+      'geolocationError'
     );
   });
 
   it('should clear the listeners associated with a watchID', () => {
-    const watchID = Geolocation.watchPosition(() => {}, () => {});
+    const watchID = Geolocation.watchPosition(
+      () => {},
+      () => {}
+    );
     Geolocation.clearWatch(watchID);
     expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
-      1,
+      1
     );
   });
 
   it('should correctly assess if all listeners have been cleared', () => {
-    const watchID = Geolocation.watchPosition(() => {}, () => {});
-    Geolocation.watchPosition(() => {}, () => {});
+    const watchID = Geolocation.watchPosition(
+      () => {},
+      () => {}
+    );
+    Geolocation.watchPosition(
+      () => {},
+      () => {}
+    );
     Geolocation.clearWatch(watchID);
     expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
-      0,
+      0
     );
   });
 
   it('should not fail if the watchID one wants to clear does not exist', () => {
-    Geolocation.watchPosition(() => {}, () => {});
+    Geolocation.watchPosition(
+      () => {},
+      () => {}
+    );
     Geolocation.clearWatch(42);
     expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
-      0,
+      0
     );
   });
 
@@ -93,10 +108,13 @@ describe('react-native-geolocation', () => {
     const mockWarningCallback = jest.fn();
     warning.mockImplementation(mockWarningCallback);
 
-    Geolocation.watchPosition(() => {}, () => {});
+    Geolocation.watchPosition(
+      () => {},
+      () => {}
+    );
     Geolocation.stopObserving();
     expect(NativeModules.RNCGeolocation.stopObserving.mock.calls.length).toBe(
-      1,
+      1
     );
     expect(mockWarningCallback.mock.calls.length).toBeGreaterThanOrEqual(1);
   });
