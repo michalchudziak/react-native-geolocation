@@ -32,13 +32,13 @@ or
 
 Drag `RNCGeolocation.xcodeproj` to your project on Xcode (usually under the Libraries group on Xcode):
 
-![xcode-add](https://facebook.github.io/react-native/docs/assets/AddToLibraries.png)
+![xcode-add](https://reactnative.dev/docs/assets/AddToLibraries.png)
 
 ### Link `libRNCGeolocation.a` binary with libraries
 
 Click on your main project file (the one that represents the `.xcodeproj`) select `Build Phases` and drag the static library from the `Products` folder inside the Library you are importing to `Link Binary With Libraries` (or use the `+` sign and choose library from the list):
 
-![xcode-link](https://facebook.github.io/react-native/docs/assets/AddToBuildPhases.png)
+![xcode-link](https://reactnative.dev/docs/assets/AddToBuildPhases.png)
 
 ### Using CocoaPods
 
@@ -119,7 +119,7 @@ Android API >= 18 Positions will also contain a `mocked` boolean to indicate if 
 <p>
   Android API >= 23 Requires an additional step to check for, and request
   the ACCESS_FINE_LOCATION permission using
-  the <a href="https://facebook.github.io/react-native/docs/permissionsandroid.html" target="_blank">PermissionsAndroid API</a>.
+  the <a href="https://reactnative.dev/docs/permissionsandroid.html" target="_blank">PermissionsAndroid API</a>.
   Failure to do so may result in a hard crash.
 </p>
 
@@ -138,7 +138,7 @@ import Geolocation from '@react-native-community/geolocation';
 Geolocation.setRNConfiguration(config);
 ```
 
-If you need to have geolocation API aligned with the browser (cross-platform apps), or want to support backward compatibility, please consider adding following lines at the root level, for example at the top of your App.js file (only for [react native](https://facebook.github.io/react-native/docs/platform-specific-code.html#native-specific-extensions-ie-sharing-code-with-nodejs-and-web)):
+If you need to have geolocation API aligned with the browser (cross-platform apps), or want to support backward compatibility, please consider adding following lines at the root level, for example at the top of your App.js file (only for [react native](https://reactnative.dev/docs/platform-specific-code.html#native-specific-extensions-ie-sharing-code-with-nodejs-and-web)):
 
 ```javascript
 navigator.geolocation = require('@react-native-community/geolocation');
@@ -174,7 +174,7 @@ Check out the [example project](example) for more examples.
 #### `setRNConfiguration()`
 
 ```javascript
-geolocation.setRNConfiguration(config);
+Geolocation.setRNConfiguration(config);
 ```
 
 Sets configuration options that will be used in all location requests.
@@ -188,14 +188,14 @@ Sets configuration options that will be used in all location requests.
 Supported options:
 
 * `skipPermissionRequests` (boolean, iOS-only) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
-* `authorizationLevel` (string, iOS-only) - Either `"whenInUse"`, `"always"`, or `"auto"`. Changes the whether the user will be asked to give "always" or "when in use" location services permission. Any other value or `auto` will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
+* `authorizationLevel` (string, iOS-only) - Either `"whenInUse"`, `"always"`, or `"auto"`. Changes whether the user will be asked to give "always" or "when in use" location services permission. Any other value or `auto` will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
 
 ---
 
 #### `requestAuthorization()`
 
 ```javascript
-geolocation.requestAuthorization();
+Geolocation.requestAuthorization();
 ```
 
 Request suitable Location permission based on the key configured on pList. If NSLocationAlwaysUsageDescription is set, it will request Always authorization, although if NSLocationWhenInUseUsageDescription is set, it will request InUse authorization.
@@ -205,7 +205,7 @@ Request suitable Location permission based on the key configured on pList. If NS
 #### `getCurrentPosition()`
 
 ```javascript
-geolocation.getCurrentPosition(geo_success, [geo_error], [geo_options]);
+Geolocation.getCurrentPosition(geo_success, [geo_error], [geo_options]);
 ```
 
 Invokes the success callback once with the latest location info.
@@ -229,7 +229,7 @@ Supported options:
 #### `watchPosition()`
 
 ```javascript
-geolocation.watchPosition(success, [error], [options]);
+Geolocation.watchPosition(success, [error], [options]);
 ```
 
 Invokes the success callback whenever the location changes. Returns a `watchId` (number).
@@ -255,7 +255,7 @@ Supported options:
 #### `clearWatch()`
 
 ```javascript
-geolocation.clearWatch(watchID);
+Geolocation.clearWatch(watchID);
 ```
 
 **Parameters:**
@@ -269,12 +269,12 @@ geolocation.clearWatch(watchID);
 #### `stopObserving()`
 
 ```javascript
-geolocation.stopObserving();
+Geolocation.stopObserving();
 ```
 
 Stops observing for device location changes. In addition, it removes all listeners previously registered.
 
-Notice that this method has only effect if the `geolocation.watchPosition(successCallback, errorCallback)` method was previously invoked.
+Notice that this method has only effect if the `Geolocation.watchPosition(successCallback, errorCallback)` method was previously invoked.
 
 ## Contributors
 

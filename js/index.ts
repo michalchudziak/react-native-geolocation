@@ -7,7 +7,7 @@
  * @format
  */
 
-import * as RNCGeolocation from './implementation';
+import * as GeolocationModule from './implementation';
 
 import type {
   GeolocationOptions,
@@ -28,7 +28,7 @@ const Geolocation = {
     error?: (error: GeolocationError) => void,
     options?: GeolocationOptions
   ) {
-    RNCGeolocation.getCurrentPosition(success, error, options);
+    GeolocationModule.getCurrentPosition(success, error, options);
   },
 
   /**
@@ -40,23 +40,23 @@ const Geolocation = {
     error?: (error: GeolocationError) => void,
     options?: GeolocationOptions
   ): number {
-    return RNCGeolocation.watchPosition(success, error, options);
+    return GeolocationModule.watchPosition(success, error, options);
   },
 
   clearWatch: function (watchID: number) {
-    RNCGeolocation.clearWatch(watchID);
+    GeolocationModule.clearWatch(watchID);
   },
 
   stopObserving: function () {
-    RNCGeolocation.stopObserving();
+    GeolocationModule.stopObserving();
   },
 
   requestAuthorization: function () {
-    RNCGeolocation.requestAuthorization();
+    GeolocationModule.requestAuthorization();
   },
 
   setRNConfiguration: function (config: GeolocationConfiguration) {
-    RNCGeolocation.setRNConfiguration(config);
+    GeolocationModule.setRNConfiguration(config);
   },
 };
 
