@@ -9,11 +9,12 @@
 
 import type {
   GeolocationOptions,
+  GeolocationConfiguration,
   GeolocationResponse,
   GeolocationError,
 } from './types';
 
-export function setRNConfiguration() {
+export function setRNConfiguration(_config: GeolocationConfiguration) {
   throw new Error('setRNConfiguration is not supported by the browser');
 }
 

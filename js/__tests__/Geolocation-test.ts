@@ -7,7 +7,7 @@
  * @format
  */
 
-import {NativeModules} from 'react-native';
+import { NativeModules } from 'react-native';
 import Geolocation from '../';
 
 jest.mock('../utils', () => {
@@ -16,7 +16,7 @@ jest.mock('../utils', () => {
     warning: jest.fn(),
   };
 });
-import {warning} from '../utils';
+import { warning } from '../utils';
 
 describe('react-native-geolocation', () => {
   afterEach(() => {
@@ -24,7 +24,7 @@ describe('react-native-geolocation', () => {
   });
 
   it('should set the location observer configuration', () => {
-    Geolocation.setRNConfiguration({skipPermissionRequests: true});
+    Geolocation.setRNConfiguration({ skipPermissionRequests: true });
     expect(
       NativeModules.RNCGeolocation.setConfiguration.mock.calls.length
     ).toEqual(1);

@@ -51,11 +51,11 @@ export default class ExampleApp extends React.Component<Props, State> {
   }
 
   _toggleMode = () => {
-    this.setState(state => ({showExamples: !state.showExamples}));
+    this.setState((state) => ({ showExamples: !state.showExamples }));
   };
 
   render() {
-    const {showExamples} = this.state;
+    const { showExamples } = this.state;
     return (
       <ScrollView style={styles.container}>
         <SafeAreaView>
@@ -84,12 +84,13 @@ export default class ExampleApp extends React.Component<Props, State> {
     );
   }
 
-  _renderExample = example => {
+  _renderExample = (example) => {
     return (
       <View
         testID={`example-${example.id}`}
         key={example.title}
-        style={styles.exampleContainer}>
+        style={styles.exampleContainer}
+      >
         <Text style={styles.exampleTitle}>{example.title}</Text>
         <Text style={styles.exampleDescription}>{example.description}</Text>
         <View style={styles.exampleInnerContainer}>{example.render()}</View>
