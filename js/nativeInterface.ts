@@ -1,16 +1,15 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) React Native Community
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
  */
 
-import {NativeEventEmitter, NativeModules} from 'react-native';
+import { NativeEventEmitter, NativeModules } from 'react-native';
 
-const {RNCGeolocation} = NativeModules;
+const { RNCGeolocation } = NativeModules;
 
 // Produce an error if we don't have the native module
 if (!RNCGeolocation) {
@@ -25,8 +24,9 @@ If none of these fix the issue, please open an issue on the Github repository: h
  * We export the native interface in this way to give easy shared access to it between the
  * JavaScript code and the tests
  */
-let nativeEventEmitter = null;
-module.exports = {
+let nativeEventEmitter: NativeEventEmitter | null = null;
+
+export default {
   RNCGeolocation,
   get GeolocationEventEmitter() {
     if (!nativeEventEmitter) {

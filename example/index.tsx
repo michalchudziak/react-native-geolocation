@@ -1,15 +1,15 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) React Native Community
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
  */
 
 import React from 'react';
 import {
+  AppRegistry,
   Button,
   SafeAreaView,
   ScrollView,
@@ -19,9 +19,17 @@ import {
 } from 'react-native';
 
 import GeolocationExample from './GeolocationExample';
+import { name as appName } from './app.json';
+
+type RenderableExample = {
+  id: string;
+  title: string;
+  description: string;
+  render: () => React.ReactElement;
+};
 
 // Examples which show the user how to correctly use the library
-const EXAMPLES = [
+const EXAMPLES: RenderableExample[] = [
   {
     id: 'getCurrentPosition',
     title: 'Geolocation.getCurrentPosition',
@@ -35,13 +43,13 @@ const EXAMPLES = [
 // Test cases for the e2e tests. THESE ARE NOT EXAMPLES OF BEST PRACTICE
 import TEST_CASES from './testCases';
 
-type State = {
-  showExamples: boolean,
-};
-
 type Props = {};
 
-export default class ExampleApp extends React.Component<Props, State> {
+type State = {
+  showExamples: boolean;
+};
+
+class ExampleApp extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -84,7 +92,7 @@ export default class ExampleApp extends React.Component<Props, State> {
     );
   }
 
-  _renderExample = (example) => {
+  _renderExample = (example: RenderableExample) => {
     return (
       <View
         testID={`example-${example.id}`}
@@ -130,3 +138,5 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
 });
+
+AppRegistry.registerComponent(appName, () => ExampleApp);
