@@ -63,21 +63,17 @@ export function requestAuthorization() {
  * See https://facebook.github.io/react-native/docs/geolocation.html#getcurrentposition
  */
 export async function getCurrentPosition(
-  geo_success: (position: GeolocationResponse) => void,
-  geo_error?: (error: GeolocationError) => void,
-  geo_options?: GeolocationOptions
+  success: (position: GeolocationResponse) => void,
+  error?: (error: GeolocationError) => void,
+  options?: GeolocationOptions
 ) {
   invariant(
-    typeof geo_success === 'function',
+    typeof success === 'function',
     'Must provide a valid geo_success callback.'
   );
 
   // Permission checks/requests are done on the native side
-  RNCGeolocation.getCurrentPosition(
-    geo_options || {},
-    geo_success,
-    geo_error || logError
-  );
+  RNCGeolocation.getCurrentPosition(options || {}, success, error || logError);
 }
 
 /*
