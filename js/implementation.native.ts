@@ -71,7 +71,6 @@ export async function getCurrentPosition(
     typeof success === 'function',
     'Must provide a valid geo_success callback.'
   );
-
   // Permission checks/requests are done on the native side
   RNCGeolocation.getCurrentPosition(options, success, error);
 }

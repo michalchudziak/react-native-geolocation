@@ -27,7 +27,9 @@
     "validate:eslint": "eslint \"**/*.{js,ts,tsx}\"",
     "validate:typescript": "tsc --noEmit",
     "test:jest": "jest js/",
-    "prepare": "bob build"
+    "prepare": "bob build",
+    "example": "yarn --cwd example",
+    "bootstrap": "yarn example && yarn && yarn example pods"
   },
   "repository": {
     "type": "git",
@@ -117,6 +119,15 @@
           "project": "tsconfig.build.json"
         }
       ]
+    ]
+  },
+  "codegenConfig": {
+    "libraries": [
+      {
+        "name": "RNCGeolocationSpec",
+        "type": "modules",
+        "jsSrcsDir": "js"
+      }
     ]
   }
 }

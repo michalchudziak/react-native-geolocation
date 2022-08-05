@@ -7,18 +7,31 @@
  * @format
  */
 
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 
-const { RNCGeolocation } = NativeModules;
+const LINKING_ERROR =
+  `The package '@react-native-community/geolocation' doesn't seem to be linked. Make sure: \n\n` +
+  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
+  '- You rebuilt the app after installing the package\n' +
+  '- You are not using Expo managed workflow\n';
 
-// Produce an error if we don't have the native module
-if (!RNCGeolocation) {
-  throw new Error(`@react-native-community/geolocation: NativeModules.RNCGeolocation is null. To fix this issue try these steps:
-• Run \`react-native link @react-native-community/geolocation\` in the project root.
-• Rebuild and re-run the app.
-• If you are using CocoaPods on iOS, run \`pod install\` in the \`ios\` directory and then rebuild and re-run the app. You may also need to re-open Xcode to get the new pods.
-If none of these fix the issue, please open an issue on the Github repository: https://github.com/react-native-community/react-native-geolocation`);
-}
+// @ts-expect-error
+const isTurboModuleEnabled = global.__turboModuleProxy != null;
+
+const RNCGeolocationModule = isTurboModuleEnabled
+  ? require('./NativeRNCGeolocation').default
+  : NativeModules.RNCGeolocation;
+
+const RNCGeolocation = RNCGeolocationModule
+  ? RNCGeolocationModule
+  : new Proxy(
+      {},
+      {
+        get() {
+          throw new Error(LINKING_ERROR);
+        },
+      }
+    );
 
 /**
  * We export the native interface in this way to give easy shared access to it between the
