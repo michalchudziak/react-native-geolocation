@@ -39,8 +39,7 @@ import javax.annotation.Nullable;
  * Native module that exposes Geolocation to JS.
  */
 @SuppressLint("MissingPermission")
-@ReactModule(name = GeolocationModuleImpl.NAME)
-public class GeolocationModuleImpl extends ReactContextBaseJavaModule {
+public class GeolocationModule extends ReactContextBaseJavaModule {
 
   public static final String NAME = "RNCGeolocation";
   private @Nullable String mWatchedProvider;
@@ -69,7 +68,7 @@ public class GeolocationModuleImpl extends ReactContextBaseJavaModule {
     public void onProviderDisabled(String provider) { }
   };
 
-  public GeolocationModuleImpl(ReactApplicationContext reactContext) {
+  public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 

@@ -8,27 +8,27 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.Callback;
 
-public class GeolocationModule extends ReactContextBaseJavaModule {
-    public static final String NAME = NewBobGeo2ModuleImpl.NAME;
-    GeolocationModuleImpl mImpl;
+public class RNCGeolocationModule extends ReactContextBaseJavaModule {
+    public static final String NAME = GeolocationModule.NAME;
+    GeolocationModule mImpl;
   
-    GeolocationModule(ReactApplicationContext context) {
+    RNCGeolocationModule(ReactApplicationContext context) {
       super(context);
-      mImpl = new GeolocationModuleImpl(context);
+      mImpl = new GeolocationModule(context);
     }
   
     @Override
     @NonNull
     public String getName() {
-      return GeolocationModuleImpl.NAME;
+      return GeolocationModule.NAME;
     }
   
     @ReactMethod
     public void getCurrentPosition(
         final ReadableMap options,
-        final Callback success,
+        final Callback position,
         final Callback error) {
-          mImpl.getCurrentPosition(options, success, error);
+          mImpl.getCurrentPosition(options, position, error);
     }
 
     @ReactMethod

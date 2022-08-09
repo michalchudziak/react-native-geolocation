@@ -16,8 +16,8 @@ public class GeolocationPackage extends TurboReactPackage {
   @Nullable
   @Override
   public NativeModule getModule(String name, ReactApplicationContext reactContext) {
-    if (name.equals(GeolocationModuleImpl.NAME)) {
-        return new GeolocationModuleImpl(reactContext);
+    if (name.equals(GeolocationModule.NAME)) {
+        return new RNCGeolocationModule(reactContext);
     } else {
         return null;
     }
@@ -29,10 +29,10 @@ public class GeolocationPackage extends TurboReactPackage {
       final Map<String, ReactModuleInfo> moduleInfos = new HashMap<>();
       boolean isTurboModule = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
       moduleInfos.put(
-              GeolocationModuleImpl.NAME,
+              RNCGeolocationModule.NAME,
               new ReactModuleInfo(
-                      GeolocationModuleImpl.NAME,
-                      GeolocationModuleImpl.NAME,
+                      RNCGeolocationModule.NAME,
+                      RNCGeolocationModule.NAME,
                       false, // canOverrideExistingModule
                       false, // needsEagerInit
                       true, // hasConstants

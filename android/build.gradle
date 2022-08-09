@@ -10,11 +10,11 @@ buildscript {
 }
 
 def getExtOrDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['ReactNativeGeolocation_' + name]
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['RNCGeolocation_' + name]
 }
 
 def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['ReactNativeGeolocation_' + name]).toInteger()
+  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['RNCGeolocation_' + name]).toInteger()
 }
 
 def isNewArchitectureEnabled() {
@@ -132,13 +132,16 @@ repositories {
 
 dependencies {
   //noinspection GradleDynamicVersion
-  api 'com.facebook.react:react-native:+'
+  implementation 'com.facebook.react:react-native:+'
 }
 
 if (isNewArchitectureEnabled()) {
   react {
     jsRootDir = file("../js/")
-    libraryName = "GeolocationModule"
+    libraryName = "RNCGeolocation"
+    root = rootProject.file("..")
     codegenJavaPackageName = "com.reactnativecommunity.geolocation"
+    codegenDir = rootProject.file("../node_modules/react-native-codegen/")
+    reactNativeDir = rootProject.file("../node_modules/react-native/")
   }
 }
