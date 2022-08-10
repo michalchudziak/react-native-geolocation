@@ -22,6 +22,12 @@ public class RNCGeolocationModule extends ReactContextBaseJavaModule {
     public String getName() {
       return GeolocationModule.NAME;
     }
+
+    @ReactMethod
+    public void setConfiguration(ReadableMap config) { }
+
+    @ReactMethod
+    public void requestAuthorization() { }
   
     @ReactMethod
     public void getCurrentPosition(

@@ -14,7 +14,7 @@ import type {
   GeolocationConfiguration,
   GeolocationResponse,
   GeolocationError,
-} from './types';
+} from './NativeRNCGeolocation';
 
 const Geolocation = {
   /**

@@ -19,7 +19,7 @@ import type {
   GeolocationConfiguration,
   GeolocationResponse,
   GeolocationError,
-} from './types';
+} from './NativeRNCGeolocation';
 
 const { RNCGeolocation, GeolocationEventEmitter } = GeolocationNativeInterface;
 

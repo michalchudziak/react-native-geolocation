@@ -12,7 +12,7 @@ import type {
   GeolocationConfiguration,
   GeolocationResponse,
   GeolocationError,
-} from './types';
+} from './NativeRNCGeolocation';
 
 export function setRNConfiguration(_config: GeolocationConfiguration) {
   throw new Error('setRNConfiguration is not supported by the browser');

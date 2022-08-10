@@ -18,21 +18,23 @@ public class RNCGeolocationModule extends NativeRNCGeolocationSpec {
     }
 
     @Override
+    @NonNull
+    public String getName() {
+      return GeolocationModule.NAME;
+    }
+
+    @Override
+    @ReactMethod
     public void setConfiguration(ReadableMap config) { }
 
     @Override
+    @ReactMethod
     public void requestAuthorization() { }
 
     @Override
     @ReactMethod
     public void getCurrentPosition(ReadableMap options, Callback position, Callback error) {
         mImpl.getCurrentPosition(options, position, error);
-    }
-
-    @Override
-    @NonNull
-    public String getName() {
-      return GeolocationModule.NAME;
     }
 
     @Override
