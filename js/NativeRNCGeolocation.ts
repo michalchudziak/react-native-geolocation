@@ -1,11 +1,5 @@
-/**
- * Copyright (c) React Native Community
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @format
- */
+import type { TurboModule } from 'react-native';
+import { TurboModuleRegistry } from 'react-native';
 
 export type GeolocationConfiguration = {
   skipPermissionRequests: boolean;
@@ -40,3 +34,20 @@ export type GeolocationError = {
   POSITION_UNAVAILABLE: number;
   TIMEOUT: number;
 };
+
+export interface Spec extends TurboModule {
+  setConfiguration(config: {
+    skipPermissionRequests: boolean;
+    authorizationLevel?: string;
+  }): void;
+  requestAuthorization(): void;
+  getCurrentPosition(
+    options: GeolocationOptions,
+    position: (position: GeolocationResponse) => void,
+    error: (error: GeolocationError) => void
+  ): void;
+  startObserving(options: GeolocationOptions): void;
+  stopObserving(): void;
+}
+
+export default TurboModuleRegistry.getEnforcing<Spec>('RNCGeolocation');

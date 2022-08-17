@@ -28,6 +28,7 @@ export default class GeolocationExample extends React.Component<Props, State> {
   watchID: number | null = null;
 
   componentDidMount() {
+    Geolocation.requestAuthorization();
     Geolocation.getCurrentPosition(
       (position) => {
         const initialPosition = JSON.stringify(position);

@@ -7,6 +7,10 @@
 
 #import "RNCGeolocation.h"
 
+#ifdef RCT_NEW_ARCH_ENABLED
+#import "RNCGeolocationSpec.h"
+#endif
+
 #import <CoreLocation/CLError.h>
 #import <CoreLocation/CLLocationManager.h>
 #import <CoreLocation/CLLocationManagerDelegate.h>
@@ -75,7 +79,7 @@ RCT_ENUM_CONVERTER(RNCGeolocationAuthorizationLevel, (@{
     .maximumAge = [RCTConvert NSTimeInterval:options[@"maximumAge"]] ?: INFINITY,
     .accuracy = [RCTConvert BOOL:options[@"enableHighAccuracy"]] ? kCLLocationAccuracyBest : RNC_DEFAULT_LOCATION_ACCURACY,
     .distanceFilter = distanceFilter,
-    .useSignificantChanges = [RCTConvert BOOL:options[@"useSignificantChanges"]] ?: NO,
+    .useSignificantChanges = static_cast<BOOL>([RCTConvert BOOL:options[@"useSignificantChanges"]] ?: NO),
   };
 }
 
@@ -223,12 +227,12 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - Public API
 
-RCT_EXPORT_METHOD(setConfiguration:(RNCGeolocationConfiguration)config)
+RCT_REMAP_METHOD(setConfiguration, setConfiguration:(RNCGeolocationConfiguration)config)
 {
   _locationConfiguration = config;
 }
 
-RCT_EXPORT_METHOD(requestAuthorization)
+RCT_REMAP_METHOD(requestAuthorization, requestAuthorization)
 {
   if (!_locationManager) {
     _locationManager = [CLLocationManager new];
@@ -266,7 +270,7 @@ RCT_EXPORT_METHOD(requestAuthorization)
   }
 }
 
-RCT_EXPORT_METHOD(startObserving:(RNCGeolocationOptions)options)
+RCT_REMAP_METHOD(startObserving, startObserving:(RNCGeolocationOptions)options)
 {
   checkLocationConfig();
 
@@ -282,7 +286,7 @@ RCT_EXPORT_METHOD(startObserving:(RNCGeolocationOptions)options)
   _observingLocation = YES;
 }
 
-RCT_EXPORT_METHOD(stopObserving)
+RCT_REMAP_METHOD(stopObserving, stopObserving)
 {
   // Stop observing
   _observingLocation = NO;
@@ -293,9 +297,9 @@ RCT_EXPORT_METHOD(stopObserving)
   }
 }
 
-RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
-                  withSuccessCallback:(RCTResponseSenderBlock)successBlock
-                  errorCallback:(RCTResponseSenderBlock)errorBlock)
+RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)options
+                  position:(RCTResponseSenderBlock)successBlock
+                  error:(RCTResponseSenderBlock)errorBlock)
 {
   checkLocationConfig();
 
@@ -468,6 +472,14 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
   [_pendingRequests removeAllObjects];
 
 }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params
+{
+    return std::make_shared<facebook::react::NativeRNCGeolocationSpecJSI>(params);
+}
+#endif
 
 static void checkLocationConfig()
 {
