@@ -3,7 +3,6 @@ package com.reactnativecommunity.geolocation;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
@@ -25,7 +24,9 @@ public class RNCGeolocationModule extends NativeRNCGeolocationSpec {
 
     @Override
     @ReactMethod
-    public void setConfiguration(ReadableMap config) { }
+    public void setConfiguration(ReadableMap config) {
+        mImpl.setConfiguration(config);
+    }
 
     @Override
     @ReactMethod

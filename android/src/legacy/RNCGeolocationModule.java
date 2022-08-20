@@ -24,7 +24,9 @@ public class RNCGeolocationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setConfiguration(ReadableMap config) { }
+    public void setConfiguration(ReadableMap config) {
+      mImpl.setConfiguration(config);
+    }
 
     @ReactMethod
     public void requestAuthorization() { }

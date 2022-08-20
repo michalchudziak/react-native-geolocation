@@ -10,12 +10,18 @@ package com.reactnativecommunity.geolocation;
 import android.Manifest;
 import android.os.Build;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.JavaOnlyArray;
 import com.facebook.react.bridge.PromiseImpl;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 import com.facebook.react.modules.permissions.PermissionsModule;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.util.ArrayList;
 
 public class GeolocationModule extends ReactContextBaseJavaModule {
 
@@ -24,12 +30,32 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
 
   public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
-    mLocationManager = new AndroidLocationManager(reactContext);
+    GoogleApiAvailability availability = new GoogleApiAvailability();
+    if (availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS) {
+      mLocationManager = new PlayServicesLocationManager(reactContext);
+    } else {
+      mLocationManager = new AndroidLocationManager(reactContext);
+    }
+
   }
 
   @Override
   public String getName() {
     return NAME;
+  }
+
+  public void setConfiguration(ReadableMap config) {
+    onConfigutationChange(config);
+  }
+
+  private void onConfigutationChange(ReadableMap config) {
+    if (config.hasKey("locationProvider")) {
+      if (config.getString("locationProvider") == "android" && mLocationManager instanceof PlayServicesLocationManager) {
+        mLocationManager = new AndroidLocationManager(mLocationManager.mReactContext);
+      } else if (config.getString("locationProvider") == "playServices" && mLocationManager instanceof AndroidLocationManager) {
+        mLocationManager = new PlayServicesLocationManager(mLocationManager.mReactContext);
+      }
+    }
   }
 
   /**
@@ -47,6 +73,10 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     try {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         final PermissionsModule perms = getReactApplicationContext().getNativeModule(PermissionsModule.class);
+        ArrayList<String> permissions = new ArrayList<>();
+        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        permissions.add( Manifest.permission.ACCESS_FINE_LOCATION);
+        ReadableArray permissionsArray = JavaOnlyArray.from(permissions);
 
         final Callback onPermissionGranted = new Callback() {
           @Override
@@ -80,7 +110,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
             boolean hasPermission = (boolean) args[0];
 
             if (!hasPermission) {
-              perms.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, new PromiseImpl(onPermissionGranted, onPermissionDenied));
+              perms.requestMultiplePermissions(permissionsArray, new PromiseImpl(onPermissionGranted, onPermissionDenied));
             } else {
               mLocationManager.getCurrentLocationData(options, success, error);
             }
