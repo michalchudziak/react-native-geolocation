@@ -16,6 +16,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 import com.facebook.react.modules.permissions.PermissionsModule;
 import com.google.android.gms.common.ConnectionResult;
@@ -81,8 +82,8 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
         final Callback onPermissionGranted = new Callback() {
           @Override
           public void invoke(Object... args) {
-            String result = (String) args[0];
-            if (result == "granted") {
+            WritableNativeMap result = (WritableNativeMap) args[0];
+            if (result.getString(Manifest.permission.ACCESS_COARSE_LOCATION) == "granted") {
               mLocationManager.getCurrentLocationData(options, success, error);
             } else {
               error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Location permission was not granted."));
