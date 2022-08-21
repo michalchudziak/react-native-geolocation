@@ -569,6 +569,29 @@ PODS:
     - React-Codegen
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-safe-area-context (4.3.3):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - react-native-safe-area-context/common (= 4.3.3)
+    - react-native-safe-area-context/fabric (= 4.3.3)
+    - ReactCommon/turbomodule/core
+  - react-native-safe-area-context/common (4.3.3):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - ReactCommon/turbomodule/core
+  - react-native-safe-area-context/fabric (4.3.3):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - react-native-safe-area-context/common
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
   - React-perflogger (0.69.3)
   - React-RCTActionSheet (0.69.3):
     - React-Core/RCTActionSheetHeaders (= 0.69.3)
@@ -641,6 +664,23 @@ PODS:
     - React-jsi (= 0.69.3)
     - React-logger (= 0.69.3)
     - React-perflogger (= 0.69.3)
+  - RNScreens (3.16.0):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React
+    - React-Codegen
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
+    - RNScreens/common (= 3.16.0)
+  - RNScreens/common (3.16.0):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React
+    - React-Codegen
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -672,6 +712,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-geolocation (from `../..`)
+  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -686,6 +727,7 @@ DEPENDENCIES:
   - React-rncore (from `../node_modules/react-native/ReactCommon`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -742,6 +784,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-geolocation:
     :path: "../.."
+  react-native-safe-area-context:
+    :path: "../node_modules/react-native-safe-area-context"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -770,6 +814,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -800,6 +846,7 @@ SPEC CHECKSUMS:
   React-jsinspector: bb2605f98aada5d81f3494690da3ef3b4ff3b716
   React-logger: 23a50ef4c18bf9adbb51e2c979318e6b3a2e44a1
   react-native-geolocation: 6437687918eb8462b13d0ee70ccbac1b2b0d28f8
+  react-native-safe-area-context: 6ab17f921537d721f7315b198d82d6a65a2680f9
   React-perflogger: 39d2ba8cbcac54d1bb1d9a980dab348e96aef467
   React-RCTActionSheet: b1ad907a2c8f8e4d037148ca507b7f2d6ab1c66d
   React-RCTAnimation: 914a9ba46fb6e7376f7709c7ce825d53b47ca2ee
@@ -814,6 +861,7 @@ SPEC CHECKSUMS:
   React-rncore: 4672e0fa61e6049ab0af36d16c7c83bf563a0618
   React-runtimeexecutor: 607eb048e22a16388c908ee1f6644200e8d1e19b
   ReactCommon: af7636436b382db7cde4583bbd642f0978e6e3ed
+  RNScreens: bb17bdc9eca378fefc6103fb52c35b4f7ef0a791
   Yoga: 44c64131616253fa83366295acdbce3d14926041
 
 PODFILE CHECKSUM: 3b197480e675eca4770afde2dd9bf0ad3c217680

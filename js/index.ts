@@ -43,11 +43,20 @@ const Geolocation = {
     return GeolocationModule.watchPosition(success, error, options);
   },
 
+  /**
+   * Clears the watch started by `watchPosition`.
+   */
   clearWatch: function (watchID: number) {
     GeolocationModule.clearWatch(watchID);
   },
 
+  /**
+   * @deprecated `ReactNativeGeolocation.stopObserving` is deprecated. Use `ReactNativeGeolocation.clearWatch` instead.
+   */
   stopObserving: function () {
+    console.warn(
+      '`ReactNativeGeolocation.stopObserving` is deprecated and should not be used. Use `ReactNativeGeolocation.clearWatch` instead.'
+    );
     GeolocationModule.stopObserving();
   },
 
@@ -58,6 +67,13 @@ const Geolocation = {
   setRNConfiguration: function (config: GeolocationConfiguration) {
     GeolocationModule.setRNConfiguration(config);
   },
+};
+
+export type {
+  GeolocationOptions,
+  GeolocationConfiguration,
+  GeolocationResponse,
+  GeolocationError,
 };
 
 export default Geolocation;

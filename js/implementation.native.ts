@@ -43,9 +43,15 @@ let updatesEnabled = false;
  *
  */
 export function setRNConfiguration(config: GeolocationConfiguration) {
-  if (RNCGeolocation.setConfiguration) {
-    RNCGeolocation.setConfiguration(config);
-  }
+  RNCGeolocation.setConfiguration({
+    ...config,
+    authorizationLevel:
+      config?.authorizationLevel === 'auto'
+        ? undefined
+        : config.authorizationLevel,
+    locationProvider:
+      config?.locationProvider === 'auto' ? undefined : config.locationProvider,
+  });
 }
 
 /*
