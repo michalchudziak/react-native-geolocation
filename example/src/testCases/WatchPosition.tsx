@@ -9,7 +9,7 @@
 
 'use strict';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Alert, Button, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import type { GeolocationOptions } from '@react-native-community/geolocation';

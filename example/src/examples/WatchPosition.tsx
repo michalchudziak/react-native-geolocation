@@ -42,6 +42,7 @@ export default function WatchPositionExample() {
     return () => {
       clearWatch();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
