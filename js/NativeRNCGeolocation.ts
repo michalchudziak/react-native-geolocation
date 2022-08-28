@@ -4,6 +4,7 @@ import { TurboModuleRegistry } from 'react-native';
 export type GeolocationConfiguration = {
   skipPermissionRequests: boolean;
   authorizationLevel?: 'always' | 'whenInUse' | 'auto';
+  locationProvider?: 'playServices' | 'android' | 'auto';
 };
 
 export type GeolocationOptions = {
@@ -12,6 +13,8 @@ export type GeolocationOptions = {
   enableHighAccuracy?: boolean;
   distanceFilter?: number;
   useSignificantChanges?: boolean;
+  interval?: number;
+  fastestInterval?: number;
 };
 
 export type GeolocationResponse = {
