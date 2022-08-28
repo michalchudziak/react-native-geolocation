@@ -59,8 +59,11 @@ export function setRNConfiguration(config: GeolocationConfiguration) {
  *
  * See https://facebook.github.io/react-native/docs/geolocation.html#requestauthorization
  */
-export function requestAuthorization() {
-  RNCGeolocation.requestAuthorization();
+export function requestAuthorization(
+  success: () => void = () => {},
+  error: (error: GeolocationError) => void = logError
+) {
+  RNCGeolocation.requestAuthorization(success, error);
 }
 
 /*

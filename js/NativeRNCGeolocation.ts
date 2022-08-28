@@ -43,7 +43,10 @@ export interface Spec extends TurboModule {
     skipPermissionRequests: boolean;
     authorizationLevel?: string;
   }): void;
-  requestAuthorization(): void;
+  requestAuthorization(
+    success: () => void,
+    error: (error: GeolocationError) => void
+  ): void;
   getCurrentPosition(
     options: GeolocationOptions,
     position: (position: GeolocationResponse) => void,

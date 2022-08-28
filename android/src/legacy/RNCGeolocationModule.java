@@ -29,7 +29,9 @@ public class RNCGeolocationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void requestAuthorization() { }
+    public void requestAuthorization(final Callback success, final Callback error) { 
+      mImpl.requestAuthorization(success, error);
+    }
   
     @ReactMethod
     public void getCurrentPosition(

@@ -24,19 +24,6 @@ public class PlayServicesLocationManager extends BaseLocationManager {
     protected PlayServicesLocationManager(ReactApplicationContext reactContext) {
         super(reactContext);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(reactContext.getCurrentActivity());
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    emitError(PositionError.POSITION_UNAVAILABLE, "No location provided by FusedLocationProviderClient.");
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                            .emit("geolocationDidChange", locationToMap(location));
-                }
-            }
-        };
     }
 
     @Override
@@ -63,6 +50,21 @@ public class PlayServicesLocationManager extends BaseLocationManager {
 
     @Override
     public void startObserving(ReadableMap options) {
+        if (mLocationCallback == null) {
+            mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        emitError(PositionError.POSITION_UNAVAILABLE, "No location provided by FusedLocationProviderClient.");
+                        return;
+                    }
+                    for (Location location : locationResult.getLocations()) {
+                        mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                .emit("geolocationDidChange", locationToMap(location));
+                    }
+                }
+            };
+        };
         LocationOptions locationOptions = LocationOptions.fromReactMap(options);
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(locationOptions.interval);
