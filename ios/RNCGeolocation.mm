@@ -144,7 +144,7 @@ static NSDictionary<NSString *, id> *RNCPositionError(RNCPositionErrorCode code,
   RNCGeolocationConfiguration _locationConfiguration;
   RNCGeolocationOptions _observerOptions;
   CLAuthorizationStatus _lastUpdatedAuthorizationStatus; // used since iOS 14.0+
-  NSMutableArray<RCTResponseSenderBlock> *_queuedAuthorizationCallbacks;
+  NSMutableArray<NSDictionary<NSString *, RCTResponseSenderBlock>*>* _queuedAuthorizationCallbacks;
 }
 
 RCT_EXPORT_MODULE()
@@ -242,9 +242,14 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
   }
 
   if (successBlock != nil || errorBlock != nil) {
-    _queuedAuthorizationCallbacks = [NSMutableArray new];
-    [_queuedAuthorizationCallbacks addObject:successBlock];
-    [_queuedAuthorizationCallbacks addObject:errorBlock];
+    if (_queuedAuthorizationCallbacks == nil) {
+      _queuedAuthorizationCallbacks = [NSMutableArray new];
+    }
+
+    [_queuedAuthorizationCallbacks addObject:@{
+        @"success": successBlock,
+        @"error": errorBlock,
+    }];
   }
     
   BOOL wantsAlways = NO;
@@ -429,7 +434,10 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
     currentStatus == kCLAuthorizationStatusAuthorizedWhenInUse
   ) {
     if (_queuedAuthorizationCallbacks != nil && _queuedAuthorizationCallbacks.count > 0){
-      _queuedAuthorizationCallbacks.firstObject(@[]);
+        for (NSDictionary<NSString *, RCTResponseSenderBlock>* callbacks in _queuedAuthorizationCallbacks) {
+            [callbacks objectForKey:@"success"](@[]);
+        }
+        _queuedAuthorizationCallbacks = nil;
     }
     [self startMonitoring];
   } else {
@@ -445,7 +453,10 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
       }
         
       if (_queuedAuthorizationCallbacks != nil && _queuedAuthorizationCallbacks.count > 0){
-          _queuedAuthorizationCallbacks.lastObject(@[jsError]);
+          for (NSDictionary<NSString *, RCTResponseSenderBlock>* callbacks in _queuedAuthorizationCallbacks) {
+              [callbacks objectForKey:@"error"](@[jsError]);
+          }
+          _queuedAuthorizationCallbacks = nil;
       }
 
       // Fire all queued error callbacks
@@ -455,8 +466,6 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
       }
       [_pendingRequests removeAllObjects];
     }
-      
-    _queuedAuthorizationCallbacks = nil;
 
     // Stop updating if user has explicitly denied authorization for this application, or
     // location services are disabled in Settings, or any other reason.
