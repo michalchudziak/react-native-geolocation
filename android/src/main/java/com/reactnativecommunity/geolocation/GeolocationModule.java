@@ -138,7 +138,9 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
         return;
       }
 
-      requestAuthorization(args -> mLocationManager.startObserving(options), args -> {});
+      requestAuthorization(args -> mLocationManager.startObserving(options), args -> {
+        throw new SecurityException(args.toString());
+      });
     } catch (SecurityException e) {
       throwLocationPermissionMissing(e);
     }
