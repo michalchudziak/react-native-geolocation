@@ -30,7 +30,9 @@ public class RNCGeolocationModule extends NativeRNCGeolocationSpec {
 
     @Override
     @ReactMethod
-    public void requestAuthorization() { }
+    public void requestAuthorization(Callback success, Callback error) {
+        mImpl.requestAuthorization(success, error);
+    }
 
     @Override
     @ReactMethod

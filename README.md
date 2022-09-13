@@ -187,7 +187,7 @@ Sets configuration options that will be used in all location requests.
 
 Supported options:
 
-* `skipPermissionRequests` (boolean, iOS-only) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
+* `skipPermissionRequests` (boolean) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
 * `authorizationLevel` (string, iOS-only) - Either `"whenInUse"`, `"always"`, or `"auto"`. Changes whether the user will be asked to give "always" or "when in use" location services permission. Any other value or `auto` will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
 * `locationProvider` (string, Android-only) - Either `"playServices"`, `"android"`, or `"auto"`.  Determines wether to use `Google’s Location Services API` or `Android’s Location API`. The `"auto"` mode defaults to `playServices`, and falls back to Android's Location API if play services aren't available.
 
@@ -196,10 +196,10 @@ Supported options:
 #### `requestAuthorization()`
 
 ```javascript
-Geolocation.requestAuthorization();
+Geolocation.requestAuthorization(success, [error]);
 ```
 
-Request suitable Location permission based on the key configured on pList. If NSLocationAlwaysUsageDescription is set, it will request Always authorization, although if NSLocationWhenInUseUsageDescription is set, it will request InUse authorization.
+Request suitable Location permission. On iOS if NSLocationAlwaysUsageDescription is set, it will request Always authorization, although if NSLocationWhenInUseUsageDescription is set, it will request InUse authorization.
 
 ---
 

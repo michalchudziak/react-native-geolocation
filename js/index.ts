@@ -60,8 +60,11 @@ const Geolocation = {
     GeolocationModule.stopObserving();
   },
 
-  requestAuthorization: function () {
-    GeolocationModule.requestAuthorization();
+  requestAuthorization: function (
+    success?: () => void,
+    error?: (error: GeolocationError) => void
+  ) {
+    GeolocationModule.requestAuthorization(success, error);
   },
 
   setRNConfiguration: function (config: GeolocationConfiguration) {

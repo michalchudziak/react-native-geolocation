@@ -144,6 +144,7 @@ static NSDictionary<NSString *, id> *RNCPositionError(RNCPositionErrorCode code,
   RNCGeolocationConfiguration _locationConfiguration;
   RNCGeolocationOptions _observerOptions;
   CLAuthorizationStatus _lastUpdatedAuthorizationStatus; // used since iOS 14.0+
+  NSMutableArray<NSDictionary<NSString *, RCTResponseSenderBlock>*>* _queuedAuthorizationCallbacks;
 }
 
 RCT_EXPORT_MODULE()
@@ -172,7 +173,7 @@ RCT_EXPORT_MODULE()
 - (void)beginLocationUpdatesWithDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy distanceFilter:(CLLocationDistance)distanceFilter useSignificantChanges:(BOOL)useSignificantChanges
 {
   if (!_locationConfiguration.skipPermissionRequests) {
-    [self requestAuthorization];
+    [self requestAuthorization:nil error:nil];
   }
 
   if (!_locationManager) {
@@ -232,12 +233,25 @@ RCT_REMAP_METHOD(setConfiguration, setConfiguration:(RNCGeolocationConfiguration
   _locationConfiguration = config;
 }
 
-RCT_REMAP_METHOD(requestAuthorization, requestAuthorization)
+RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBlock)successBlock
+                 error:(RCTResponseSenderBlock)errorBlock)
 {
   if (!_locationManager) {
     _locationManager = [CLLocationManager new];
     _locationManager.delegate = self;
   }
+
+  if (successBlock != nil || errorBlock != nil) {
+    if (_queuedAuthorizationCallbacks == nil) {
+      _queuedAuthorizationCallbacks = [NSMutableArray new];
+    }
+
+    [_queuedAuthorizationCallbacks addObject:@{
+        @"success": successBlock,
+        @"error": errorBlock,
+    }];
+  }
+    
   BOOL wantsAlways = NO;
   BOOL wantsWhenInUse = NO;
   if (_locationConfiguration.authorizationLevel == RNCGeolocationAuthorizationLevelDefault) {
@@ -407,39 +421,59 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
 
 - (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager
 {
+  CLAuthorizationStatus currentStatus;
+    
   if (@available(iOS 14.0, *)) {
-    if (
-      manager.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
-      manager.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse
-    ) {
-      [self startMonitoring];
-    } else {
-      NSDictionary<NSString *, id> *jsError = manager.authorizationStatus == kCLAuthorizationStatusRestricted
-        ? RNCPositionError(RNCPositionErrorUnavailable, @"This application is not authorized to use location services")
-        : manager.authorizationStatus == kCLAuthorizationStatusDenied
-          ? RNCPositionError(RNCPositionErrorDenied, nil)
-          : nil;
-
-      if (jsError != nil) {
-        if (_observingLocation) {
-          [self sendEventWithName:@"geolocationError" body:jsError];
+    currentStatus = manager.authorizationStatus;
+  } else {
+    currentStatus = [CLLocationManager authorizationStatus];
+  }
+    
+  if (
+    currentStatus == kCLAuthorizationStatusAuthorizedAlways ||
+    currentStatus == kCLAuthorizationStatusAuthorizedWhenInUse
+  ) {
+    if (_queuedAuthorizationCallbacks != nil && _queuedAuthorizationCallbacks.count > 0){
+        for (NSDictionary<NSString *, RCTResponseSenderBlock>* callbacks in _queuedAuthorizationCallbacks) {
+            [callbacks objectForKey:@"success"](@[]);
         }
+        _queuedAuthorizationCallbacks = nil;
+    }
+    [self startMonitoring];
+  } else {
+    NSDictionary<NSString *, id> *jsError = currentStatus == kCLAuthorizationStatusRestricted
+      ? RNCPositionError(RNCPositionErrorUnavailable, @"This application is not authorized to use location services")
+      : currentStatus == kCLAuthorizationStatusDenied
+        ? RNCPositionError(RNCPositionErrorDenied, nil)
+        : nil;
 
-        // Fire all queued error callbacks
-        for (RNCGeolocationRequest *request in _pendingRequests) {
-          request.errorBlock(@[jsError]);
-          [request.timeoutTimer invalidate];
-        }
-        [_pendingRequests removeAllObjects];
+    if (jsError != nil) {
+      if (_observingLocation) {
+        [self sendEventWithName:@"geolocationError" body:jsError];
+      }
+        
+      if (_queuedAuthorizationCallbacks != nil && _queuedAuthorizationCallbacks.count > 0){
+          for (NSDictionary<NSString *, RCTResponseSenderBlock>* callbacks in _queuedAuthorizationCallbacks) {
+              [callbacks objectForKey:@"error"](@[jsError]);
+          }
+          _queuedAuthorizationCallbacks = nil;
       }
 
-      // Stop updating if user has explicitly denied authorization for this application, or
-      // location services are disabled in Settings, or any other reason.
-      [self stopMonitoring];
+      // Fire all queued error callbacks
+      for (RNCGeolocationRequest *request in _pendingRequests) {
+        request.errorBlock(@[jsError]);
+        [request.timeoutTimer invalidate];
+      }
+      [_pendingRequests removeAllObjects];
     }
 
-    _lastUpdatedAuthorizationStatus = manager.authorizationStatus;
+    // Stop updating if user has explicitly denied authorization for this application, or
+    // location services are disabled in Settings, or any other reason.
+    [self stopMonitoring];
   }
+
+  _lastUpdatedAuthorizationStatus = currentStatus;
+
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error

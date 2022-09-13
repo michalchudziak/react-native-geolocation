@@ -18,7 +18,10 @@ export function setRNConfiguration(_config: GeolocationConfiguration) {
   throw new Error('setRNConfiguration is not supported by the browser');
 }
 
-export function requestAuthorization() {
+export function requestAuthorization(
+  _success?: () => void,
+  _error?: (error: GeolocationError) => void
+) {
   throw new Error('requestAuthorization is not supported by the browser');
 }
 

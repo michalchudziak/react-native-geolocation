@@ -49,46 +49,44 @@ export default function SetConfigurationExample() {
 
   return (
     <View>
+      <View style={styles.row}>
+        <Text>skipPermissionRequests</Text>
+        <Switch
+          onValueChange={() =>
+            setSkipPermissionRequests(!skipPermissionRequests)
+          }
+          value={skipPermissionRequests}
+        />
+      </View>
       {Platform.OS === 'ios' && (
-        <>
-          <View style={styles.row}>
-            <Text>skipPermissionRequests</Text>
-            <Switch
-              onValueChange={() =>
-                setSkipPermissionRequests(!skipPermissionRequests)
-              }
-              value={skipPermissionRequests}
-            />
-          </View>
-          <View style={styles.row}>
-            <Text>authorizationLevel</Text>
-            <View style={styles.segmentControlContainer}>
-              {authorizationLevelOptions.map((item, index) => (
-                <TouchableOpacity
-                  key={`segmented-control-${index}`}
-                  onPress={() =>
-                    setAuthorizationLevel(authorizationLevelOptions[index])
-                  }
+        <View style={styles.row}>
+          <Text>authorizationLevel</Text>
+          <View style={styles.segmentControlContainer}>
+            {authorizationLevelOptions.map((item, index) => (
+              <TouchableOpacity
+                key={`segmented-control-${index}`}
+                onPress={() =>
+                  setAuthorizationLevel(authorizationLevelOptions[index])
+                }
+                style={[
+                  styles.segmentedControlButton,
+                  authorizationLevelOptions.indexOf(authorizationLevel) ===
+                    index && styles.segmentedControlButtonActive,
+                ]}
+              >
+                <Text
                   style={[
-                    styles.segmentedControlButton,
+                    styles.segmentControlText,
                     authorizationLevelOptions.indexOf(authorizationLevel) ===
-                      index && styles.segmentedControlButtonActive,
+                      index && styles.segmentControlTextActive,
                   ]}
                 >
-                  <Text
-                    style={[
-                      styles.segmentControlText,
-                      authorizationLevelOptions.indexOf(authorizationLevel) ===
-                        index && styles.segmentControlTextActive,
-                    ]}
-                  >
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
-        </>
+        </View>
       )}
       {Platform.OS === 'android' && (
         <View style={styles.row}>

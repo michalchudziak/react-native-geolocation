@@ -28,6 +28,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
 
   public static final String NAME = "RNCGeolocation";
   private BaseLocationManager mLocationManager;
+  private Configuration mConfiguration;
 
   public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -46,17 +47,57 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   }
 
   public void setConfiguration(ReadableMap config) {
-    onConfigutationChange(config);
+    mConfiguration = Configuration.fromReactMap(config);
+    onConfigutationChange(mConfiguration);
   }
 
-  private void onConfigutationChange(ReadableMap config) {
-    if (config.hasKey("locationProvider")) {
-      if (config.getString("locationProvider") == "android" && mLocationManager instanceof PlayServicesLocationManager) {
-        mLocationManager = new AndroidLocationManager(mLocationManager.mReactContext);
-      } else if (config.getString("locationProvider") == "playServices" && mLocationManager instanceof AndroidLocationManager) {
-        mLocationManager = new PlayServicesLocationManager(mLocationManager.mReactContext);
-      }
+  private void onConfigutationChange(Configuration config) {
+    if (config.locationProvider == "android" && mLocationManager instanceof PlayServicesLocationManager) {
+      mLocationManager = new AndroidLocationManager(mLocationManager.mReactContext);
+    } else if (config.locationProvider == "playServices" && mLocationManager instanceof AndroidLocationManager) {
+      mLocationManager = new PlayServicesLocationManager(mLocationManager.mReactContext);
     }
+  }
+
+  /**
+   * Requests location permission.
+   */
+  public void requestAuthorization(final Callback success, final Callback error) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      final PermissionsModule perms = getReactApplicationContext().getNativeModule(PermissionsModule.class);
+      ArrayList<String> permissions = new ArrayList<>();
+      permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+      permissions.add( Manifest.permission.ACCESS_FINE_LOCATION);
+      ReadableArray permissionsArray = JavaOnlyArray.from(permissions);
+
+      final Callback onPermissionGranted = args -> {
+        WritableNativeMap result = (WritableNativeMap) args[0];
+        if (result.getString(Manifest.permission.ACCESS_COARSE_LOCATION).equals("granted")) {
+          success.invoke();
+        } else {
+          error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Location permission was not granted."));
+        }
+      };
+
+      final Callback onPermissionDenied = args -> error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to request location permission."));
+
+      Callback onPermissionCheckFailed = args -> error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to check location permission."));
+
+      Callback onPermissionChecked = args -> {
+        boolean hasPermission = (boolean) args[0];
+
+        if (!hasPermission) {
+          perms.requestMultiplePermissions(permissionsArray, new PromiseImpl(onPermissionGranted, onPermissionDenied));
+        } else {
+          success.invoke();
+        }
+      };
+
+      perms.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, new PromiseImpl(onPermissionChecked, onPermissionCheckFailed));
+      return;
+    }
+
+    success.invoke();
   }
 
   /**
@@ -72,57 +113,12 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       final Callback success,
       final Callback error) {
     try {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        final PermissionsModule perms = getReactApplicationContext().getNativeModule(PermissionsModule.class);
-        ArrayList<String> permissions = new ArrayList<>();
-        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-        permissions.add( Manifest.permission.ACCESS_FINE_LOCATION);
-        ReadableArray permissionsArray = JavaOnlyArray.from(permissions);
-
-        final Callback onPermissionGranted = new Callback() {
-          @Override
-          public void invoke(Object... args) {
-            WritableNativeMap result = (WritableNativeMap) args[0];
-            if (result.getString(Manifest.permission.ACCESS_COARSE_LOCATION) == "granted") {
-              mLocationManager.getCurrentLocationData(options, success, error);
-            } else {
-              error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Location permission was not granted."));
-            }
-          }
-        };
-
-        final Callback onPermissionDenied = new Callback() {
-          @Override
-          public void invoke(Object... args) {
-            error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to request location permission."));
-          }
-        };
-
-        Callback onPermissionCheckFailed = new Callback() {
-          @Override
-          public void invoke(Object... args) {
-            error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to check location permission."));
-          }
-        };
-
-        Callback onPermissionChecked = new Callback() {
-          @Override
-          public void invoke(Object... args) {
-            boolean hasPermission = (boolean) args[0];
-
-            if (!hasPermission) {
-              perms.requestMultiplePermissions(permissionsArray, new PromiseImpl(onPermissionGranted, onPermissionDenied));
-            } else {
-              mLocationManager.getCurrentLocationData(options, success, error);
-            }
-          }
-        };
-
-        perms.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, new PromiseImpl(onPermissionChecked, onPermissionCheckFailed));
+      if (mConfiguration.skipPermissionRequests) {
+        mLocationManager.getCurrentLocationData(options, success, error);
         return;
       }
 
-      mLocationManager.getCurrentLocationData(options, success, error);
+      requestAuthorization(args -> mLocationManager.getCurrentLocationData(options, success, error), error);
     } catch (SecurityException e) {
       throwLocationPermissionMissing(e);
     }
@@ -137,7 +133,14 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
    */
   public void startObserving(ReadableMap options) {
     try {
-      mLocationManager.startObserving(options);
+      if (mConfiguration.skipPermissionRequests) {
+        mLocationManager.startObserving(options);
+        return;
+      }
+
+      requestAuthorization(args -> mLocationManager.startObserving(options), args -> {
+        throw new SecurityException(args.toString());
+      });
     } catch (SecurityException e) {
       throwLocationPermissionMissing(e);
     }
@@ -161,5 +164,23 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       "Looks like the app doesn't have the permission to access location.\n" +
       "Add the following line to your app's AndroidManifest.xml:\n" +
       "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />", e);
+  }
+
+  private static class Configuration {
+    String locationProvider;
+    Boolean skipPermissionRequests;
+
+    private Configuration(String locationProvider, boolean skipPermissionRequests) {
+      this.locationProvider = locationProvider;
+      this.skipPermissionRequests = skipPermissionRequests;
+    }
+
+    protected static Configuration fromReactMap(ReadableMap map) {
+      String locationProvider =
+              map.hasKey("locationProvider") ? map.getString("locationProvider") : "auto";
+      boolean skipPermissionRequests =
+              map.hasKey("skipPermissionRequests") ? map.getBoolean("skipPermissionRequests") : false;
+      return new Configuration(locationProvider, skipPermissionRequests);
+    }
   }
 }
