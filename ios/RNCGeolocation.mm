@@ -387,7 +387,14 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
 {
   // Create event
   CLLocation *location = locations.lastObject;
+
+  BOOL mocked = NO;
+  if (@available(iOS 15.0, *)) {
+    mocked = location.sourceInformation.isSimulatedBySoftware;
+  }
+
   _lastLocationEvent = @{
+                         @"mocked": @(mocked),
                          @"coords": @{
                              @"latitude": @(location.coordinate.latitude),
                              @"longitude": @(location.coordinate.longitude),

@@ -108,6 +108,9 @@ You need to include `NSLocationWhenInUseUsageDescription` and `NSLocationAlwaysA
 
 In order to enable geolocation in the background, you need to include the 'NSLocationAlwaysUsageDescription' key in Info.plist and add location as a background mode in the 'Capabilities' tab in Xcode.
 
+IOS >= 15 Positions will also contain a `mocked` boolean to indicate if position was created from a mock provider / software.
+
+
 ### Android
 
 To request access to location, you need to add the following line to your app's `AndroidManifest.xml`:
