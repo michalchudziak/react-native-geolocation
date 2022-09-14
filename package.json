@@ -48,6 +48,8 @@
     "@babel/core": "^7.12.9",
     "@babel/runtime": "^7.12.5",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@react-navigation/native": "^6.0.11",
+    "@react-navigation/native-stack": "^6.7.0",
     "@semantic-release/git": "^7.0.16",
     "@types/invariant": "^2.2.35",
     "@types/jest": "^26.0.23",
