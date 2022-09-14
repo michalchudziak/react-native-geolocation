@@ -369,7 +369,14 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
 {
   // Create event
   CLLocation *location = locations.lastObject;
+
+  BOOL mocked = NO;
+  if (@available(iOS 15.0, *)) {
+    mocked = location.sourceInformation.isSimulatedBySoftware;
+  }
+
   _lastLocationEvent = @{
+                         @"mocked": @(mocked),
                          @"coords": @{
                              @"latitude": @(location.coordinate.latitude),
                              @"longitude": @(location.coordinate.longitude),
