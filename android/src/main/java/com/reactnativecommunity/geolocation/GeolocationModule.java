@@ -32,6 +32,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
 
   public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
+    mConfiguration = Configuration.getDefault();
     GoogleApiAvailability availability = new GoogleApiAvailability();
     if (availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS) {
       mLocationManager = new PlayServicesLocationManager(reactContext);
@@ -173,6 +174,10 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     private Configuration(String locationProvider, boolean skipPermissionRequests) {
       this.locationProvider = locationProvider;
       this.skipPermissionRequests = skipPermissionRequests;
+    }
+
+    protected static Configuration getDefault() {
+      return new Configuration("auto", false);
     }
 
     protected static Configuration fromReactMap(ReadableMap map) {
