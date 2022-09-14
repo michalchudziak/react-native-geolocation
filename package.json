@@ -1,38 +1,39 @@
 {
   "name": "@react-native-community/geolocation",
-  "version": "2.1.0",
+  "version": "3.0.0-rc.0",
   "description": "React Native Geolocation Module for iOS and Android",
-  "react-native": "js/index.js",
-  "main": "lib/commonjs/index.js",
+  "react-native": "js/index",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/index.d.ts",
+  "source": "js/index",
   "files": [
     "lib/",
     "js/",
-    "typings/",
     "/android",
     "!/android/build",
     "/ios",
     "/*.podspec"
   ],
-  "typings": "typings/index.d.ts",
   "author": "React Native Community",
   "contributors": [
-    "Janic Duplessis <janic@th3rdwave.coffee>",
-    "Michal Chudziak <michal.chudziak@gmail.com>",
-    "Matt Oakes <hello@mattoakes.net>"
+    "Michal Chudziak <michal.chudziak@gmail.com>"
   ],
-  "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
+  "homepage": "https://github.com/michalchudziak/react-native-geolocation#README.md",
   "license": "MIT",
   "scripts": {
     "start": "react-native start",
-    "test": "yarn validate:eslint && yarn validate:flow && yarn test:jest",
-    "validate:eslint": "eslint 'js/**/*.js' 'example/**/*.js'",
-    "validate:flow": "flow check",
+    "test": "yarn validate:eslint && yarn validate:typescript && yarn test:jest",
+    "validate:eslint": "eslint \"**/*.{js,ts,tsx}\"",
+    "validate:typescript": "tsc --noEmit",
     "test:jest": "jest js/",
-    "prepare": "bob build"
+    "prepare": "bob build",
+    "example": "yarn --cwd example",
+    "bootstrap": "yarn example && yarn && yarn example pods"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/react-native-geolocation/react-native-geolocation.git"
+    "url": "https://github.com/michalchudziak/react-native-geolocation.git"
   },
   "keywords": [
     "react-native",
@@ -44,26 +45,31 @@
     "react-native": "*"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/runtime": "^7.5.5",
-    "@react-native-community/bob": "^0.6.1",
-    "@react-native-community/eslint-config": "^0.0.5",
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
     "@semantic-release/git": "^7.0.16",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.0.2",
-    "babel-jest": "^24.9.0",
+    "@types/invariant": "^2.2.35",
+    "@types/jest": "^26.0.23",
+    "@types/react-native": "^0.69.3",
+    "@types/react-test-renderer": "^18.0.0",
+    "babel-jest": "^26.6.3",
     "babel-plugin-module-resolver": "^3.2.0",
-    "eslint": "^5.16.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "3.0.1",
-    "flow-bin": "^0.92.0",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "0.56.0",
-    "prettier": "^1.18.2",
-    "react": "16.8.3",
-    "react-native": "0.59.10",
-    "react-test-renderer": "16.8.3",
-    "semantic-release": "^15.13.21"
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.70.3",
+    "prettier": "^2.6.2",
+    "react": "18.0.0",
+    "react-native": "0.69.3",
+    "react-native-builder-bob": "^0.18.3",
+    "react-test-renderer": "18.0.0",
+    "semantic-release": "^15.13.21",
+    "typescript": "^4.4.4"
+  },
+  "resolutions": {
+    "@types/react": "^17"
   },
   "jest": {
     "preset": "react-native",
@@ -71,18 +77,57 @@
       "<rootDir>/jest.setup.js"
     ]
   },
-  "dependencies": {},
-  "@react-native-community/bob": {
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@react-native-community",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "quoteProps": "consistent",
+          "singleQuote": true,
+          "tabWidth": 2,
+          "trailingComma": "es5",
+          "useTabs": false
+        }
+      ]
+    }
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false
+  },
+  "react-native-builder-bob": {
     "source": "js",
     "output": "lib",
     "targets": [
+      "commonjs",
+      "module",
       [
-        "commonjs",
+        "typescript",
         {
-          "flow": true
+          "project": "tsconfig.build.json"
         }
-      ],
-      "module"
+      ]
+    ]
+  },
+  "codegenConfig": {
+    "libraries": [
+      {
+        "name": "RNCGeolocationSpec",
+        "type": "modules",
+        "jsSrcsDir": "js"
+      }
     ]
   }
 }

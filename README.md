@@ -2,14 +2,26 @@
 
 [![npm](https://img.shields.io/npm/v/@react-native-community/geolocation)](https://www.npmjs.com/package/@react-native-community/geolocation) [![CircleCI Status](https://img.shields.io/circleci/project/github/react-native-community/react-native-geolocation/master.svg)](https://circleci.com/gh/react-native-community/workflows/react-native-geolocation/tree/master) ![Supports Android, iOS and web](https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20web-lightgrey.svg) ![MIT License](https://img.shields.io/npm/l/@react-native-community/geolocation.svg)
 
-The Geolocation API extends the [Geolocation web spec](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation).
+The Geolocation API 📍 module for React Native that extends the [Geolocation web spec](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation). 
 
-Currently, on Android, this uses the [android.location API](https://developer.android.com/reference/android/location/package-summary). This API is not recommended by Google because it is less accurate and slower than the recommended [Google Location Services API](https://developer.android.com/training/location/). This is something that we want to change in the near future https://github.com/react-native-community/react-native-geolocation/issues/6.
+Supports TurboModules ⚡️ and legacy React Native architecture.
 
-In order to use the new [Google Location Services API](https://developer.android.com/training/location/) with React Native, please check out alternative libraries:
+Fully compatible with TypeScript.
 
-- [react-native-geolocation-service](https://github.com/Agontuk/react-native-geolocation-service)
-- [react-native-location](https://github.com/timfpark/react-native-location)
+Uses modern [Play Services Location API](https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderClient.html) and falls back to legacy [Android Location API](https://developer.android.com/reference/android/location/Location) if PlayServices aren't available.
+
+
+## Supported platforms
+
+| Platform  |  Support |
+|---|---|
+| iOS  |  ✅ |
+| Android  |  ✅ |
+| Web  |  ✅ |
+| Windows  |  ❌ |
+| macOS  |  ❌ |
+
+
 
 ## Getting started
 
@@ -18,76 +30,6 @@ In order to use the new [Google Location Services API](https://developer.android
 or
 
 `npm install @react-native-community/geolocation --save`
-
-### Mostly automatic installation (react-native 0.59 and lower)
-
-`react-native link @react-native-community/geolocation`
-
-### Manual installation (react-native 0.59 and lower)
-
-<details>
-<summary>Manually link the library on iOS</summary>
-
-### `Open project.xcodeproj in Xcode`
-
-Drag `RNCGeolocation.xcodeproj` to your project on Xcode (usually under the Libraries group on Xcode):
-
-![xcode-add](https://reactnative.dev/docs/assets/AddToLibraries.png)
-
-### Link `libRNCGeolocation.a` binary with libraries
-
-Click on your main project file (the one that represents the `.xcodeproj`) select `Build Phases` and drag the static library from the `Products` folder inside the Library you are importing to `Link Binary With Libraries` (or use the `+` sign and choose library from the list):
-
-![xcode-link](https://reactnative.dev/docs/assets/AddToBuildPhases.png)
-
-### Using CocoaPods
-
-Update your `Podfile`
-
-```
-pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
-```
-
-</details>
-
-<details>
-<summary>Manually link the library on Android</summary>
-
-#### `android/settings.gradle`
-```groovy
-include ':react-native-community-geolocation'
-project(':react-native-community-geolocation').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/geolocation/android')
-```
-
-#### `android/app/build.gradle`
-```groovy
-dependencies {
-   ...
-   implementation project(':react-native-community-geolocation')
-}
-```
-
-#### `android/app/src/main/.../MainApplication.java`
-On top, where imports are:
-
-```java
-import com.reactnativecommunity.geolocation.GeolocationPackage;
-```
-
-Add the `GeolocationPackage` class to your list of exported packages.
-
-```java
-@Override
-protected List<ReactPackage> getPackages() {
-    return Arrays.asList(
-            new MainReactPackage(),
-            new GeolocationPackage()
-    );
-}
-```
-</details>
-
-Since **react-native 0.60** and higher, [autolinking](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) makes the installation process simpler
 
 ## Configuration and Permissions
 
@@ -117,11 +59,15 @@ To request access to location, you need to add the following line to your app's 
 
 `<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />`
 
+or 
+
+`<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />`
+
 Android API >= 18 Positions will also contain a `mocked` boolean to indicate if position was created from a mock provider.
 
 <p>
   Android API >= 23 Requires an additional step to check for, and request
-  the ACCESS_FINE_LOCATION permission using
+  the ACCESS_FINE_LOCATION or ACCESS_COARSE_LOCATION permissions using
   the <a href="https://reactnative.dev/docs/permissionsandroid.html" target="_blank">PermissionsAndroid API</a>.
   Failure to do so may result in a hard crash.
 </p>
@@ -176,50 +122,87 @@ Check out the [example project](example) for more examples.
 
 #### `setRNConfiguration()`
 
-```javascript
-Geolocation.setRNConfiguration(config);
-```
-
 Sets configuration options that will be used in all location requests.
 
-**Parameters:**
 
-| Name   | Type   | Required | Description |
-| ------ | ------ | -------- | ----------- |
-| config | object | Yes      | See below.  |
+```ts
+Geolocation.setRNConfiguration(
+  config: {
+    skipPermissionRequests: boolean;
+    authorizationLevel?: 'always' | 'whenInUse' | 'auto';
+    locationProvider?: 'playServices' | 'android' | 'auto';
+  }
+) => void
+```
 
 Supported options:
 
-* `skipPermissionRequests` (boolean, iOS-only) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
+* `skipPermissionRequests` (boolean) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
 * `authorizationLevel` (string, iOS-only) - Either `"whenInUse"`, `"always"`, or `"auto"`. Changes whether the user will be asked to give "always" or "when in use" location services permission. Any other value or `auto` will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
+* `locationProvider` (string, Android-only) - Either `"playServices"`, `"android"`, or `"auto"`.  Determines wether to use `Google’s Location Services API` or `Android’s Location API`. The `"auto"` mode defaults to `playServices`, and falls back to Android's Location API if play services aren't available.
 
 ---
 
 #### `requestAuthorization()`
 
-```javascript
-Geolocation.requestAuthorization();
+Request suitable Location permission. 
+
+```ts
+  Geolocation.requestAuthorization(
+    success?: () => void,
+    error?: (
+      error: {
+        code: number;
+        message: string;
+        PERMISSION_DENIED: number;
+        POSITION_UNAVAILABLE: number;
+        TIMEOUT: number;
+      }
+    ) => void
+  )
 ```
 
-Request suitable Location permission based on the key configured on pList. If NSLocationAlwaysUsageDescription is set, it will request Always authorization, although if NSLocationWhenInUseUsageDescription is set, it will request InUse authorization.
+On iOS if NSLocationAlwaysUsageDescription is set, it will request Always authorization, although if NSLocationWhenInUseUsageDescription is set, it will request InUse authorization.
 
 ---
 
 #### `getCurrentPosition()`
 
-```javascript
-Geolocation.getCurrentPosition(geo_success, [geo_error], [geo_options]);
-```
-
 Invokes the success callback once with the latest location info.
 
-**Parameters:**
+```ts
+  Geolocation.getCurrentPosition(
+    success: (
+      position: {
+        coords: {
+          latitude: number;
+          longitude: number;
+          altitude: number | null;
+          accuracy: number;
+          altitudeAccuracy: number | null;
+          heading: number | null;
+          speed: number | null;
+        };
+        timestamp: number;
+      }
+    ) => void,
+    error?: (
+      error: {
+        code: number;
+        message: string;
+        PERMISSION_DENIED: number;
+        POSITION_UNAVAILABLE: number;
+        TIMEOUT: number;
+      }
+    ) => void,
+    options?: {
+        timeout?: number;
+        maximumAge?: number;
+        enableHighAccuracy?: boolean;
+    }
+  )
+```
 
-| Name        | Type     | Required | Description                               |
-| ----------- | -------- | -------- | ----------------------------------------- |
-| geo_success | function | Yes      | Invoked with latest location info.        |
-| geo_error   | function | No       | Invoked whenever an error is encountered. |
-| geo_options | object   | No       | See below.                                |
 
 Supported options:
 
@@ -231,22 +214,49 @@ Supported options:
 
 #### `watchPosition()`
 
-```javascript
-Geolocation.watchPosition(success, [error], [options]);
-```
-
 Invokes the success callback whenever the location changes. Returns a `watchId` (number).
 
-**Parameters:**
-
-| Name    | Type     | Required | Description                               |
-| ------- | -------- | -------- | ----------------------------------------- |
-| success | function | Yes      | Invoked whenever the location changes.    |
-| error   | function | No       | Invoked whenever an error is encountered. |
-| options | object   | No       | See below.                                |
+```ts
+  Geolocation.watchPosition(
+    success: (
+      position: {
+        coords: {
+          latitude: number;
+          longitude: number;
+          altitude: number | null;
+          accuracy: number;
+          altitudeAccuracy: number | null;
+          heading: number | null;
+          speed: number | null;
+        };
+        timestamp: number;
+      }
+    ) => void,
+    error?: (
+      error: {
+        code: number;
+        message: string;
+        PERMISSION_DENIED: number;
+        POSITION_UNAVAILABLE: number;
+        TIMEOUT: number;
+      }
+    ) => void,
+    options?: {
+      interval?: number;
+      fastestInterval?: number;
+      timeout?: number;
+      maximumAge?: number;
+      enableHighAccuracy?: boolean;
+      distanceFilter?: number;
+      useSignificantChanges?: boolean;
+    }
+  ) => number
+```
 
 Supported options:
 
+* `interval` (ms) -- (Android only) The rate in milliseconds at which your app prefers to receive location updates. Note that the location updates may be somewhat faster or slower than this rate to optimize for battery usage, or there may be no updates at all (if the device has no connectivity, for example).
+* `fastestInterval` (ms) -- (Android only) The fastest rate in milliseconds at which your app can handle location updates. Unless your app benefits from receiving updates more quickly than the rate specified in `interval`, you don't need to set it.
 * `timeout` (ms) - Is a positive value representing the maximum length of time (in milliseconds) the device is allowed to take in order to return a position. Defaults to INFINITY.
 * `maximumAge` (ms) - Is a positive value indicating the maximum age in milliseconds of a possible cached position that is acceptable to return. If set to 0, it means that the device cannot use a cached position and must attempt to retrieve the real current position. If set to Infinity the device will always return a cached position regardless of its age. Defaults to INFINITY.
 * `enableHighAccuracy` (bool) - Is a boolean representing if to use GPS or not. If set to true, a GPS position will be requested. If set to false, a WIFI location will be requested.
@@ -257,27 +267,19 @@ Supported options:
 
 #### `clearWatch()`
 
-```javascript
-Geolocation.clearWatch(watchID);
+Clears watch observer by id returned by `watchPosition()`
+
+```ts
+Geolocation.clearWatch(watchID: number);
 ```
 
-**Parameters:**
+## Maintainers
 
-| Name    | Type   | Required | Description                          |
-| ------- | ------ | -------- | ------------------------------------ |
-| watchID | number | Yes      | Id as returned by `watchPosition()`. |
+This module is developed and maintained by [michalchudziak](https://github.com/michalchudziak).
 
----
+I owe a lot to the fantastic React & React Native community, and I contribute back with my free time 👨🏼‍💼💻 so if you like the project, please star it ⭐️!
 
-#### `stopObserving()`
-
-```javascript
-Geolocation.stopObserving();
-```
-
-Stops observing for device location changes. In addition, it removes all listeners previously registered.
-
-Notice that this method has only effect if the `Geolocation.watchPosition(successCallback, errorCallback)` method was previously invoked.
+If you need any help with this module, or anything else, feel free to reach out to me! I provide boutique consultancy services for React & React Native. Just visit my [website](https://michalchudziak.dev), or send me an email at [hello@michalchudziak.dev](mailto:hello@michalchudziak.dev) 🙏🏻
 
 ## Contributors
 
