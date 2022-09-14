@@ -1,6 +1,6 @@
 # `@react-native-community/geolocation`
 
-[![npm](https://img.shields.io/npm/v/@react-native-community/geolocation)](https://www.npmjs.com/package/@react-native-community/geolocation) [![CircleCI Status](https://img.shields.io/circleci/project/github/react-native-community/react-native-geolocation/master.svg)](https://circleci.com/gh/react-native-community/workflows/react-native-geolocation/tree/master) ![Supports Android, iOS and web](https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20web-lightgrey.svg) ![MIT License](https://img.shields.io/npm/l/@react-native-community/geolocation.svg)
+[![npm](https://img.shields.io/npm/v/@react-native-community/geolocation)](https://www.npmjs.com/package/@react-native-community/geolocation) ![Supports Android, iOS and web](https://img.shields.io/badge/platforms-android%20%7C%20ios%20%7C%20web-lightgrey.svg) ![MIT License](https://img.shields.io/npm/l/@react-native-community/geolocation.svg)
 
 The Geolocation API 📍 module for React Native that extends the [Geolocation web spec](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation). 
 
