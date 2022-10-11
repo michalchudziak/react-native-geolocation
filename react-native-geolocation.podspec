@@ -18,6 +18,7 @@ Pod::Spec.new do |s|
   s.source_files  = "ios/**/*.{h,m,mm}"
 
   s.dependency 'React-Core'
+  s.frameworks = 'CoreLocation'
 
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
     s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
