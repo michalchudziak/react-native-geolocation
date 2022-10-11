@@ -845,7 +845,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 53bd208e5c27939c6e6365528393445a596a9a2b
   React-jsinspector: 26c42646ab0bb69e29e837e23754fe7121eeaf94
   React-logger: 1bfd109a0ffa4c0989bbfac0c2d8c4abe4637faa
-  react-native-geolocation: 8f885d2f684fc34ba794e049393e86abd170119d
+  react-native-geolocation: a58ed89465cd3876d47aa76eb4a4b7d5b8b86524
   react-native-safe-area-context: 2f75b317784a1a8e224562941e50ecbc932d2097
   React-perflogger: 6009895616a455781293950bbd63d53cfc7ffbc5
   React-RCTActionSheet: 5e90aa5712af18bfc86c2c6d97d4dbe0e5451c1d
@@ -864,6 +864,6 @@ SPEC CHECKSUMS:
   RNScreens: e2cd04caa74748a6e42609a7b84f76c71d70a6ee
   Yoga: 043f8eb97345d0171f27fead4d1849cacf0472a5
 
-PODFILE CHECKSUM: e4a78b765b8b00ec2c0a542d3b9af6a4a94e10f8
+PODFILE CHECKSUM: fd0a9b0c025fdffd0d1760eb77f3cbf23faf9222
 
 COCOAPODS: 1.11.3

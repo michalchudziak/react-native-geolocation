@@ -50,5 +50,15 @@ public class RNCGeolocationModule extends ReactContextBaseJavaModule {
     public void stopObserving() {
       mImpl.stopObserving();
     }
+
+    @ReactMethod
+    public void addListener(String eventName) {
+        // Keep: Required for RN RCTEventEmitter class (iOS).
+    }
+
+    @ReactMethod
+    public void removeListeners(double count) {
+        // Keep: Required for RN RCTEventEmitter class (iOS).
+    }
   }
   
