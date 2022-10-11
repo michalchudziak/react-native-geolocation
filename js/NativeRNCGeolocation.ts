@@ -54,6 +54,10 @@ export interface Spec extends TurboModule {
   ): void;
   startObserving(options: GeolocationOptions): void;
   stopObserving(): void;
+
+  // RCTEventEmitter
+  addListener: (eventName: string) => void;
+  removeListeners: (count: number) => void;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('RNCGeolocation');

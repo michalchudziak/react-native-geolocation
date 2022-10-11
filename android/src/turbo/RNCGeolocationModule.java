@@ -51,5 +51,15 @@ public class RNCGeolocationModule extends NativeRNCGeolocationSpec {
     public void stopObserving() {
       mImpl.stopObserving();
     }
+
+    @Override
+    public void addListener(String eventName) {
+        // Keep: Required for RN RCTEventEmitter class (iOS).
+    }
+
+    @Override
+    public void removeListeners(double count) {
+        // Keep: Required for RN RCTEventEmitter class (iOS).
+    }
   }
   
