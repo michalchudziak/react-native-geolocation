@@ -44,13 +44,13 @@ let updatesEnabled = false;
  */
 export function setRNConfiguration(config: GeolocationConfiguration) {
   RNCGeolocation.setConfiguration({
-    ...config,
+    skipPermissionRequests: config.skipPermissionRequests,
     authorizationLevel:
-      config?.authorizationLevel === 'auto'
+      config.authorizationLevel === 'auto'
         ? undefined
         : config.authorizationLevel,
     locationProvider:
-      config?.locationProvider === 'auto' ? undefined : config.locationProvider,
+      config.locationProvider === 'auto' ? undefined : config.locationProvider,
   });
 }
 

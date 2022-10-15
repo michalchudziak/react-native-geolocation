@@ -100,7 +100,23 @@ navigator.geolocation = require('@react-native-community/geolocation');
 ```javascript
 import Geolocation from '@react-native-community/geolocation';
 
-Geolocation.getCurrentPosition(info => console.log(info));
+function() Example() {
+  useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests: false,
+      authorizationLevel: 'whenInUse',
+      locationProvider: 'auto',
+    });
+
+    Geolocation.getCurrentPosition(
+      pos => console.debug('Geolocation.getCurrentPosition Result', JSON.stringify(pos)),
+      error => console.error('Geolocation.getCurrentPosition Error', JSON.stringify(error)),
+      {enableHighAccuracy: true},
+    );
+  };
+
+  // ...
+}
 ```
 
 Check out the [example project](example) for more examples.
@@ -128,7 +144,7 @@ Sets configuration options that will be used in all location requests.
 ```ts
 Geolocation.setRNConfiguration(
   config: {
-    skipPermissionRequests: boolean;
+    skipPermissionRequests?: boolean;
     authorizationLevel?: 'always' | 'whenInUse' | 'auto';
     locationProvider?: 'playServices' | 'android' | 'auto';
   }

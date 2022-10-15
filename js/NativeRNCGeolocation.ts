@@ -2,7 +2,7 @@ import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
 
 export type GeolocationConfiguration = {
-  skipPermissionRequests: boolean;
+  skipPermissionRequests?: boolean;
   authorizationLevel?: 'always' | 'whenInUse' | 'auto';
   locationProvider?: 'playServices' | 'android' | 'auto';
 };
@@ -40,8 +40,9 @@ export type GeolocationError = {
 
 export interface Spec extends TurboModule {
   setConfiguration(config: {
-    skipPermissionRequests: boolean;
+    skipPermissionRequests?: boolean;
     authorizationLevel?: string;
+    locationProvider?: string;
   }): void;
   requestAuthorization(
     success: () => void,
