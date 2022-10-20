@@ -23,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GeolocationModule extends ReactContextBaseJavaModule {
 
@@ -49,13 +50,13 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
 
   public void setConfiguration(ReadableMap config) {
     mConfiguration = Configuration.fromReactMap(config);
-    onConfigutationChange(mConfiguration);
+    onConfigurationChange(mConfiguration);
   }
 
-  private void onConfigutationChange(Configuration config) {
-    if (config.locationProvider == "android" && mLocationManager instanceof PlayServicesLocationManager) {
+  private void onConfigurationChange(Configuration config) {
+    if (Objects.equals(config.locationProvider, "android") && mLocationManager instanceof PlayServicesLocationManager) {
       mLocationManager = new AndroidLocationManager(mLocationManager.mReactContext);
-    } else if (config.locationProvider == "playServices" && mLocationManager instanceof AndroidLocationManager) {
+    } else if (Objects.equals(config.locationProvider, "playServices") && mLocationManager instanceof AndroidLocationManager) {
       mLocationManager = new PlayServicesLocationManager(mLocationManager.mReactContext);
     }
   }
@@ -68,7 +69,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       final PermissionsModule perms = getReactApplicationContext().getNativeModule(PermissionsModule.class);
       ArrayList<String> permissions = new ArrayList<>();
       permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-      permissions.add( Manifest.permission.ACCESS_FINE_LOCATION);
+      permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
       ReadableArray permissionsArray = JavaOnlyArray.from(permissions);
 
       final Callback onPermissionGranted = args -> {
@@ -94,7 +95,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
         }
       };
 
-      perms.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, new PromiseImpl(onPermissionChecked, onPermissionCheckFailed));
+      perms.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, new PromiseImpl(onPermissionChecked, args -> perms.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, new PromiseImpl(onPermissionChecked, onPermissionCheckFailed))));
       return;
     }
 

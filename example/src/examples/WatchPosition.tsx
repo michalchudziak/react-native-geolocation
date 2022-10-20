@@ -37,7 +37,7 @@ export default function WatchPositionExample() {
   const [position, setPosition] = useState<string | null>(null);
   const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
   useEffect(() => {
-    watchPosition();
+    // watchPosition();
 
     return () => {
       clearWatch();
