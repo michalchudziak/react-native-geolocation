@@ -44,8 +44,9 @@ export default function SetConfigurationExample() {
     Geolocation.setRNConfiguration({
       skipPermissionRequests,
       authorizationLevel,
+      locationProvider,
     });
-  }, [skipPermissionRequests, authorizationLevel]);
+  }, [skipPermissionRequests, authorizationLevel, locationProvider]);
 
   return (
     <View>
