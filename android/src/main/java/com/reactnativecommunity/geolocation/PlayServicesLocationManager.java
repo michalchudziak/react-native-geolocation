@@ -48,14 +48,8 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         try {
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(mReactContext.getCurrentActivity(), location -> {
-                        if (location != null) {
-                            if ((SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
-                                success.invoke(locationToMap(location));
-                            } else  {
-                                error.invoke(PositionError.buildError(
-                                        PositionError.POSITION_UNAVAILABLE, "Last found location is older than maximumAge (FusedLocationProvider/lastLocation).")
-                                );
-                            }
+                        if (location != null && (SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
+                            success.invoke(locationToMap(location));
                         } else {
                             mSingleLocationCallback = new LocationCallback() {
                                 @Override
@@ -67,11 +61,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
 
                                     AndroidLocationManager.LocationOptions locationOptions = AndroidLocationManager.LocationOptions.fromReactMap(options);
                                     Location location = locationResult.getLastLocation();
-                                    if ((SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
-                                        success.invoke(locationToMap(location));
-                                    } else  {
-                                        emitError(PositionError.POSITION_UNAVAILABLE, "Last found location is older than maximumAge (FusedLocationProvider/lastLocation).");
-                                    }
+                                    success.invoke(locationToMap(location));
 
                                     mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
                                     mSingleLocationCallback = null;
@@ -102,14 +92,8 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                     return;
                 }
 
-                AndroidLocationManager.LocationOptions locationOptions = AndroidLocationManager.LocationOptions.fromReactMap(options);
-                Location location = locationResult.getLastLocation();
-                if ((SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
-                    mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                             .emit("geolocationDidChange", locationToMap(locationResult.getLastLocation()));
-                } else  {
-                    emitError(PositionError.POSITION_UNAVAILABLE, "Last found location is older than maximumAge (FusedLocationProvider/observer).");
-                }
             }
 
             @Override
