@@ -34,13 +34,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
     mConfiguration = Configuration.getDefault();
-    GoogleApiAvailability availability = new GoogleApiAvailability();
-    if (availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS) {
-      mLocationManager = new PlayServicesLocationManager(reactContext);
-    } else {
-      mLocationManager = new AndroidLocationManager(reactContext);
-    }
-
+    mLocationManager = new AndroidLocationManager(reactContext);
   }
 
   @Override
@@ -54,10 +48,14 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   }
 
   private void onConfigurationChange(Configuration config) {
+    ReactApplicationContext reactContext = mLocationManager.mReactContext;
     if (Objects.equals(config.locationProvider, "android") && mLocationManager instanceof PlayServicesLocationManager) {
-      mLocationManager = new AndroidLocationManager(mLocationManager.mReactContext);
+      mLocationManager = new AndroidLocationManager(reactContext);
     } else if (Objects.equals(config.locationProvider, "playServices") && mLocationManager instanceof AndroidLocationManager) {
-      mLocationManager = new PlayServicesLocationManager(mLocationManager.mReactContext);
+      GoogleApiAvailability availability = new GoogleApiAvailability();
+      if (availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS) {
+        mLocationManager = new PlayServicesLocationManager(reactContext);
+      }
     }
   }
 
