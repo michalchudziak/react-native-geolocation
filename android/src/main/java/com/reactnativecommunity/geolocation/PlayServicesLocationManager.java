@@ -48,14 +48,8 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         try {
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(mReactContext.getCurrentActivity(), location -> {
-                        if (location != null) {
-                            if ((SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
-                                success.invoke(locationToMap(location));
-                            } else  {
-                                error.invoke(PositionError.buildError(
-                                        PositionError.POSITION_UNAVAILABLE, "Last found location is older than maximumAge (FusedLocationProvider/lastLocation).")
-                                );
-                            }
+                        if (location != null && (SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
+                            success.invoke(locationToMap(location));
                         } else {
                             mSingleLocationCallback = new LocationCallback() {
                                 @Override
@@ -69,7 +63,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                                     Location location = locationResult.getLastLocation();
                                     if ((SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
                                         success.invoke(locationToMap(location));
-                                    } else  {
+                                    } else {
                                         emitError(PositionError.POSITION_UNAVAILABLE, "Last found location is older than maximumAge (FusedLocationProvider/lastLocation).");
                                     }
 
@@ -107,7 +101,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                 if ((SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
                     mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                             .emit("geolocationDidChange", locationToMap(locationResult.getLastLocation()));
-                } else  {
+                } else {
                     emitError(PositionError.POSITION_UNAVAILABLE, "Last found location is older than maximumAge (FusedLocationProvider/observer).");
                 }
             }
