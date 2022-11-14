@@ -8,7 +8,7 @@ Supports TurboModules ⚡️ and legacy React Native architecture.
 
 Fully compatible with TypeScript.
 
-Uses modern [Play Services Location API](https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderClient.html) and falls back to legacy [Android Location API](https://developer.android.com/reference/android/location/Location) if PlayServices aren't available.
+Supports modern [Play Services Location API](https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderClient.html).
 
 
 ## Supported platforms
@@ -139,7 +139,7 @@ Supported options:
 
 * `skipPermissionRequests` (boolean) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
 * `authorizationLevel` (string, iOS-only) - Either `"whenInUse"`, `"always"`, or `"auto"`. Changes whether the user will be asked to give "always" or "when in use" location services permission. Any other value or `auto` will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
-* `locationProvider` (string, Android-only) - Either `"playServices"`, `"android"`, or `"auto"`.  Determines wether to use `Google’s Location Services API` or `Android’s Location API`. The `"auto"` mode defaults to `playServices`, and falls back to Android's Location API if play services aren't available.
+* `locationProvider` (string, Android-only) - Either `"playServices"`, `"android"`, or `"auto"`.  Determines wether to use `Google’s Location Services API` or `Android’s Location API`. The `"auto"` mode defaults to `android`, and falls back to Android's Location API if play services aren't available.
 
 ---
 
