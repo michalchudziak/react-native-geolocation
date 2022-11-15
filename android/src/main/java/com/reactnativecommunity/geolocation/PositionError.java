@@ -32,6 +32,12 @@ public class PositionError {
    */
   public static int TIMEOUT = 3;
 
+  /**
+   * Getting the current Activity returned null, but the logic requires a non-null Activity.
+   * This error can then be returned to inform the user of some underlying Android error.
+   */
+  public static int ACTIVITY_NULL = 4;
+
   public static WritableMap buildError(int code, String message) {
     WritableMap error = Arguments.createMap();
     error.putInt("code", code);
@@ -46,6 +52,7 @@ public class PositionError {
     error.putInt("PERMISSION_DENIED", PERMISSION_DENIED);
     error.putInt("POSITION_UNAVAILABLE", POSITION_UNAVAILABLE);
     error.putInt("TIMEOUT", TIMEOUT);
+    error.putInt("ACTIVITY_NULL", ACTIVITY_NULL);
     return error;
   }
 }
