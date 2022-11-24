@@ -1,6 +1,7 @@
 package com.reactnativecommunity.geolocation;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.location.Location;
 import android.os.Build;
 import android.os.Looper;
@@ -45,9 +46,16 @@ public class PlayServicesLocationManager extends BaseLocationManager {
     public void getCurrentLocationData(ReadableMap options, Callback success, Callback error) {
         AndroidLocationManager.LocationOptions locationOptions = AndroidLocationManager.LocationOptions.fromReactMap(options);
 
+        Activity currentActivity = mReactContext.getCurrentActivity();
+
+        if (currentActivity == null) {
+            error.invoke(PositionError.buildError(PositionError.ACTIVITY_NULL, "mReactContext.getCurrentActivity() returned null but should be non-null in getCurrentLocationData"));
+            return;
+        }
+
         try {
             mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(mReactContext.getCurrentActivity(), location -> {
+                    .addOnSuccessListener(currentActivity, location -> {
                         if (location != null && (SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
                             success.invoke(locationToMap(location));
                         } else {
