@@ -1,5 +1,6 @@
 package com.reactnativecommunity.geolocation;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -132,7 +133,8 @@ public class AndroidLocationManager extends BaseLocationManager {
         }
         // If it's an enabled provider, but we don't have permissions, ignore it
         int finePermission = ContextCompat.checkSelfPermission(mReactContext, android.Manifest.permission.ACCESS_FINE_LOCATION);
-        if (provider.equals(LocationManager.GPS_PROVIDER) && finePermission != PackageManager.PERMISSION_GRANTED) {
+        int coarsePermission = ContextCompat.checkSelfPermission(mReactContext, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (provider.equals(LocationManager.GPS_PROVIDER) && (finePermission != PackageManager.PERMISSION_GRANTED && coarsePermission != PackageManager.PERMISSION_GRANTED)) {
             return null;
         }
         return provider;
