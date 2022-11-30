@@ -49,8 +49,10 @@ public abstract class BaseLocationManager {
     }
 
     protected static void putIntoMap(WritableMap map, String key, Object value) {
-        if (value instanceof Integer || value instanceof Long) {
+        if (value instanceof Integer) {
             map.putInt(key, (Integer) value);
+        } else if (value instanceof Long) {
+            map.putInt(key, ((Long) value).intValue());
         } else if (value instanceof Float) {
             map.putDouble(key, (Float) value);
         } else if (value instanceof Double) {
