@@ -109,7 +109,7 @@ public abstract class BaseLocationManager {
             int fastestInterval =
                     map.hasKey("fastestInterval") ? map.getInt("fastestInterval") : -1;
             long timeout =
-                    map.hasKey("timeout") ? (long) map.getDouble("timeout") : Long.MAX_VALUE;
+                    map.hasKey("timeout") ? (long) map.getDouble("timeout") : 1000 * 60 * 10;
             double maximumAge =
                     map.hasKey("maximumAge") ? map.getDouble("maximumAge") : Double.POSITIVE_INFINITY;
             boolean highAccuracy =
