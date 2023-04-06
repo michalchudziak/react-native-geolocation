@@ -128,7 +128,9 @@ public class PlayServicesLocationManager extends BaseLocationManager {
             locationRequest.setFastestInterval(locationOptions.fastestInterval);
         }
         locationRequest.setExpirationDuration((long) locationOptions.maximumAge);
-        locationRequest.setSmallestDisplacement(locationOptions.distanceFilter);
+        if (locationOptions.distanceFilter >= 0) {
+            locationRequest.setSmallestDisplacement(locationOptions.distanceFilter);
+        }
         locationRequest.setPriority(
                 locationOptions.highAccuracy ? LocationRequest.PRIORITY_HIGH_ACCURACY : LocationRequest.PRIORITY_LOW_POWER
         );
