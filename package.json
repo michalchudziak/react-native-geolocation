@@ -1,6 +1,6 @@
 {
   "name": "@react-native-community/geolocation",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "React Native Geolocation Module for iOS and Android",
   "react-native": "js/index",
   "main": "lib/commonjs/index",
