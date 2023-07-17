@@ -72,7 +72,9 @@ Android API >= 18 Positions will also contain a `mocked` boolean to indicate if 
   Failure to do so may result in a hard crash.
 </p>
 
-#### For React Native < 0.65 on Android we need to link manually, follow the steps bellow: 
+<details>
+  <summary><b>For React Native < 0.65 on Android we need to link manually</b></summary>
+
 
 - android/settings.gradle
 ```
@@ -102,6 +104,7 @@ protected List<ReactPackage> getPackages() {
       return packages;
 }
 ```
+</details>
 
 ## Migrating from the core `react-native` module
 This module was created when the Geolocation was split out from the core of React Native. As a browser polyfill, this API was available through the `navigator.geolocation` global - you didn't need to import it. To migrate to this module you need to follow the installation instructions above and change following code:
