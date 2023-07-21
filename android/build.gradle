@@ -133,7 +133,7 @@ repositories {
 dependencies {
   //noinspection GradleDynamicVersion
   implementation 'com.facebook.react:react-native:+'
-  implementation 'com.google.android.gms:play-services-location:20.0.0'
+  implementation 'com.google.android.gms:play-services-location:21.0.1'
 }
 
 if (isNewArchitectureEnabled()) {
