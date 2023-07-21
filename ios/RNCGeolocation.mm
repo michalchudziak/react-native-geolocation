@@ -174,6 +174,8 @@ RCT_EXPORT_MODULE()
 {
   if (!_locationConfiguration.skipPermissionRequests) {
     [self requestAuthorization:nil error:nil];
+  } else {
+    [self enableBackgroundLocationUpdates];
   }
 
   if (!_locationManager) {
@@ -271,18 +273,23 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
   // Request location access permission
   if (wantsAlways) {
     [_locationManager requestAlwaysAuthorization];
-
-    // On iOS 9+ we also need to enable background updates
-    NSArray *backgroundModes  = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
-    if (backgroundModes && [backgroundModes containsObject:@"location"]) {
-      if ([_locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
-        [_locationManager setAllowsBackgroundLocationUpdates:YES];
-      }
-    }
+    [self enableBackgroundLocationUpdates];
   } else if (wantsWhenInUse) {
     [_locationManager requestWhenInUseAuthorization];
   }
 }
+
+- (void)enableBackgroundLocationUpdates
+{
+  // iOS 9+ requires explicitly enabling background updates
+  NSArray *backgroundModes  = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
+  if (backgroundModes && [backgroundModes containsObject:@"location"]) {
+    if ([_locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
+      [_locationManager setAllowsBackgroundLocationUpdates:YES];
+    }
+  }
+}
+
 
 RCT_REMAP_METHOD(startObserving, startObserving:(RNCGeolocationOptions)options)
 {
