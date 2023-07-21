@@ -72,6 +72,9 @@ Android API >= 18 Positions will also contain a `mocked` boolean to indicate if 
   Failure to do so may result in a hard crash.
 </p>
 
+**Android 10 and above( API >= 29):**
+In order to enable geolocation in the background, you need to add `<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />` and also check & request permission using <a href="https://reactnative.dev/docs/permissionsandroid.html" target="_blank">PermissionsAndroid API</a>.
+
 ## Migrating from the core `react-native` module
 This module was created when the Geolocation was split out from the core of React Native. As a browser polyfill, this API was available through the `navigator.geolocation` global - you didn't need to import it. To migrate to this module you need to follow the installation instructions above and change following code:
 
