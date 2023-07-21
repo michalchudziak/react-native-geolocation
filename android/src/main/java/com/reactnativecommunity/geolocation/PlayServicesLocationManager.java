@@ -71,7 +71,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                                     Location location = locationResult.getLastLocation();
                                     success.invoke(locationToMap(location));
 
-                                    mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
+                                    mFusedLocationClient.removeLocationUpdates(this);
                                     mSingleLocationCallback = null;
                                 }
 
