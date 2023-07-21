@@ -49,8 +49,37 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         Activity currentActivity = mReactContext.getCurrentActivity();
 
         if (currentActivity == null) {
-            error.invoke(PositionError.buildError(PositionError.ACTIVITY_NULL, "mReactContext.getCurrentActivity() returned null but should be non-null in getCurrentLocationData"));
-            return;
+            // error.invoke(PositionError.buildError(PositionError.ACTIVITY_NULL, "mReactContext.getCurrentActivity() returned null but should be non-null in getCurrentLocationData"));
+
+
+
+			mSingleLocationCallback = new LocationCallback() {
+				@Override
+				public void onLocationResult(LocationResult locationResult) {
+					if (locationResult == null) {
+						error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "No location provided (FusedLocationProvider/lastLocation)."));
+						return;
+					}
+
+					AndroidLocationManager.LocationOptions locationOptions = AndroidLocationManager.LocationOptions.fromReactMap(options);
+					Location location = locationResult.getLastLocation();
+					success.invoke(locationToMap(location));
+
+					mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
+					mSingleLocationCallback = null;
+				}
+
+				@Override
+				public void onLocationAvailability(LocationAvailability locationAvailability) {
+					if (!locationAvailability.isLocationAvailable()) {
+						error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/lastLocation)."));
+					}
+				}
+			};
+			checkLocationSettings(options, mSingleLocationCallback);
+
+
+			return;
         }
 
         try {
