@@ -72,6 +72,40 @@ Android API >= 18 Positions will also contain a `mocked` boolean to indicate if 
   Failure to do so may result in a hard crash.
 </p>
 
+<details>
+  <summary><b>For React Native < 0.65 on Android we need to link manually</b></summary>
+
+
+- android/settings.gradle
+```
+include ':react-native-community-geolocation'
+project(':react-native-community-geolocation').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/geolocation/android')
+```
+- android/app/build.gradle
+```
+dependencies {
+   ...
+   implementation project(':react-native-community-geolocation')
+}
+```
+- android/app/src/main/.../MainApplication.java
+  On imports section:
+```java
+import com.reactnativecommunity.geolocation.GeolocationPackage;
+```
+  In the class at `getPackages` method: 
+```java
+@Override
+protected List<ReactPackage> getPackages() {
+      @SuppressWarnings("UnnecessaryLocalVariable")
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      // Packages that cannot be autolinked yet can be added manually here, for example:
+      packages.add(new GeolocationPackage()); // <== add this line
+      return packages;
+}
+```
+</details>
+
 ## Migrating from the core `react-native` module
 This module was created when the Geolocation was split out from the core of React Native. As a browser polyfill, this API was available through the `navigator.geolocation` global - you didn't need to import it. To migrate to this module you need to follow the installation instructions above and change following code:
 
