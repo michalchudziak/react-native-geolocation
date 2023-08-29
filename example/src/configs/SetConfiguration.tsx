@@ -40,6 +40,9 @@ export default function SetConfigurationExample() {
   const [locationProvider, setLocationProvider] = useState<
     'playServices' | 'android' | 'auto'
   >('auto');
+  const [enableBackgroundLocationUpdates, setEnableBackgroundLocationUpdates] =
+    useState(false);
+
   useEffect(() => {
     Geolocation.setRNConfiguration({
       skipPermissionRequests,
@@ -60,34 +63,47 @@ export default function SetConfigurationExample() {
         />
       </View>
       {Platform.OS === 'ios' && (
-        <View style={styles.row}>
-          <Text>authorizationLevel</Text>
-          <View style={styles.segmentControlContainer}>
-            {authorizationLevelOptions.map((item, index) => (
-              <TouchableOpacity
-                key={`segmented-control-${index}`}
-                onPress={() =>
-                  setAuthorizationLevel(authorizationLevelOptions[index])
-                }
-                style={[
-                  styles.segmentedControlButton,
-                  authorizationLevelOptions.indexOf(authorizationLevel) ===
-                    index && styles.segmentedControlButtonActive,
-                ]}
-              >
-                <Text
+        <>
+          <View style={styles.row}>
+            <Text>authorizationLevel</Text>
+            <View style={styles.segmentControlContainer}>
+              {authorizationLevelOptions.map((item, index) => (
+                <TouchableOpacity
+                  key={`segmented-control-${index}`}
+                  onPress={() =>
+                    setAuthorizationLevel(authorizationLevelOptions[index])
+                  }
                   style={[
-                    styles.segmentControlText,
+                    styles.segmentedControlButton,
                     authorizationLevelOptions.indexOf(authorizationLevel) ===
-                      index && styles.segmentControlTextActive,
+                      index && styles.segmentedControlButtonActive,
                   ]}
                 >
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      styles.segmentControlText,
+                      authorizationLevelOptions.indexOf(authorizationLevel) ===
+                        index && styles.segmentControlTextActive,
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-        </View>
+          <View style={styles.row}>
+            <Text>enableBackgroundLocationUpdates</Text>
+            <Switch
+              onValueChange={() =>
+                setEnableBackgroundLocationUpdates(
+                  !enableBackgroundLocationUpdates
+                )
+              }
+              value={enableBackgroundLocationUpdates}
+            />
+          </View>
+        </>
       )}
       {Platform.OS === 'android' && (
         <View style={styles.row}>
