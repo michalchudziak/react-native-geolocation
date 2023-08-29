@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, RNCGeolocationAuthorizationLevel) {
 typedef struct {
   BOOL skipPermissionRequests;
   RNCGeolocationAuthorizationLevel authorizationLevel;
+  BOOL enableBackgroundLocationUpdates;
 } RNCGeolocationConfiguration;
 
 typedef struct {
@@ -174,7 +175,7 @@ RCT_EXPORT_MODULE()
 {
   if (!_locationConfiguration.skipPermissionRequests) {
     [self requestAuthorization:nil error:nil];
-  } else {
+  } else if (_locationConfiguration.enableBackgroundLocationUpdates) {
     [self enableBackgroundLocationUpdates];
   }
 

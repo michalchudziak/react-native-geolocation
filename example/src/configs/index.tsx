@@ -1,6 +1,7 @@
 import React from 'react';
 import RequestAuthorization from './RequestAuthorization';
 import SetConfiguration from './SetConfiguration';
+import BackgroundLocationUpdates from './BackgroundLocationUpdates';
 
 const configs = [
   {
@@ -18,6 +19,14 @@ const configs = [
     description: 'Request authorization for location services',
     render() {
       return <RequestAuthorization />;
+    },
+  },
+  {
+    id: 'backgroundLocationUpdates',
+    title: 'getCurrentLoaction() in background',
+    description: 'Test background location updates',
+    render() {
+      return <BackgroundLocationUpdates />;
     },
   },
 ];

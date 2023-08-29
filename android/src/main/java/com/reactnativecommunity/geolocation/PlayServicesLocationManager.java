@@ -49,36 +49,8 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         Activity currentActivity = mReactContext.getCurrentActivity();
 
         if (currentActivity == null) {
-            // error.invoke(PositionError.buildError(PositionError.ACTIVITY_NULL, "mReactContext.getCurrentActivity() returned null but should be non-null in getCurrentLocationData"));
-
-
-
-			mSingleLocationCallback = new LocationCallback() {
-				@Override
-				public void onLocationResult(LocationResult locationResult) {
-					if (locationResult == null) {
-						error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "No location provided (FusedLocationProvider/lastLocation)."));
-						return;
-					}
-
-					AndroidLocationManager.LocationOptions locationOptions = AndroidLocationManager.LocationOptions.fromReactMap(options);
-					Location location = locationResult.getLastLocation();
-					success.invoke(locationToMap(location));
-
-					mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
-					mSingleLocationCallback = null;
-				}
-
-				@Override
-				public void onLocationAvailability(LocationAvailability locationAvailability) {
-					if (!locationAvailability.isLocationAvailable()) {
-						error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/lastLocation)."));
-					}
-				}
-			};
-			checkLocationSettings(options, mSingleLocationCallback);
-
-
+            mSingleLocationCallback = createSingleLocationCallback(success, error);
+            checkLocationSettings(options, mSingleLocationCallback);
 			return;
         }
 
@@ -88,29 +60,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                         if (location != null && (SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
                             success.invoke(locationToMap(location));
                         } else {
-                            mSingleLocationCallback = new LocationCallback() {
-                                @Override
-                                public void onLocationResult(LocationResult locationResult) {
-                                    if (locationResult == null) {
-                                        emitError(PositionError.POSITION_UNAVAILABLE, "No location provided (FusedLocationProvider/lastLocation).");
-                                        return;
-                                    }
-
-                                    AndroidLocationManager.LocationOptions locationOptions = AndroidLocationManager.LocationOptions.fromReactMap(options);
-                                    Location location = locationResult.getLastLocation();
-                                    success.invoke(locationToMap(location));
-
-                                    mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
-                                    mSingleLocationCallback = null;
-                                }
-
-                                @Override
-                                public void onLocationAvailability(LocationAvailability locationAvailability) {
-                                    if (!locationAvailability.isLocationAvailable()) {
-                                        emitError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/lastLocation).");
-                                    }
-                                }
-                            };
+                            mSingleLocationCallback = createSingleLocationCallback(success, error);
                             checkLocationSettings(options, mSingleLocationCallback);
                         }
                     });
@@ -179,5 +129,30 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         } catch (SecurityException e) {
             throw e;
         }
+    }
+
+    private LocationCallback createSingleLocationCallback(Callback success, Callback error){
+        return new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "No location provided (FusedLocationProvider/lastLocation)."));
+                    return;
+                }
+
+                Location location = locationResult.getLastLocation();
+                success.invoke(locationToMap(location));
+
+                mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
+                mSingleLocationCallback = null;
+            }
+
+            @Override
+            public void onLocationAvailability(LocationAvailability locationAvailability) {
+                if (!locationAvailability.isLocationAvailable()) {
+                    error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/lastLocation)."));
+                }
+            }
+        };
     }
 }

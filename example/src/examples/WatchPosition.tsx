@@ -18,6 +18,7 @@ export default function WatchPositionExample() {
     try {
       const watchID = Geolocation.watchPosition(
         (position) => {
+          console.log('watchPosition', JSON.stringify(position));
           setPosition(JSON.stringify(position));
         },
         (error) => Alert.alert('WatchPosition Error', JSON.stringify(error))

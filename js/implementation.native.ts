@@ -45,6 +45,8 @@ let updatesEnabled = false;
 export function setRNConfiguration(config: GeolocationConfiguration) {
   RNCGeolocation.setConfiguration({
     ...config,
+    enableBackgroundLocationUpdates:
+      config?.enableBackgroundLocationUpdates ?? true,
     authorizationLevel:
       config?.authorizationLevel === 'auto'
         ? undefined
