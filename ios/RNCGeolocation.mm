@@ -76,7 +76,7 @@ RCT_ENUM_CONVERTER(RNCGeolocationAuthorizationLevel, (@{
 
   return (RNCGeolocationOptions){
     .timeout = [RCTConvert NSTimeInterval:options[@"timeout"]] ?: 1000 * 60 * 10,
-    .maximumAge = [RCTConvert NSTimeInterval:options[@"maximumAge"]] ?: INFINITY,
+    .maximumAge = [RCTConvert NSTimeInterval:options[@"maximumAge"]],
     .accuracy = [RCTConvert BOOL:options[@"enableHighAccuracy"]] ? kCLLocationAccuracyBest : RNC_DEFAULT_LOCATION_ACCURACY,
     .distanceFilter = distanceFilter,
     .useSignificantChanges = static_cast<BOOL>([RCTConvert BOOL:options[@"useSignificantChanges"]] ?: NO),
