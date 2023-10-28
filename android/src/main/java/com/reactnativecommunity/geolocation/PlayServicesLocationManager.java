@@ -6,6 +6,8 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
+import android.content.Context;
+import android.location.LocationManager;
 
 import androidx.annotation.RequiresApi;
 
@@ -96,6 +98,9 @@ public class PlayServicesLocationManager extends BaseLocationManager {
 
     @Override
     public void stopObserving() {
+        if(mLocationCallback == null) {
+            return;
+        }
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
@@ -117,10 +122,15 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(locationRequest);
         LocationSettingsRequest locationSettingsRequest = builder.build();
-
         mLocationServicesSettingsClient.checkLocationSettings(locationSettingsRequest)
                 .addOnSuccessListener(locationSettingsResponse -> requestLocationUpdates(locationRequest, locationCallback))
-                .addOnFailureListener(err -> emitError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/settings)."));
+                .addOnFailureListener(err -> {
+                    if(isAnyProviderAvailable()){
+                        requestLocationUpdates(locationRequest, locationCallback);
+                        return;
+                    }
+                    emitError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/settings).");
+                });
     }
 
     private void requestLocationUpdates(LocationRequest locationRequest, LocationCallback locationCallback) {
@@ -129,6 +139,15 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         } catch (SecurityException e) {
             throw e;
         }
+    }
+
+    private boolean isAnyProviderAvailable() {
+        if (mReactContext == null) {
+        return false;
+        }
+        LocationManager locationManager =
+                    (LocationManager) mReactContext.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager != null && (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
     }
 
     private LocationCallback createSingleLocationCallback(Callback success, Callback error){
