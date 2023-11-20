@@ -134,6 +134,9 @@
       ]
     ]
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "codegenConfig": {
     "libraries": [
       {
