@@ -1,7 +1,10 @@
 {
-  "name": "@react-native-community/geolocation",
-  "version": "3.1.0",
+  "name": "@react-native-oh-library/geolocation",
+  "version": "3.1.0-0.0.1",
   "description": "React Native Geolocation Module for iOS and Android",
+   "harmony": {
+    "alias": "@react-native-geolocation/geolocation"
+  },
   "react-native": "js/index",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
