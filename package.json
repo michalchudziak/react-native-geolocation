@@ -1,6 +1,6 @@
 {
   "name": "@react-native-community/geolocation",
-  "version": "3.0.6",
+  "version": "3.1.0",
   "description": "React Native Geolocation Module for iOS and Android",
   "react-native": "js/index",
   "main": "lib/commonjs/index",
@@ -11,7 +11,11 @@
     "lib/",
     "js/",
     "/android",
+	"harmony",
     "!/android/build",
+	"!/harmony/oh_modules",
+	"!/harmony/**/build",
+	"!/harmony/**/oh_modules",
     "/ios",
     "/*.podspec"
   ],

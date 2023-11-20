@@ -1,0 +1,7 @@
+{
+  "module": {
+    "name": "geolocation",
+    "type": "har",
+    "deviceTypes": ['default'],
+  }
+}
