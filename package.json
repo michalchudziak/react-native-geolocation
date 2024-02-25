@@ -1,6 +1,6 @@
 {
   "name": "@react-native-community/geolocation",
-  "version": "3.0.6",
+  "version": "3.2.0",
   "description": "React Native Geolocation Module for iOS and Android",
   "react-native": "js/index",
   "main": "lib/commonjs/index",
@@ -80,7 +80,9 @@
   },
   "jest": {
     "preset": "react-native",
-    "modulePathIgnorePatterns": ["<rootDir>/lib/"],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/lib/"
+    ],
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ],
