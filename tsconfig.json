@@ -1,4 +1,5 @@
 {
+  "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
@@ -7,12 +8,11 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,
-    "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "lib": ["esnext", "dom"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noImplicitUseStrict": false,
@@ -22,6 +22,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
+    "noEmit": false,
     "target": "esnext"
   }
 }
