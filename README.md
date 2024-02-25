@@ -24,9 +24,9 @@ Supports modern [Play Services Location API](https://developers.google.com/andro
 ## Compatibility
 | React Native  |  RNC Geoloaction |
 |---|---|
-| > 0.73.0  | > 3.2.0 |
-| > 0.70.0  | > 3.0.0 |
-| > 0.64.0  | > 2.0.0 |
+| >= 0.73.0  | >= 3.2.0 |
+| >= 0.70.0  | >= 3.0.0 < 3.2.0 |
+| >= 0.64.0  | 2.x.x |
 | <= 0.63.0  | 1.x.x |
 
 
