@@ -13,7 +13,7 @@ jobs:
           node-version: "18.x"
           cache: "yarn"
       - run: yarn
-      - run: yarn eslint .
+      - run: yarn validate:eslint
 
   tsc:
     runs-on: ubuntu-latest
@@ -25,4 +25,4 @@ jobs:
           node-version: "18.x"
           cache: "yarn"
       - run: yarn
-      - run: yarn tsc
+      - run: yarn validate:typescript
