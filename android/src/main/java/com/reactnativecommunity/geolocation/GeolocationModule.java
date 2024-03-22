@@ -23,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class GeolocationModule extends ReactContextBaseJavaModule {
@@ -120,7 +121,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
 
       requestAuthorization(args -> mLocationManager.getCurrentLocationData(options, success, error), error);
     } catch (SecurityException e) {
-      throwLocationPermissionMissing(e);
+      emitLocationPermissionMissing(e);
     }
   }
 
@@ -139,10 +140,10 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       }
 
       requestAuthorization(args -> mLocationManager.startObserving(options), args -> {
-        throw new SecurityException(args.toString());
+        emitLocationPermissionMissing(new SecurityException(Arrays.toString(args)));
       });
     } catch (SecurityException e) {
-      throwLocationPermissionMissing(e);
+      emitLocationPermissionMissing(e);
     }
   }
 
@@ -159,11 +160,13 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   /**
    * Provides a clearer exception message than the default one.
    */
-  private static void throwLocationPermissionMissing(SecurityException e) {
-    throw new SecurityException(
-      "Looks like the app doesn't have the permission to access location.\n" +
-      "Add the following line to your app's AndroidManifest.xml:\n" +
-      "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />", e);
+  private void emitLocationPermissionMissing(SecurityException e) {
+    String message =
+            "Looks like the app doesn't have the permission to access location.\n" +
+                    "Add the following line to your app's AndroidManifest.xml:\n" +
+                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\n" +
+                    e.getMessage();
+    mLocationManager.emitError(PositionError.PERMISSION_DENIED, message);
   }
 
   private static class Configuration {
