@@ -3,17 +3,17 @@ package com.reactnativecommunity.geolocation;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.location.Location;
-import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
 import android.content.Context;
 import android.location.LocationManager;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.SystemClock;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -23,13 +23,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnSuccessListener;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 @SuppressLint("MissingPermission")
 public class PlayServicesLocationManager extends BaseLocationManager {
@@ -150,28 +144,58 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         return locationManager != null && (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
     }
 
-    private LocationCallback createSingleLocationCallback(Callback success, Callback error){
+    private LocationCallback createSingleLocationCallback(Callback success, Callback error) {
+        final CallbackHolder callbackHolder = new CallbackHolder(success, error);
+
         return new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "No location provided (FusedLocationProvider/lastLocation)."));
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+
+                if (location == null) {
+                    callbackHolder.error(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "No location provided (FusedLocationProvider/lastLocation)."));
                     return;
                 }
 
-                Location location = locationResult.getLastLocation();
-                success.invoke(locationToMap(location));
+                callbackHolder.success(location);
 
                 mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
                 mSingleLocationCallback = null;
             }
 
             @Override
-            public void onLocationAvailability(LocationAvailability locationAvailability) {
+            public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
                 if (!locationAvailability.isLocationAvailable()) {
-                    error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/lastLocation)."));
+                    callbackHolder.error(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/lastLocation)."));
                 }
             }
         };
+    }
+
+    private static class CallbackHolder {
+        Callback success;
+        Callback error;
+        public CallbackHolder(Callback success, Callback error) {
+            this.success = success;
+            this.error = error;
+        }
+
+        public void error(WritableMap cause) {
+            if (this.error == null) {
+                Log.e(this.getClass().getSimpleName(), "tried to invoke null error callback -> " + cause.toString());
+                return;
+            }
+            this.error.invoke(cause);
+            this.error = null;
+        }
+
+        public void success(Location location) {
+            if (this.success == null) {
+                Log.e(this.getClass().getSimpleName(), "tried to invoke null success callback");
+                return;
+            }
+            this.success.invoke(locationToMap(location));
+            this.success = null;
+        }
     }
 }
