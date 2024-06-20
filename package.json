@@ -133,12 +133,11 @@
     ]
   },
   "codegenConfig": {
-    "libraries": [
-      {
-        "name": "RNCGeolocationSpec",
-        "type": "modules",
-        "jsSrcsDir": "js"
-      }
-    ]
+    "name": "RNCGeolocationSpec",
+    "type": "modules",
+    "jsSrcsDir": "js",
+    "android": {
+      "javaPackageName": "com.reactnativecommunity.geolocation"
+    }
   }
 }
