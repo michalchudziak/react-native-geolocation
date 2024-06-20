@@ -145,7 +145,6 @@ android {
 
 dependencies {
     implementation("com.facebook.react:react-android")
-    implementation("com.facebook.react:flipper-integration")
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     if (hermesEnabled.toBoolean()) {
