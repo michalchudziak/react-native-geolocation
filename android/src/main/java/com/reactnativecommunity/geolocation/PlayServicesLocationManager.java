@@ -52,7 +52,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
 
         if (currentActivity == null) {
             mSingleLocationCallback = createSingleLocationCallback(success, error);
-            checkLocationSettings(options, mSingleLocationCallback);
+            checkLocationSettings(options, mSingleLocationCallback, error);
 			return;
         }
 
@@ -63,7 +63,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                             success.invoke(locationToMap(location));
                         } else {
                             mSingleLocationCallback = createSingleLocationCallback(success, error);
-                            checkLocationSettings(options, mSingleLocationCallback);
+                            checkLocationSettings(options, mSingleLocationCallback, error);
                         }
                     });
         } catch (SecurityException e) {
@@ -93,7 +93,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
             }
         };
 
-        checkLocationSettings(options, mLocationCallback);
+        checkLocationSettings(options, mLocationCallback, null);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
-    private void checkLocationSettings(ReadableMap options, LocationCallback locationCallback) {
+    private void checkLocationSettings(ReadableMap options, LocationCallback locationCallback, Callback error) {
         LocationOptions locationOptions = LocationOptions.fromReactMap(options);
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(locationOptions.interval);
@@ -127,6 +127,13 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                 .addOnFailureListener(err -> {
                     if(isAnyProviderAvailable()){
                         requestLocationUpdates(locationRequest, locationCallback);
+                        return;
+                    }
+
+                    if (error != null) {
+                        error.invoke(
+                            PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/settings).")
+                        );
                         return;
                     }
                     emitError(PositionError.POSITION_UNAVAILABLE, "Location not available (FusedLocationProvider/settings).");
