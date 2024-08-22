@@ -190,7 +190,9 @@ RCT_EXPORT_MODULE()
 
   if (@available(iOS 14.0, *)) {
     if (
+#if ! TARGET_OS_VISION
       _lastUpdatedAuthorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
+#endif
       _lastUpdatedAuthorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse
     ) {
       [self startMonitoring];
@@ -202,16 +204,24 @@ RCT_EXPORT_MODULE()
 
 - (void)startMonitoring
 {
-  _usingSignificantChanges
-    ? [_locationManager startMonitoringSignificantLocationChanges]
-    : [_locationManager startUpdatingLocation];
+#if !TARGET_OS_VISION
+   _usingSignificantChanges
+     ? [_locationManager startMonitoringSignificantLocationChanges]
+     : [_locationManager startUpdatingLocation];
+#else
+    [_locationManager startUpdatingLocation];
+#endif
 }
 
 - (void)stopMonitoring
 {
-  _usingSignificantChanges
-    ? [_locationManager stopMonitoringSignificantLocationChanges]
-    : [_locationManager stopUpdatingLocation];
+#if !TARGET_OS_VISION
+   _usingSignificantChanges
+     ? [_locationManager stopMonitoringSignificantLocationChanges]
+     : [_locationManager stopUpdatingLocation];
+#else
+    [_locationManager stopUpdatingLocation];
+#endif
 }
 
 #pragma mark - Timeout handler
@@ -273,8 +283,10 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
 
   // Request location access permission
   if (wantsAlways) {
+#if !TARGET_OS_VISION
     [_locationManager requestAlwaysAuthorization];
     [self enableBackgroundLocationUpdates];
+#endif
   } else if (wantsWhenInUse) {
     [_locationManager requestWhenInUseAuthorization];
   }
@@ -282,6 +294,7 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
 
 - (void)enableBackgroundLocationUpdates
 {
+#if !TARGET_OS_VISION
   // iOS 9+ requires explicitly enabling background updates
   NSArray *backgroundModes  = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
   if (backgroundModes && [backgroundModes containsObject:@"location"]) {
@@ -289,6 +302,7 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
       [_locationManager setAllowsBackgroundLocationUpdates:YES];
     }
   }
+#endif
 }
 
 
@@ -445,7 +459,9 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
   }
     
   if (
+#if !TARGET_OS_VISION
     currentStatus == kCLAuthorizationStatusAuthorizedAlways ||
+#endif
     currentStatus == kCLAuthorizationStatusAuthorizedWhenInUse
   ) {
     if (_queuedAuthorizationCallbacks != nil && _queuedAuthorizationCallbacks.count > 0){
