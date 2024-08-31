@@ -45,10 +45,12 @@ public class AndroidLocationManager extends BaseLocationManager {
         }
 
         @Override
-        public void onProviderEnabled(String provider) { }
+        public void onProviderEnabled(String provider) {
+        }
 
         @Override
-        public void onProviderDisabled(String provider) { }
+        public void onProviderDisabled(String provider) {
+        }
     };
 
     protected AndroidLocationManager(ReactApplicationContext reactContext) {
@@ -134,7 +136,8 @@ public class AndroidLocationManager extends BaseLocationManager {
         // If it's an enabled provider, but we don't have permissions, ignore it
         int finePermission = ContextCompat.checkSelfPermission(mReactContext, android.Manifest.permission.ACCESS_FINE_LOCATION);
         int coarsePermission = ContextCompat.checkSelfPermission(mReactContext, android.Manifest.permission.ACCESS_COARSE_LOCATION);
-        if (provider.equals(LocationManager.GPS_PROVIDER) && (finePermission != PackageManager.PERMISSION_GRANTED && coarsePermission != PackageManager.PERMISSION_GRANTED)) {
+        if ((provider.equals(LocationManager.GPS_PROVIDER) && finePermission != PackageManager.PERMISSION_GRANTED) ||
+                (provider.equals(LocationManager.NETWORK_PROVIDER) && coarsePermission != PackageManager.PERMISSION_GRANTED)) {
             return null;
         }
         return provider;
@@ -178,13 +181,16 @@ public class AndroidLocationManager extends BaseLocationManager {
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
 
             @Override
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
 
             @Override
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+            }
         };
         private boolean mTriggered;
 
@@ -209,11 +215,12 @@ public class AndroidLocationManager extends BaseLocationManager {
 
         private static final int TWO_MINUTES = 1000 * 60 * 2;
 
-        /** Determines whether one Location reading is better than the current Location fix
+        /**
+         * Determines whether one Location reading is better than the current Location fix
          * taken from Android Examples https://developer.android.com/guide/topics/location/strategies.html
          *
-         * @param location  The new Location that you want to evaluate
-         * @param currentBestLocation  The current Location fix, to which you want to compare the new one
+         * @param location            The new Location that you want to evaluate
+         * @param currentBestLocation The current Location fix, to which you want to compare the new one
          */
         private boolean isBetterLocation(Location location, Location currentBestLocation) {
             if (currentBestLocation == null) {
@@ -258,7 +265,9 @@ public class AndroidLocationManager extends BaseLocationManager {
             return false;
         }
 
-        /** Checks whether two providers are the same */
+        /**
+         * Checks whether two providers are the same
+         */
         private boolean isSameProvider(String provider1, String provider2) {
             if (provider1 == null) {
                 return provider2 == null;
