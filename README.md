@@ -324,6 +324,10 @@ I owe a lot to the fantastic React & React Native community, and I contribute ba
 
 If you need any help with this module, or anything else, feel free to reach out to me! I provide boutique consultancy services for React & React Native. Just visit my [website](https://michalchudziak.dev), or send me an email at [hello@michalchudziak.dev](mailto:hello@michalchudziak.dev) 🙏🏻
 
+### Co-maintainers needed
+
+Due to personal commitments, recently I am unable to dedicate the necessary time to maintain this library as it deserves. I’m looking for passionate contributors to help keep the project alive and thriving. If you're interested in contributing or taking on a maintainer role, please reach out [hello@michalchudziak.dev](mailto:hello@michalchudziak.dev) — your support would mean a lot!
+
 ## Contributors
 
 This module was extracted from `react-native` core. Please refer to https://github.com/react-native-community/react-native-geolocation/graphs/contributors for the complete list of contributors.
