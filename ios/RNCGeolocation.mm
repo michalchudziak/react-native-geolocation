@@ -309,6 +309,10 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
 RCT_REMAP_METHOD(startObserving, startObserving:(RNCGeolocationOptions)options)
 {
   checkLocationConfig();
+    
+  if (_observingLocation) {
+    [self stopObserving];
+  }
 
   // Select best options
   _observerOptions = options;
@@ -376,6 +380,12 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
     successBlock(@[_lastLocationEvent]);
     return;
   }
+    
+  BOOL didPause = NO;
+  if (_observingLocation) {
+    [self stopObserving];
+    didPause = YES;
+  }
 
   // Create request
   RNCGeolocationRequest *request = [RNCGeolocationRequest new];
@@ -400,6 +410,10 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
   [self beginLocationUpdatesWithDesiredAccuracy:accuracy
                                  distanceFilter:options.distanceFilter
                           useSignificantChanges:options.useSignificantChanges];
+
+  if (didPause) {
+    [self startObserving];
+  }
 }
 
 #pragma mark - CLLocationManagerDelegate
