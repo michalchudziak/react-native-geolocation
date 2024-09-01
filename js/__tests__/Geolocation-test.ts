@@ -50,7 +50,7 @@ describe('react-native-geolocation', () => {
 
   it('should add a success listener to the geolocation', () => {
     const watchID = Geolocation.watchPosition(() => {});
-    expect(watchID).toEqual(0);
+    expect(watchID).toEqual(1000);
     expect(NativeModules.RNCGeolocation.addListener.mock.calls[0][0]).toBe(
       'geolocationDidChange'
     );
@@ -61,7 +61,7 @@ describe('react-native-geolocation', () => {
       () => {},
       () => {}
     );
-    expect(watchID).toEqual(0);
+    expect(watchID).toEqual(1000);
     expect(NativeModules.RNCGeolocation.addListener.mock.calls[1][0]).toBe(
       'geolocationError'
     );
