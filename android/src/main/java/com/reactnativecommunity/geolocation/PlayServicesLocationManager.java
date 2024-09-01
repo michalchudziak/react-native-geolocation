@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 
 @SuppressLint("MissingPermission")
@@ -100,22 +101,22 @@ public class PlayServicesLocationManager extends BaseLocationManager {
 
     private void checkLocationSettings(ReadableMap options, LocationCallback locationCallback, Callback error) {
         LocationOptions locationOptions = LocationOptions.fromReactMap(options);
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(locationOptions.interval);
-        if (locationOptions.fastestInterval >= 0) {
-            locationRequest.setFastestInterval(locationOptions.fastestInterval);
-        }
-        locationRequest.setExpirationDuration((long) locationOptions.maximumAge);
-        if (locationOptions.distanceFilter >= 0) {
-            locationRequest.setSmallestDisplacement(locationOptions.distanceFilter);
-        }
-        locationRequest.setPriority(
-                locationOptions.highAccuracy ? LocationRequest.PRIORITY_HIGH_ACCURACY : LocationRequest.PRIORITY_LOW_POWER
-        );
+        LocationRequest.Builder requestBuilder = new LocationRequest.Builder(locationOptions.interval);
+        requestBuilder.setPriority(locationOptions.highAccuracy ? Priority.PRIORITY_HIGH_ACCURACY : Priority.PRIORITY_LOW_POWER);
+        requestBuilder.setMaxUpdateAgeMillis((long) locationOptions.maximumAge);
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(locationRequest);
-        LocationSettingsRequest locationSettingsRequest = builder.build();
+        if (locationOptions.fastestInterval >= 0) {
+            requestBuilder.setMinUpdateIntervalMillis(locationOptions.fastestInterval);
+        }
+        
+        if (locationOptions.distanceFilter >= 0) {
+            requestBuilder.setMinUpdateDistanceMeters(locationOptions.distanceFilter);
+        }
+        LocationRequest locationRequest = requestBuilder.build();
+
+        LocationSettingsRequest.Builder settingsBuilder = new LocationSettingsRequest.Builder();
+        settingsBuilder.addLocationRequest(locationRequest);
+        LocationSettingsRequest locationSettingsRequest = settingsBuilder.build();
         mLocationServicesSettingsClient.checkLocationSettings(locationSettingsRequest)
                 .addOnSuccessListener(locationSettingsResponse -> requestLocationUpdates(locationRequest, locationCallback))
                 .addOnFailureListener(err -> {
