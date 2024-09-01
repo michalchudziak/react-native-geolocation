@@ -23,10 +23,9 @@ import type {
 
 const { RNCGeolocation, GeolocationEventEmitter } = GeolocationNativeInterface;
 
-let subscriptions: (
-  | [EmitterSubscription, EmitterSubscription | null]
-  | undefined
-)[] = [];
+let subscriptions: {
+  [key: number]: [EmitterSubscription, EmitterSubscription | null];
+} = {};
 let updatesEnabled = false;
 
 /**
@@ -100,13 +99,13 @@ export function watchPosition(
     RNCGeolocation.startObserving(options);
     updatesEnabled = true;
   }
-  const watchID = subscriptions.length;
-  subscriptions.push([
+  const watchID = Object.keys(subscriptions).length + 1000;
+  subscriptions[watchID] = [
     GeolocationEventEmitter.addListener('geolocationDidChange', success),
     error
       ? GeolocationEventEmitter.addListener('geolocationError', error)
       : null,
-  ]);
+  ];
   return watchID;
 }
 
@@ -127,13 +126,9 @@ export function clearWatch(watchID: number) {
   // array element refinements not yet enabled in Flow
   const sub1 = sub[1];
   sub1 && sub1.remove();
-  subscriptions[watchID] = undefined;
-  let noWatchers = true;
-  for (let ii = 0; ii < subscriptions.length; ii++) {
-    if (subscriptions[ii]) {
-      noWatchers = false; // still valid subscriptions
-    }
-  }
+
+  delete subscriptions[watchID];
+  let noWatchers = Object.keys(subscriptions).length === 0;
   if (noWatchers) {
     stopObserving();
   }
@@ -148,16 +143,11 @@ export function stopObserving() {
   if (updatesEnabled) {
     RNCGeolocation.stopObserving();
     updatesEnabled = false;
-    for (let ii = 0; ii < subscriptions.length; ii++) {
-      const sub = subscriptions[ii];
-      if (sub) {
-        warning(false, 'Called stopObserving with existing subscriptions.');
-        sub[0].remove();
-        // array element refinements not yet enabled in Flow
-        const sub1 = sub[1];
-        sub1 && sub1.remove();
-      }
-    }
-    subscriptions = [];
+    Object.values(subscriptions).forEach(([sub, sub1]) => {
+      warning(false, 'Called stopObserving with existing subscriptions.');
+      sub.remove();
+      sub1 && sub1.remove();
+    });
+    subscriptions = {};
   }
 }
