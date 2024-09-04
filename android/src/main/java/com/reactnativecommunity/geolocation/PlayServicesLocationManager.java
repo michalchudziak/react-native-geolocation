@@ -26,17 +26,21 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.location.SettingsClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressLint("MissingPermission")
 public class PlayServicesLocationManager extends BaseLocationManager {
     private FusedLocationProviderClient mFusedLocationClient;
-    private LocationCallback mLocationCallback;
-    private LocationCallback mSingleLocationCallback;
+    private List<LocationCallback> mPendingLocationCallbacks;
     private SettingsClient mLocationServicesSettingsClient;
+    private LocationCallback mLocationCallback;
 
     protected PlayServicesLocationManager(ReactApplicationContext reactContext) {
         super(reactContext);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(reactContext);
         mLocationServicesSettingsClient = LocationServices.getSettingsClient(reactContext);
+        mPendingLocationCallbacks = new ArrayList<>();
     }
 
     @Override
@@ -46,9 +50,10 @@ public class PlayServicesLocationManager extends BaseLocationManager {
         Activity currentActivity = mReactContext.getCurrentActivity();
 
         if (currentActivity == null) {
-            mSingleLocationCallback = createSingleLocationCallback(success, error);
-            checkLocationSettings(options, mSingleLocationCallback, error);
-			return;
+            LocationCallback singleLocationCallback = createSingleLocationCallback(success, error);
+            mPendingLocationCallbacks.add(singleLocationCallback);
+            checkLocationSettings(options, singleLocationCallback, error);
+            return;
         }
 
         try {
@@ -57,8 +62,9 @@ public class PlayServicesLocationManager extends BaseLocationManager {
                         if (location != null && (SystemClock.currentTimeMillis() - location.getTime()) < locationOptions.maximumAge) {
                             success.invoke(locationToMap(location));
                         } else {
-                            mSingleLocationCallback = createSingleLocationCallback(success, error);
-                            checkLocationSettings(options, mSingleLocationCallback, error);
+                            LocationCallback singleLocationCallback = createSingleLocationCallback(success, error);
+                            mPendingLocationCallbacks.add(singleLocationCallback);
+                            checkLocationSettings(options, singleLocationCallback, error);
                         }
                     });
         } catch (SecurityException e) {
@@ -93,10 +99,16 @@ public class PlayServicesLocationManager extends BaseLocationManager {
 
     @Override
     public void stopObserving() {
-        if(mLocationCallback == null) {
+        if(mLocationCallback == null && mPendingLocationCallbacks.isEmpty()) {
             return;
         }
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        if (mLocationCallback != null) {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
+        for (LocationCallback callback : mPendingLocationCallbacks) {
+            mFusedLocationClient.removeLocationUpdates(callback);
+        }
+        mPendingLocationCallbacks.clear();
     }
 
     private void checkLocationSettings(ReadableMap options, LocationCallback locationCallback, Callback error) {
@@ -167,8 +179,8 @@ public class PlayServicesLocationManager extends BaseLocationManager {
 
                 callbackHolder.success(location);
 
-                mFusedLocationClient.removeLocationUpdates(mSingleLocationCallback);
-                mSingleLocationCallback = null;
+                mFusedLocationClient.removeLocationUpdates(this);
+                mPendingLocationCallbacks.remove(this);
             }
 
             @Override
