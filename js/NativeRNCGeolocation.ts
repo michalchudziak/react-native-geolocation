@@ -29,6 +29,10 @@ export type GeolocationResponse = {
     speed: number | null;
   };
   timestamp: number;
+  /**
+   * Only set on Android API >= 18 or iOS >= 15
+   */
+  mocked?: boolean;
 };
 
 export type GeolocationError = {
