@@ -412,7 +412,7 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
                           useSignificantChanges:options.useSignificantChanges];
 
   if (didPause) {
-    [self startObserving];
+    [self startObserving:_observerOptions];
   }
 }
 
