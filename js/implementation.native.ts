@@ -46,6 +46,8 @@ export function setRNConfiguration(config: GeolocationConfiguration) {
     ...config,
     enableBackgroundLocationUpdates:
       config?.enableBackgroundLocationUpdates ?? true,
+    showsBackgroundLocationIndicator: 
+      config?.showsBackgroundLocationIndicator ?? true,
     authorizationLevel:
       config?.authorizationLevel === 'auto'
         ? undefined

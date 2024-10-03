@@ -39,6 +39,7 @@ typedef struct {
   BOOL skipPermissionRequests;
   RNCGeolocationAuthorizationLevel authorizationLevel;
   BOOL enableBackgroundLocationUpdates;
+  BOOL showsBackgroundLocationIndicator;
 } RNCGeolocationConfiguration;
 
 typedef struct {
@@ -64,7 +65,9 @@ RCT_ENUM_CONVERTER(RNCGeolocationAuthorizationLevel, (@{
 
   return (RNCGeolocationConfiguration) {
     .skipPermissionRequests = [RCTConvert BOOL:options[@"skipPermissionRequests"]],
-    .authorizationLevel = [RCTConvert RNCGeolocationAuthorizationLevel:options[@"authorizationLevel"]]
+    .authorizationLevel = [RCTConvert RNCGeolocationAuthorizationLevel:options[@"authorizationLevel"]],
+    .enableBackgroundLocationUpdates = [RCTConvert BOOL:options[@"enableBackgroundLocationUpdates"]],
+    .showsBackgroundLocationIndicator = [RCTConvert BOOL:options[@"showsBackgroundLocationIndicator"]],
   };
 }
 
@@ -182,6 +185,14 @@ RCT_EXPORT_MODULE()
   if (!_locationManager) {
     _locationManager = [CLLocationManager new];
     _locationManager.delegate = self;
+
+    if(_locationConfiguration.showsBackgroundLocationIndicator) {
+      // Set showsBackgroundLocationIndicator to YES
+      if ([_locationManager respondsToSelector:@selector(setShowsBackgroundLocationIndicator:)]) {
+        _locationManager.showsBackgroundLocationIndicator = YES;
+      }
+    }
+    
   }
 
   _locationManager.distanceFilter  = distanceFilter;
@@ -252,6 +263,14 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
   if (!_locationManager) {
     _locationManager = [CLLocationManager new];
     _locationManager.delegate = self;
+
+  if(_locationConfiguration.showsBackgroundLocationIndicator) {
+    // Set showsBackgroundLocationIndicator to YES
+    if ([_locationManager respondsToSelector:@selector(setShowsBackgroundLocationIndicator:)]) {
+      _locationManager.showsBackgroundLocationIndicator = YES;
+    }
+  }
+    
   }
 
   if (successBlock != nil || errorBlock != nil) {
@@ -301,6 +320,13 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
     if ([_locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
       [_locationManager setAllowsBackgroundLocationUpdates:YES];
     }
+
+  if(_locationConfiguration.showsBackgroundLocationIndicator) {
+    // Set showsBackgroundLocationIndicator to YES
+    if ([_locationManager respondsToSelector:@selector(setShowsBackgroundLocationIndicator:)]) {
+      _locationManager.showsBackgroundLocationIndicator = YES;
+    }
+    }
   }
 #endif
 }
@@ -309,7 +335,7 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
 RCT_REMAP_METHOD(startObserving, startObserving:(RNCGeolocationOptions)options)
 {
   checkLocationConfig();
-    
+
   if (_observingLocation) {
     [self stopObserving];
   }
