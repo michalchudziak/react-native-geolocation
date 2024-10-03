@@ -6,6 +6,7 @@ export type GeolocationConfiguration = {
   authorizationLevel?: 'always' | 'whenInUse' | 'auto';
   locationProvider?: 'playServices' | 'android' | 'auto';
   enableBackgroundLocationUpdates?: boolean;
+  showsBackgroundLocationIndicator?: boolean;
 };
 
 export type GeolocationOptions = {
@@ -44,6 +45,7 @@ export interface Spec extends TurboModule {
     skipPermissionRequests: boolean;
     authorizationLevel?: string;
     enableBackgroundLocationUpdates?: string;
+    showsBackgroundLocationIndicator?: string;
   }): void;
   requestAuthorization(
     success: () => void,
