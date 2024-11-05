@@ -190,7 +190,7 @@ RCT_EXPORT_MODULE()
 
   if (@available(iOS 14.0, *)) {
     if (
-#if ! TARGET_OS_VISION
+#if !TARGET_OS_VISION && !TARGET_OS_TV
       _lastUpdatedAuthorizationStatus == kCLAuthorizationStatusAuthorizedAlways ||
 #endif
       _lastUpdatedAuthorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse
@@ -204,22 +204,22 @@ RCT_EXPORT_MODULE()
 
 - (void)startMonitoring
 {
-#if !TARGET_OS_VISION
+#if !TARGET_OS_VISION && !TARGET_OS_TV
    _usingSignificantChanges
      ? [_locationManager startMonitoringSignificantLocationChanges]
      : [_locationManager startUpdatingLocation];
-#else
+#elif !TARGET_OS_TV
     [_locationManager startUpdatingLocation];
 #endif
 }
 
 - (void)stopMonitoring
 {
-#if !TARGET_OS_VISION
+#if !TARGET_OS_VISION && !TARGET_OS_TV
    _usingSignificantChanges
      ? [_locationManager stopMonitoringSignificantLocationChanges]
      : [_locationManager stopUpdatingLocation];
-#else
+#elif !TARGET_OS_TV
     [_locationManager stopUpdatingLocation];
 #endif
 }
@@ -283,7 +283,7 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
 
   // Request location access permission
   if (wantsAlways) {
-#if !TARGET_OS_VISION
+#if !TARGET_OS_VISION && !TARGET_OS_TV
     [_locationManager requestAlwaysAuthorization];
     [self enableBackgroundLocationUpdates];
 #endif
@@ -294,7 +294,7 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
 
 - (void)enableBackgroundLocationUpdates
 {
-#if !TARGET_OS_VISION
+#if !TARGET_OS_VISION && !TARGET_OS_TV
   // iOS 9+ requires explicitly enabling background updates
   NSArray *backgroundModes  = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
   if (backgroundModes && [backgroundModes containsObject:@"location"]) {
@@ -473,7 +473,7 @@ RCT_REMAP_METHOD(getCurrentPosition, getCurrentPosition:(RNCGeolocationOptions)o
   }
     
   if (
-#if !TARGET_OS_VISION
+#if !TARGET_OS_VISION && !TARGET_OS_TV
     currentStatus == kCLAuthorizationStatusAuthorizedAlways ||
 #endif
     currentStatus == kCLAuthorizationStatusAuthorizedWhenInUse
