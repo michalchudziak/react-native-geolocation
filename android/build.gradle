@@ -84,8 +84,8 @@ repositories {
 
   if (defaultDir.exists()) {
     maven {
-      url defaultDir.toString()
-      name androidSourcesName
+      url = defaultDir.toString()
+      name = androidSourcesName
     }
 
     logger.info(":${project.name}:reactNativeAndroidRoot ${defaultDir.canonicalPath}")
@@ -109,16 +109,16 @@ repositories {
 
       if (androidPrebuiltBinaryDir.exists()) {
         maven {
-          url androidPrebuiltBinaryDir.toString()
-          name androidSourcesName
+          url = androidPrebuiltBinaryDir.toString()
+          name = androidSourcesName
         }
 
         logger.info(":${project.name}:reactNativeAndroidRoot ${androidPrebuiltBinaryDir.canonicalPath}")
         found = true
       } else if (androidSourcesDir.exists()) {
         maven {
-          url androidSourcesDir.toString()
-          name androidSourcesName
+          url = androidSourcesDir.toString()
+          name = androidSourcesName
         }
 
         logger.info(":${project.name}:reactNativeAndroidRoot ${androidSourcesDir.canonicalPath}")
