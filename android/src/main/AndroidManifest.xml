@@ -1,6 +1,12 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.reactnativecommunity.geolocation">
-
+  <application>
+    <service
+        android:name=".LocationService"
+        android:enabled="true"
+        android:exported="false"
+        android:foregroundServiceType="location" />
+  </application>
 </manifest>
   

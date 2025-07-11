@@ -11,12 +11,13 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-public abstract class BaseLocationManager {
-    protected static final float RCT_DEFAULT_LOCATION_ACCURACY = 100;
+public abstract class BaseLocationManager implements EventEmitter {
     public ReactApplicationContext mReactContext;
+    public boolean mEnableBackgroundLocationUpdates;
 
-    protected BaseLocationManager(ReactApplicationContext reactContext) {
+    protected BaseLocationManager(ReactApplicationContext reactContext, boolean enableBackgroundLocationUpdates) {
         mReactContext = reactContext;
+        mEnableBackgroundLocationUpdates = enableBackgroundLocationUpdates;
     }
 
     protected static WritableMap locationToMap(Location location) {
@@ -70,55 +71,18 @@ public abstract class BaseLocationManager {
         }
     }
 
-    protected void emitError(int code, String message) {
+    public void emitError(int code, String message) {
         mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit("geolocationError", PositionError.buildError(code, message));
+    }
+
+    public void emit(String message, Object o) {
+        mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(message, o);
     }
 
     abstract public void getCurrentLocationData(ReadableMap options, final Callback success, Callback error);
     abstract public void startObserving(ReadableMap options);
     abstract public void stopObserving();
-
-    protected static class LocationOptions {
-        protected final int interval;
-        protected final int fastestInterval;
-        protected final long timeout;
-        protected final double maximumAge;
-        protected final boolean highAccuracy;
-        protected final float distanceFilter;
-
-        private LocationOptions(
-                int interval,
-                int fastestInterval,
-                long timeout,
-                double maximumAge,
-                boolean highAccuracy,
-                float distanceFilter) {
-            this.interval = interval;
-            this.fastestInterval = fastestInterval;
-            this.timeout = timeout;
-            this.maximumAge = maximumAge;
-            this.highAccuracy = highAccuracy;
-            this.distanceFilter = distanceFilter;
-        }
-
-        protected static LocationOptions fromReactMap(ReadableMap map) {
-            // precision might be dropped on timeout (double -> int conversion), but that's OK
-            int interval =
-                    map.hasKey("interval") ? map.getInt("interval") : 10000;
-            int fastestInterval =
-                    map.hasKey("fastestInterval") ? map.getInt("fastestInterval") : -1;
-            long timeout =
-                    map.hasKey("timeout") ? (long) map.getDouble("timeout") : 1000 * 60 * 10;
-            double maximumAge =
-                    map.hasKey("maximumAge") ? map.getDouble("maximumAge") : Double.POSITIVE_INFINITY;
-            boolean highAccuracy =
-                    map.hasKey("enableHighAccuracy") && map.getBoolean("enableHighAccuracy");
-            float distanceFilter = map.hasKey("distanceFilter") ?
-                    (float) map.getDouble("distanceFilter") :
-                    RCT_DEFAULT_LOCATION_ACCURACY;
-
-            return new LocationOptions(interval, fastestInterval, timeout, maximumAge, highAccuracy, distanceFilter);
-        }
-    }
+    abstract public void stopService();
 }

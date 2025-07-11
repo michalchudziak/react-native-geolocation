@@ -4,6 +4,8 @@
 
 The Geolocation API 📍 module for React Native that extends the [Geolocation web spec](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation). 
 
+**This fork adds support for background location updates, allowing your app to receive location updates even when it's not in the foreground.**
+
 Supports TurboModules ⚡️ and legacy React Native architecture.
 
 Fully compatible with TypeScript.
@@ -32,11 +34,15 @@ Supports modern [Play Services Location API](https://developers.google.com/andro
 
 ## Getting started
 
-`yarn add @react-native-community/geolocation`
+This is a fork of the original `@react-native-community/geolocation` package.
+
+To install this forked version:
+
+`yarn add https://github.com/quan118/react-native-geolocation`
 
 or
 
-`npm install @react-native-community/geolocation --save`
+`npm install https://github.com/quan118/react-native-geolocationn --save`
 
 ## Configuration and Permissions
 
@@ -69,6 +75,15 @@ To request access to location, you need to add the following line to your app's 
 or 
 
 `<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />`
+
+
+To enable background location updates, add the following permissions:
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+```
 
 Android API >= 18 Positions will also contain a `mocked` boolean to indicate if position was created from a mock provider.
 
@@ -181,7 +196,7 @@ Supported options:
 
 * `skipPermissionRequests` (boolean) - Defaults to `false`. If `true`, you must request permissions before using Geolocation APIs.
 * `authorizationLevel` (string, iOS-only) - Either `"whenInUse"`, `"always"`, or `"auto"`. Changes whether the user will be asked to give "always" or "when in use" location services permission. Any other value or `auto` will use the default behaviour, where the permission level is based on the contents of your `Info.plist`.
-* `enableBackgroundLocationUpdates` (boolean, iOS-only) - When using `skipPermissionRequests`, toggle wether to automatically enableBackgroundLocationUpdates. Defaults to true.
+* `enableBackgroundLocationUpdates` (boolean) - When using `skipPermissionRequests`, toggle wether to automatically enableBackgroundLocationUpdates. Defaults to true.
 * `locationProvider` (string, Android-only) - Either `"playServices"`, `"android"`, or `"auto"`.  Determines wether to use `Google’s Location Services API` or `Android’s Location API`. The `"auto"` mode defaults to `android`, and falls back to Android's Location API if play services aren't available.
 
 ---

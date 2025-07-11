@@ -64,7 +64,8 @@ RCT_ENUM_CONVERTER(RNCGeolocationAuthorizationLevel, (@{
 
   return (RNCGeolocationConfiguration) {
     .skipPermissionRequests = [RCTConvert BOOL:options[@"skipPermissionRequests"]],
-    .authorizationLevel = [RCTConvert RNCGeolocationAuthorizationLevel:options[@"authorizationLevel"]]
+    .authorizationLevel = [RCTConvert RNCGeolocationAuthorizationLevel:options[@"authorizationLevel"]],
+    .enableBackgroundLocationUpdates = [RCTConvert BOOL:options[@"enableBackgroundLocationUpdates"]]
   };
 }
 
@@ -173,15 +174,15 @@ RCT_EXPORT_MODULE()
 
 - (void)beginLocationUpdatesWithDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy distanceFilter:(CLLocationDistance)distanceFilter useSignificantChanges:(BOOL)useSignificantChanges
 {
+  if (!_locationManager) {
+    _locationManager = [CLLocationManager new];
+    _locationManager.delegate = self;
+  }
+
   if (!_locationConfiguration.skipPermissionRequests) {
     [self requestAuthorization:nil error:nil];
   } else if (_locationConfiguration.enableBackgroundLocationUpdates) {
     [self enableBackgroundLocationUpdates];
-  }
-
-  if (!_locationManager) {
-    _locationManager = [CLLocationManager new];
-    _locationManager.delegate = self;
   }
 
   _locationManager.distanceFilter  = distanceFilter;
@@ -298,9 +299,7 @@ RCT_REMAP_METHOD(requestAuthorization, requestAuthorization:(RCTResponseSenderBl
   // iOS 9+ requires explicitly enabling background updates
   NSArray *backgroundModes  = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
   if (backgroundModes && [backgroundModes containsObject:@"location"]) {
-    if ([_locationManager respondsToSelector:@selector(setAllowsBackgroundLocationUpdates:)]) {
-      [_locationManager setAllowsBackgroundLocationUpdates:YES];
-    }
+    _locationManager.allowsBackgroundLocationUpdates = YES;
   }
 #endif
 }

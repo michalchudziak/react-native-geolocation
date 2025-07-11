@@ -35,7 +35,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
     mConfiguration = Configuration.getDefault();
-    mLocationManager = new AndroidLocationManager(reactContext);
+    mLocationManager = new AndroidLocationManager(reactContext, mConfiguration.enableBackgroundLocationUpdates);
   }
 
   @Override
@@ -44,20 +44,25 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   }
 
   public void setConfiguration(ReadableMap config) {
-    mConfiguration = Configuration.fromReactMap(config);
-    onConfigurationChange(mConfiguration);
+    Configuration configuration = Configuration.fromReactMap(config);
+    onConfigurationChange(configuration);
   }
 
   private void onConfigurationChange(Configuration config) {
     ReactApplicationContext reactContext = mLocationManager.mReactContext;
-    if (Objects.equals(config.locationProvider, "android") && mLocationManager instanceof PlayServicesLocationManager) {
-      mLocationManager = new AndroidLocationManager(reactContext);
-    } else if (Objects.equals(config.locationProvider, "playServices") && mLocationManager instanceof AndroidLocationManager) {
+    if (Objects.equals(config.locationProvider, "android") && mLocationManager instanceof PlayServicesLocationManager
+            || config.enableBackgroundLocationUpdates != mConfiguration.enableBackgroundLocationUpdates) {
+      mLocationManager.stopService();
+      mLocationManager = new AndroidLocationManager(reactContext, config.enableBackgroundLocationUpdates);
+    } else if (Objects.equals(config.locationProvider, "playServices") && mLocationManager instanceof AndroidLocationManager
+            || config.enableBackgroundLocationUpdates != mConfiguration.enableBackgroundLocationUpdates) {
       GoogleApiAvailability availability = new GoogleApiAvailability();
       if (availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS) {
-        mLocationManager = new PlayServicesLocationManager(reactContext);
+        mLocationManager.stopService();
+        mLocationManager = new PlayServicesLocationManager(reactContext, config.enableBackgroundLocationUpdates);
       }
     }
+    mConfiguration = config;
   }
 
   /**
@@ -172,14 +177,16 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   private static class Configuration {
     String locationProvider;
     Boolean skipPermissionRequests;
+    Boolean enableBackgroundLocationUpdates;
 
-    private Configuration(String locationProvider, boolean skipPermissionRequests) {
+    private Configuration(String locationProvider, boolean skipPermissionRequests, boolean enableBackgroundLocationUpdates) {
       this.locationProvider = locationProvider;
       this.skipPermissionRequests = skipPermissionRequests;
+      this.enableBackgroundLocationUpdates = enableBackgroundLocationUpdates;
     }
 
     protected static Configuration getDefault() {
-      return new Configuration("auto", false);
+      return new Configuration("auto", false, false);
     }
 
     protected static Configuration fromReactMap(ReadableMap map) {
@@ -187,7 +194,8 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
               map.hasKey("locationProvider") ? map.getString("locationProvider") : "auto";
       boolean skipPermissionRequests =
               map.hasKey("skipPermissionRequests") ? map.getBoolean("skipPermissionRequests") : false;
-      return new Configuration(locationProvider, skipPermissionRequests);
+      boolean enableBackgroundLocationUpdates = map.hasKey("enableBackgroundLocationUpdates") ? map.getBoolean("enableBackgroundLocationUpdates") : false;
+      return new Configuration(locationProvider, skipPermissionRequests, enableBackgroundLocationUpdates);
     }
   }
 }
