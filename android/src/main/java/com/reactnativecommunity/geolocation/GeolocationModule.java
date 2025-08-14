@@ -29,11 +29,13 @@ import java.util.Objects;
 public class GeolocationModule extends ReactContextBaseJavaModule {
 
   public static final String NAME = "RNCGeolocation";
+  private ReactApplicationContext mReactContext;
   private BaseLocationManager mLocationManager;
   private Configuration mConfiguration;
 
   public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
+    mReactContext = reactContext;
     mConfiguration = Configuration.getDefault();
   }
 
@@ -48,14 +50,12 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   }
 
   private void onConfigurationChange(Configuration config) {
-    ReactApplicationContext reactContext = mLocationManager.mReactContext;
-
     var shouldUseAuto = Objects.equals(config.locationProvider, "auto");
     var shouldUsePlayServices = Objects.equals(config.locationProvider, "playServices");
     var shouldUseAndroid = Objects.equals(config.locationProvider, "android");
 
     GoogleApiAvailability availability = new GoogleApiAvailability();
-    var isPlayServicesAvailable = availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS;
+    var isPlayServicesAvailable = availability.isGooglePlayServicesAvailable(mReactContext.getApplicationContext()) == ConnectionResult.SUCCESS;
 
     if (shouldUseAuto) {
       if (isPlayServicesAvailable) {
@@ -68,9 +68,9 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     }
 
     if (shouldUsePlayServices && !(mLocationManager instanceof PlayServicesLocationManager)) {
-      mLocationManager = new PlayServicesLocationManager(reactContext);
+      mLocationManager = new PlayServicesLocationManager(mReactContext);
     } else if (shouldUseAndroid && !(mLocationManager instanceof AndroidLocationManager)) {
-      mLocationManager = new AndroidLocationManager(reactContext);
+      mLocationManager = new AndroidLocationManager(mReactContext);
     }
   }
 
