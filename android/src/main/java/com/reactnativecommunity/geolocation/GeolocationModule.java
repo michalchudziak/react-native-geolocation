@@ -35,7 +35,6 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   public GeolocationModule(ReactApplicationContext reactContext) {
     super(reactContext);
     mConfiguration = Configuration.getDefault();
-    mLocationManager = new AndroidLocationManager(reactContext);
   }
 
   @Override
@@ -50,13 +49,28 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
 
   private void onConfigurationChange(Configuration config) {
     ReactApplicationContext reactContext = mLocationManager.mReactContext;
-    if (Objects.equals(config.locationProvider, "android") && mLocationManager instanceof PlayServicesLocationManager) {
-      mLocationManager = new AndroidLocationManager(reactContext);
-    } else if (Objects.equals(config.locationProvider, "playServices") && mLocationManager instanceof AndroidLocationManager) {
-      GoogleApiAvailability availability = new GoogleApiAvailability();
-      if (availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS) {
-        mLocationManager = new PlayServicesLocationManager(reactContext);
+
+    var shouldUseAuto = Objects.equals(config.locationProvider, "auto");
+    var shouldUsePlayServices = Objects.equals(config.locationProvider, "playServices");
+    var shouldUseAndroid = Objects.equals(config.locationProvider, "android");
+
+    GoogleApiAvailability availability = new GoogleApiAvailability();
+    var isPlayServicesAvailable = availability.isGooglePlayServicesAvailable(reactContext.getApplicationContext()) == ConnectionResult.SUCCESS;
+
+    if (shouldUseAuto) {
+      if (isPlayServicesAvailable) {
+        shouldUsePlayServices = true;
+        shouldUseAndroid = false;
+      } else {
+        shouldUsePlayServices = false;
+        shouldUseAndroid = true;
       }
+    }
+
+    if (shouldUsePlayServices && !(mLocationManager instanceof PlayServicesLocationManager)) {
+      mLocationManager = new PlayServicesLocationManager(reactContext);
+    } else if (shouldUseAndroid && !(mLocationManager instanceof AndroidLocationManager)) {
+      mLocationManager = new AndroidLocationManager(reactContext);
     }
   }
 
