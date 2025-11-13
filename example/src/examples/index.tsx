@@ -14,7 +14,8 @@ const examples = [
   {
     id: 'watchPosition',
     title: 'watchPosition() / clearWatch()',
-    description: 'Start / stop watching location changes',
+    description:
+      'Start / stop watching location changes and tweak watch options',
     render() {
       return <WatchPosition />;
     },

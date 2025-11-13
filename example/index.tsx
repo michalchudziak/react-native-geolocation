@@ -24,6 +24,7 @@ function ExampleApp() {
         <Stack.Screen name="Home" component={Screens.HomeScreen} />
         <Stack.Screen name="Examples" component={Screens.ExamplesScreen} />
         <Stack.Screen name="TestCases" component={Screens.TestCasesScreen} />
+        <Stack.Screen name="Logging" component={Screens.LoggingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

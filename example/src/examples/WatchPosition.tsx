@@ -11,17 +11,43 @@
 
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Alert, Button } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation, { type GeolocationResponse } from '@react-native-community/geolocation';
+import {
+  WatchOptionsForm,
+  buildCurrentPositionOptions,
+  buildWatchOptions,
+  initialWatchOptionValues,
+  type WatchOptionFormValues,
+} from '../components/WatchOptionsForm';
 
 export default function WatchPositionExample() {
+  const [formValues, setFormValues] =
+    useState<WatchOptionFormValues>(initialWatchOptionValues);
+  const [position, setPosition] =
+    useState<GeolocationResponse | null>(null);
+  const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
+
   const watchPosition = () => {
     try {
-      const watchID = Geolocation.watchPosition(
-        (position) => {
-          console.log('watchPosition', JSON.stringify(position));
-          setPosition(JSON.stringify(position));
+      const currentOptions = buildCurrentPositionOptions(formValues);
+      console.log('watchPosition.getCurrentPositionOptions', currentOptions);
+      Geolocation.getCurrentPosition(
+        (nextPosition) => {
+          setPosition(nextPosition);
         },
-        (error) => Alert.alert('WatchPosition Error', JSON.stringify(error))
+        (error) => Alert.alert('GetCurrentPosition Error', JSON.stringify(error)),
+        currentOptions
+      );
+
+      const watchOptions = buildWatchOptions(formValues);
+      console.log('watchPosition.startOptions', watchOptions);
+      const watchID = Geolocation.watchPosition(
+        (nextPosition) => {
+          console.log('watchPosition', JSON.stringify(nextPosition));
+          setPosition(nextPosition);
+        },
+        (error) => Alert.alert('WatchPosition Error', JSON.stringify(error)),
+        watchOptions
       );
       setSubscriptionId(watchID);
     } catch (error) {
@@ -35,8 +61,6 @@ export default function WatchPositionExample() {
     setPosition(null);
   };
 
-  const [position, setPosition] = useState<string | null>(null);
-  const [subscriptionId, setSubscriptionId] = useState<number | null>(null);
   useEffect(() => {
     return () => {
       clearWatch();
@@ -46,10 +70,22 @@ export default function WatchPositionExample() {
 
   return (
     <View>
+      <WatchOptionsForm
+        values={formValues}
+        onChange={(field, value) =>
+          setFormValues((prev) => ({ ...prev, [field]: value }))
+        }
+      />
       <Text>
         <Text style={styles.title}>Last position: </Text>
-        {position || 'unknown'}
+        {position ? JSON.stringify(position) : 'unknown'}
       </Text>
+      {position && (
+        <Text style={styles.caption}>
+          Position timestamp:{' '}
+          {new Date(position.timestamp).toLocaleTimeString()}
+        </Text>
+      )}
       {subscriptionId !== null ? (
         <Button title="Clear Watch" onPress={clearWatch} />
       ) : (
@@ -62,5 +98,27 @@ export default function WatchPositionExample() {
 const styles = StyleSheet.create({
   title: {
     fontWeight: '500',
+  },
+  row: {
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    flex: 1,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    minWidth: 100,
+    textAlign: 'right',
+  },
+  caption: {
+    marginBottom: 12,
+    color: '#555',
   },
 });

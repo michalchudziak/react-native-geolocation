@@ -144,7 +144,11 @@ import Geolocation from '@react-native-community/geolocation';
 Geolocation.getCurrentPosition(info => console.log(info));
 ```
 
-Check out the [example project](example) for more examples.
+Check out the [example project](example) for more examples. The example app
+also provides a **Logging** section that records `watchPosition` updates into
+timestamped CSV files inside `/storage/Android/data/<app-name>/files/` (or the
+platform-equivalent app directory) and offers a shortcut to clear previously
+recorded logs on the device.
 
 ## Methods
 

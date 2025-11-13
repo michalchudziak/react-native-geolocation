@@ -35,6 +35,8 @@ import EXAMPLES from './examples';
 
 // Test cases for the e2e tests. THESE ARE NOT EXAMPLES OF BEST PRACTICE
 import TEST_CASES from './testCases';
+// Logging utilities for collecting data
+import LOGGING from './logging';
 
 const renderExample = (example: RenderableExample) => {
   return (
@@ -59,8 +61,8 @@ export function HomeScreen({
         <Text style={styles.sectionTitle}>React Native Geolocation</Text>
         <View style={styles.exampleContainer}>
           <Text style={styles.exampleDescription}>
-            Use section below to adjust the configuration or press "Examples" to
-            check out the examples.
+            Use section below to adjust the configuration or explore the demos,
+            test cases, or logging tools.
           </Text>
           <View style={[styles.exampleInnerContainer, styles.buttonContainer]}>
             <Button
@@ -70,6 +72,10 @@ export function HomeScreen({
             <Button
               title="Test cases"
               onPress={() => navigation.navigate('TestCases')}
+            />
+            <Button
+              title="Logging"
+              onPress={() => navigation.navigate('Logging')}
             />
           </View>
         </View>
@@ -96,6 +102,17 @@ export function TestCasesScreen() {
       <ScrollView style={styles.scrollContainer}>
         <Text style={styles.sectionTitle}>Test Cases</Text>
         {TEST_CASES.map(renderExample)}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+export function LoggingScreen() {
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollContainer}>
+        <Text style={styles.sectionTitle}>Logging</Text>
+        {LOGGING.map(renderExample)}
       </ScrollView>
     </SafeAreaView>
   );
