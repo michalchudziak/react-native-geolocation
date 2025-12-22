@@ -104,7 +104,7 @@ public class AndroidLocationManager extends BaseLocationManager {
                 locationManager.removeUpdates(mLocationListener);
                 locationManager.requestLocationUpdates(
                         provider,
-                        1000,
+                        locationOptions.interval, // change the hardcode value 1000 to accept user input
                         locationOptions.distanceFilter,
                         mLocationListener);
             }
